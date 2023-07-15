@@ -1,4 +1,6 @@
-﻿namespace Archive
+﻿using Archive.DB;
+
+namespace Archive
 {
     partial class Form1
     {
@@ -38,6 +40,13 @@
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);
+
+
+            //DB test
+            DBase DBase = new DBase();
+            DBase.CreateTables();
+            var a = DBase.GetTable<MKBItem>();
+            DBase.SetDataTable<MKBItem>(new MKBItem() { MKBCode = "7", Title = "1234"});
         }
 
         #endregion
