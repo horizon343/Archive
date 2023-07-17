@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             comboBox1 = new ComboBox();
-            dateTimePicker1 = new DateTimePicker();
-            dateTimePicker2 = new DateTimePicker();
             textBox1 = new TextBox();
             comboBox2 = new ComboBox();
             label1 = new Label();
@@ -39,6 +37,8 @@
             label4 = new Label();
             label5 = new Label();
             button1 = new Button();
+            textBox2 = new TextBox();
+            textBox3 = new TextBox();
             SuspendLayout();
             // 
             // comboBox1
@@ -48,20 +48,6 @@
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(200, 23);
             comboBox1.TabIndex = 0;
-            // 
-            // dateTimePicker1
-            // 
-            dateTimePicker1.Location = new Point(204, 97);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(200, 23);
-            dateTimePicker1.TabIndex = 1;
-            // 
-            // dateTimePicker2
-            // 
-            dateTimePicker2.Location = new Point(204, 126);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(200, 23);
-            dateTimePicker2.TabIndex = 2;
             // 
             // textBox1
             // 
@@ -139,6 +125,20 @@
             button1.Text = "Добавить";
             button1.UseVisualStyleBackColor = true;
             // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(204, 126);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(200, 23);
+            textBox2.TabIndex = 3;
+            // 
+            // textBox3
+            // 
+            textBox3.Location = new Point(204, 97);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(200, 23);
+            textBox3.TabIndex = 3;
+            // 
             // FormAddRecord
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -151,11 +151,12 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(comboBox2);
+            Controls.Add(textBox3);
+            Controls.Add(textBox2);
             Controls.Add(textBox1);
-            Controls.Add(dateTimePicker2);
-            Controls.Add(dateTimePicker1);
             Controls.Add(comboBox1);
             Name = "FormAddRecord";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Добавление карты";
             ResumeLayout(false);
             PerformLayout();
@@ -164,8 +165,6 @@
         #endregion
 
         private ComboBox comboBox1;
-        private DateTimePicker dateTimePicker1;
-        private DateTimePicker dateTimePicker2;
         private TextBox textBox1;
         private ComboBox comboBox2;
         private Label label1;
@@ -174,5 +173,7 @@
         private Label label4;
         private Label label5;
         private Button button1;
+        private TextBox textBox2;
+        private TextBox textBox3;
     }
 }

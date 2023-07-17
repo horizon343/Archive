@@ -30,6 +30,9 @@ namespace Archive
         /// </summary>
         private void InitializeComponent()
         {
+            //InitDB
+            InitDB();
+
             panelMenu = new Panel();
             button3 = new Button();
             button2 = new Button();
@@ -156,6 +159,15 @@ namespace Archive
         }
 
         #endregion
+
+        /// <summary>
+        /// Создание базы данных и таблиц, если она не создана (созданы)
+        /// </summary>
+        private void InitDB()
+        {
+            DBase dBase = new DBase();
+            dBase.CreateTables();
+        }
 
         private Panel panelMenu;
         private Button button1;

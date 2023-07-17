@@ -38,7 +38,7 @@ namespace Archive.DB
         public string Address { get; set; }
 
         [Column("Phone")]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
 
         [Column("Index")]
         public int Index { get; set; }

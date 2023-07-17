@@ -28,16 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
-            textBox3 = new TextBox();
-            textBox4 = new TextBox();
-            textBox5 = new TextBox();
-            textBox6 = new TextBox();
-            textBox7 = new TextBox();
-            textBox8 = new TextBox();
-            textBox9 = new TextBox();
-            dateTimePicker1 = new DateTimePicker();
+            LastNameTextField = new TextBox();
+            FirstNameTextField = new TextBox();
+            MiddleNameTextField = new TextBox();
+            RegionTextField = new TextBox();
+            DistrictTextField = new TextBox();
+            CityTextField = new TextBox();
+            AddressTextField = new TextBox();
+            PhoneTextField = new TextBox();
+            IndexTextField = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -48,97 +47,117 @@
             label8 = new Label();
             label9 = new Label();
             label10 = new Label();
-            button1 = new Button();
+            AddPatient = new Button();
+            DateOfBirthTextField = new TextBox();
+            LastNameErrorText = new Label();
+            FirstNameErrorText = new Label();
+            MiddleNameErrorText = new Label();
+            RegionErrorText = new Label();
+            DistrictErrorText = new Label();
+            IndexErrorText = new Label();
+            PhoneErrorText = new Label();
+            CityErrorText = new Label();
+            AddressErrorText = new Label();
             SuspendLayout();
             // 
-            // textBox1
+            // LastNameTextField
             // 
-            textBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox1.ForeColor = Color.Black;
-            textBox1.Location = new Point(180, 50);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(425, 23);
-            textBox1.TabIndex = 0;
+            LastNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LastNameTextField.ForeColor = Color.Black;
+            LastNameTextField.Location = new Point(180, 50);
+            LastNameTextField.MaximumSize = new Size(425, 0);
+            LastNameTextField.MinimumSize = new Size(425, 0);
+            LastNameTextField.Name = "LastNameTextField";
+            LastNameTextField.Size = new Size(425, 23);
+            LastNameTextField.TabIndex = 0;
             // 
-            // textBox2
+            // FirstNameTextField
             // 
-            textBox2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox2.ForeColor = Color.Black;
-            textBox2.Location = new Point(180, 79);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(425, 23);
-            textBox2.TabIndex = 1;
+            FirstNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            FirstNameTextField.ForeColor = Color.Black;
+            FirstNameTextField.Location = new Point(180, 79);
+            FirstNameTextField.MaximumSize = new Size(425, 0);
+            FirstNameTextField.MinimumSize = new Size(425, 0);
+            FirstNameTextField.Name = "FirstNameTextField";
+            FirstNameTextField.Size = new Size(425, 23);
+            FirstNameTextField.TabIndex = 1;
             // 
-            // textBox3
+            // MiddleNameTextField
             // 
-            textBox3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox3.ForeColor = Color.Black;
-            textBox3.Location = new Point(180, 108);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(425, 23);
-            textBox3.TabIndex = 2;
+            MiddleNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            MiddleNameTextField.ForeColor = Color.Black;
+            MiddleNameTextField.Location = new Point(180, 108);
+            MiddleNameTextField.MaximumSize = new Size(425, 0);
+            MiddleNameTextField.MinimumSize = new Size(425, 0);
+            MiddleNameTextField.Name = "MiddleNameTextField";
+            MiddleNameTextField.Size = new Size(425, 23);
+            MiddleNameTextField.TabIndex = 2;
             // 
-            // textBox4
+            // RegionTextField
             // 
-            textBox4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox4.ForeColor = Color.Black;
-            textBox4.Location = new Point(180, 166);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(425, 23);
-            textBox4.TabIndex = 3;
+            RegionTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RegionTextField.ForeColor = Color.Black;
+            RegionTextField.Location = new Point(180, 166);
+            RegionTextField.MaximumSize = new Size(425, 0);
+            RegionTextField.MinimumSize = new Size(425, 0);
+            RegionTextField.Name = "RegionTextField";
+            RegionTextField.Size = new Size(425, 23);
+            RegionTextField.TabIndex = 3;
             // 
-            // textBox5
+            // DistrictTextField
             // 
-            textBox5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox5.ForeColor = Color.Black;
-            textBox5.Location = new Point(180, 195);
-            textBox5.Name = "textBox5";
-            textBox5.Size = new Size(425, 23);
-            textBox5.TabIndex = 4;
+            DistrictTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DistrictTextField.ForeColor = Color.Black;
+            DistrictTextField.Location = new Point(180, 195);
+            DistrictTextField.MaximumSize = new Size(425, 0);
+            DistrictTextField.MinimumSize = new Size(425, 0);
+            DistrictTextField.Name = "DistrictTextField";
+            DistrictTextField.Size = new Size(425, 23);
+            DistrictTextField.TabIndex = 4;
             // 
-            // textBox6
+            // CityTextField
             // 
-            textBox6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox6.ForeColor = Color.Black;
-            textBox6.Location = new Point(180, 224);
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(425, 23);
-            textBox6.TabIndex = 5;
+            CityTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CityTextField.ForeColor = Color.Black;
+            CityTextField.Location = new Point(180, 224);
+            CityTextField.MaximumSize = new Size(425, 0);
+            CityTextField.MinimumSize = new Size(425, 0);
+            CityTextField.Name = "CityTextField";
+            CityTextField.Size = new Size(425, 23);
+            CityTextField.TabIndex = 5;
             // 
-            // textBox7
+            // AddressTextField
             // 
-            textBox7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox7.ForeColor = Color.Black;
-            textBox7.Location = new Point(180, 253);
-            textBox7.Name = "textBox7";
-            textBox7.Size = new Size(425, 23);
-            textBox7.TabIndex = 6;
+            AddressTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            AddressTextField.ForeColor = Color.Black;
+            AddressTextField.Location = new Point(180, 253);
+            AddressTextField.MaximumSize = new Size(425, 0);
+            AddressTextField.MinimumSize = new Size(425, 0);
+            AddressTextField.Name = "AddressTextField";
+            AddressTextField.Size = new Size(425, 23);
+            AddressTextField.TabIndex = 6;
             // 
-            // textBox8
+            // PhoneTextField
             // 
-            textBox8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox8.ForeColor = Color.Black;
-            textBox8.Location = new Point(180, 282);
-            textBox8.Name = "textBox8";
-            textBox8.Size = new Size(425, 23);
-            textBox8.TabIndex = 7;
+            PhoneTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            PhoneTextField.ForeColor = Color.Black;
+            PhoneTextField.Location = new Point(180, 282);
+            PhoneTextField.MaximumSize = new Size(425, 0);
+            PhoneTextField.MinimumSize = new Size(425, 0);
+            PhoneTextField.Name = "PhoneTextField";
+            PhoneTextField.Size = new Size(425, 23);
+            PhoneTextField.TabIndex = 7;
             // 
-            // textBox9
+            // IndexTextField
             // 
-            textBox9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            textBox9.ForeColor = Color.Black;
-            textBox9.Location = new Point(180, 311);
-            textBox9.Name = "textBox9";
-            textBox9.Size = new Size(425, 23);
-            textBox9.TabIndex = 8;
-            // 
-            // dateTimePicker1
-            // 
-            dateTimePicker1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dateTimePicker1.Location = new Point(180, 137);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(200, 23);
-            dateTimePicker1.TabIndex = 9;
+            IndexTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            IndexTextField.ForeColor = Color.Black;
+            IndexTextField.Location = new Point(180, 311);
+            IndexTextField.MaximumSize = new Size(425, 0);
+            IndexTextField.MinimumSize = new Size(425, 0);
+            IndexTextField.Name = "IndexTextField";
+            IndexTextField.Size = new Size(425, 23);
+            IndexTextField.TabIndex = 8;
             // 
             // label1
             // 
@@ -150,7 +169,6 @@
             label1.Size = new Size(58, 15);
             label1.TabIndex = 10;
             label1.Text = "Фамилия";
-            label1.Click += label1_Click;
             // 
             // label2
             // 
@@ -162,7 +180,6 @@
             label2.Size = new Size(31, 15);
             label2.TabIndex = 11;
             label2.Text = "Имя";
-            label2.Click += label2_Click;
             // 
             // label3
             // 
@@ -185,7 +202,6 @@
             label4.Size = new Size(90, 15);
             label4.TabIndex = 13;
             label4.Text = "Дата рождения";
-            label4.Click += label4_Click;
             // 
             // label5
             // 
@@ -238,7 +254,7 @@
             label9.ForeColor = Color.Black;
             label9.Location = new Point(84, 285);
             label9.Name = "label9";
-            label9.Size = new Size(56, 15);
+            label9.Size = new Size(55, 15);
             label9.TabIndex = 18;
             label9.Text = "Телефон";
             // 
@@ -253,22 +269,133 @@
             label10.TabIndex = 19;
             label10.Text = "Индекс адреса";
             // 
-            // button1
+            // AddPatient
             // 
-            button1.ForeColor = Color.Black;
-            button1.Location = new Point(524, 340);
-            button1.Name = "button1";
-            button1.Size = new Size(81, 36);
-            button1.TabIndex = 20;
-            button1.Text = "Добавить";
-            button1.UseVisualStyleBackColor = true;
+            AddPatient.ForeColor = Color.Black;
+            AddPatient.Location = new Point(524, 340);
+            AddPatient.Name = "AddPatient";
+            AddPatient.Size = new Size(81, 36);
+            AddPatient.TabIndex = 20;
+            AddPatient.Text = "Добавить";
+            AddPatient.UseVisualStyleBackColor = true;
+            AddPatient.Click += AddPatient_Click;
+            // 
+            // DateOfBirthTextField
+            // 
+            DateOfBirthTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DateOfBirthTextField.ForeColor = Color.Black;
+            DateOfBirthTextField.Location = new Point(180, 137);
+            DateOfBirthTextField.MaximumSize = new Size(425, 0);
+            DateOfBirthTextField.MinimumSize = new Size(425, 0);
+            DateOfBirthTextField.Name = "DateOfBirthTextField";
+            DateOfBirthTextField.Size = new Size(425, 23);
+            DateOfBirthTextField.TabIndex = 3;
+            // 
+            // LastNameErrorText
+            // 
+            LastNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            LastNameErrorText.AutoSize = true;
+            LastNameErrorText.ForeColor = Color.Black;
+            LastNameErrorText.Location = new Point(611, 53);
+            LastNameErrorText.Name = "LastNameErrorText";
+            LastNameErrorText.Size = new Size(10, 15);
+            LastNameErrorText.TabIndex = 10;
+            LastNameErrorText.Text = " ";
+            // 
+            // FirstNameErrorText
+            // 
+            FirstNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            FirstNameErrorText.AutoSize = true;
+            FirstNameErrorText.ForeColor = Color.Black;
+            FirstNameErrorText.Location = new Point(611, 82);
+            FirstNameErrorText.Name = "FirstNameErrorText";
+            FirstNameErrorText.Size = new Size(10, 15);
+            FirstNameErrorText.TabIndex = 10;
+            FirstNameErrorText.Text = " ";
+            // 
+            // MiddleNameErrorText
+            // 
+            MiddleNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            MiddleNameErrorText.AutoSize = true;
+            MiddleNameErrorText.ForeColor = Color.Black;
+            MiddleNameErrorText.Location = new Point(611, 111);
+            MiddleNameErrorText.Name = "MiddleNameErrorText";
+            MiddleNameErrorText.Size = new Size(10, 15);
+            MiddleNameErrorText.TabIndex = 10;
+            MiddleNameErrorText.Text = " ";
+            // 
+            // RegionErrorText
+            // 
+            RegionErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RegionErrorText.AutoSize = true;
+            RegionErrorText.ForeColor = Color.Black;
+            RegionErrorText.Location = new Point(611, 169);
+            RegionErrorText.Name = "RegionErrorText";
+            RegionErrorText.Size = new Size(10, 15);
+            RegionErrorText.TabIndex = 10;
+            RegionErrorText.Text = " ";
+            // 
+            // DistrictErrorText
+            // 
+            DistrictErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DistrictErrorText.AutoSize = true;
+            DistrictErrorText.ForeColor = Color.Black;
+            DistrictErrorText.Location = new Point(611, 198);
+            DistrictErrorText.Name = "DistrictErrorText";
+            DistrictErrorText.Size = new Size(10, 15);
+            DistrictErrorText.TabIndex = 10;
+            DistrictErrorText.Text = " ";
+            // 
+            // IndexErrorText
+            // 
+            IndexErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            IndexErrorText.AutoSize = true;
+            IndexErrorText.ForeColor = Color.Black;
+            IndexErrorText.Location = new Point(611, 314);
+            IndexErrorText.Name = "IndexErrorText";
+            IndexErrorText.Size = new Size(10, 15);
+            IndexErrorText.TabIndex = 10;
+            IndexErrorText.Text = " ";
+            // 
+            // PhoneErrorText
+            // 
+            PhoneErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            PhoneErrorText.AutoSize = true;
+            PhoneErrorText.ForeColor = Color.Black;
+            PhoneErrorText.Location = new Point(611, 285);
+            PhoneErrorText.Name = "PhoneErrorText";
+            PhoneErrorText.Size = new Size(10, 15);
+            PhoneErrorText.TabIndex = 10;
+            PhoneErrorText.Text = " ";
+            // 
+            // CityErrorText
+            // 
+            CityErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            CityErrorText.AutoSize = true;
+            CityErrorText.ForeColor = Color.Black;
+            CityErrorText.Location = new Point(611, 227);
+            CityErrorText.Name = "CityErrorText";
+            CityErrorText.Size = new Size(10, 15);
+            CityErrorText.TabIndex = 10;
+            CityErrorText.Text = " ";
+            // 
+            // AddressErrorText
+            // 
+            AddressErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            AddressErrorText.AutoSize = true;
+            AddressErrorText.ForeColor = Color.Black;
+            AddressErrorText.Location = new Point(611, 256);
+            AddressErrorText.Name = "AddressErrorText";
+            AddressErrorText.Size = new Size(10, 15);
+            AddressErrorText.TabIndex = 10;
+            AddressErrorText.Text = " ";
             // 
             // FormAddPatient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button1);
+            Controls.Add(AddPatient);
             Controls.Add(label10);
             Controls.Add(label9);
             Controls.Add(label8);
@@ -278,18 +405,28 @@
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
+            Controls.Add(PhoneErrorText);
+            Controls.Add(IndexErrorText);
+            Controls.Add(AddressErrorText);
+            Controls.Add(CityErrorText);
+            Controls.Add(DistrictErrorText);
+            Controls.Add(RegionErrorText);
+            Controls.Add(MiddleNameErrorText);
+            Controls.Add(FirstNameErrorText);
+            Controls.Add(LastNameErrorText);
             Controls.Add(label1);
-            Controls.Add(dateTimePicker1);
-            Controls.Add(textBox9);
-            Controls.Add(textBox8);
-            Controls.Add(textBox7);
-            Controls.Add(textBox6);
-            Controls.Add(textBox5);
-            Controls.Add(textBox4);
-            Controls.Add(textBox3);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
+            Controls.Add(IndexTextField);
+            Controls.Add(PhoneTextField);
+            Controls.Add(AddressTextField);
+            Controls.Add(CityTextField);
+            Controls.Add(DistrictTextField);
+            Controls.Add(DateOfBirthTextField);
+            Controls.Add(RegionTextField);
+            Controls.Add(MiddleNameTextField);
+            Controls.Add(FirstNameTextField);
+            Controls.Add(LastNameTextField);
             Name = "FormAddPatient";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Добавление пациента";
             ResumeLayout(false);
             PerformLayout();
@@ -297,16 +434,15 @@
 
         #endregion
 
-        private TextBox textBox1;
-        private TextBox textBox2;
-        private TextBox textBox3;
-        private TextBox textBox4;
-        private TextBox textBox5;
-        private TextBox textBox6;
-        private TextBox textBox7;
-        private TextBox textBox8;
-        private TextBox textBox9;
-        private DateTimePicker dateTimePicker1;
+        private TextBox LastNameTextField;
+        private TextBox FirstNameTextField;
+        private TextBox MiddleNameTextField;
+        private TextBox RegionTextField;
+        private TextBox DistrictTextField;
+        private TextBox CityTextField;
+        private TextBox AddressTextField;
+        private TextBox PhoneTextField;
+        private TextBox IndexTextField;
         private Label label1;
         private Label label2;
         private Label label3;
@@ -317,6 +453,16 @@
         private Label label8;
         private Label label9;
         private Label label10;
-        private Button button1;
+        private Button AddPatient;
+        private TextBox DateOfBirthTextField;
+        private Label LastNameErrorText;
+        private Label FirstNameErrorText;
+        private Label MiddleNameErrorText;
+        private Label RegionErrorText;
+        private Label DistrictErrorText;
+        private Label IndexErrorText;
+        private Label PhoneErrorText;
+        private Label CityErrorText;
+        private Label AddressErrorText;
     }
 }
