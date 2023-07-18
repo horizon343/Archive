@@ -60,6 +60,7 @@
             AddressErrorText = new Label();
             panelTitleBar = new Panel();
             lblTitle = new Label();
+            DateOfBirthErrorText = new Label();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -257,7 +258,7 @@
             label9.ForeColor = Color.Black;
             label9.Location = new Point(123, 353);
             label9.Name = "label9";
-            label9.Size = new Size(56, 15);
+            label9.Size = new Size(55, 15);
             label9.TabIndex = 18;
             label9.Text = "Телефон";
             // 
@@ -401,7 +402,7 @@
             panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             panelTitleBar.Location = new Point(0, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(800, 80);
+            panelTitleBar.Size = new Size(844, 80);
             panelTitleBar.TabIndex = 21;
             // 
             // lblTitle
@@ -409,19 +410,29 @@
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(319, 27);
+            lblTitle.Location = new Point(341, 27);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(173, 30);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Новый пациент";
-            lblTitle.Click += lblTitle_Click;
+            // 
+            // DateOfBirthErrorText
+            // 
+            DateOfBirthErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            DateOfBirthErrorText.AutoSize = true;
+            DateOfBirthErrorText.ForeColor = Color.Black;
+            DateOfBirthErrorText.Location = new Point(650, 208);
+            DateOfBirthErrorText.Name = "DateOfBirthErrorText";
+            DateOfBirthErrorText.Size = new Size(10, 15);
+            DateOfBirthErrorText.TabIndex = 10;
+            DateOfBirthErrorText.Text = " ";
             // 
             // FormAddPatient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(844, 450);
             Controls.Add(panelTitleBar);
             Controls.Add(AddPatient);
             Controls.Add(label10);
@@ -439,6 +450,7 @@
             Controls.Add(CityErrorText);
             Controls.Add(DistrictErrorText);
             Controls.Add(RegionErrorText);
+            Controls.Add(DateOfBirthErrorText);
             Controls.Add(MiddleNameErrorText);
             Controls.Add(FirstNameErrorText);
             Controls.Add(LastNameErrorText);
@@ -496,5 +508,6 @@
         private Label AddressErrorText;
         private Panel panelTitleBar;
         private Label lblTitle;
+        private Label DateOfBirthErrorText;
     }
 }

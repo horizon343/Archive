@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Archive.Forms
 {
@@ -18,6 +19,7 @@ namespace Archive.Forms
         public FormAddPatient()
         {
             InitializeComponent();
+
             LastNameTextField.TextChanged += LastNameTextField_TextChanged;
             LastNameErrorText.ForeColor = Color.Orange;
 
@@ -28,6 +30,7 @@ namespace Archive.Forms
             MiddleNameErrorText.ForeColor = Color.Orange;
 
             DateOfBirthTextField.TextChanged += DateOfBirthTextField_TextChanged;
+            DateOfBirthErrorText.ForeColor = Color.Orange;
 
             RegionTextField.TextChanged += RegionTextField_TextChanged;
             RegionErrorText.ForeColor = Color.Orange;
@@ -94,15 +97,43 @@ namespace Archive.Forms
         private void TextFieldValidation_3(TextBox textField, Label errorText, int length)
         {
             string pattern = "^[0-9]+$";
-            if (Regex.IsMatch(textField.Text, pattern))
-            {
-                if (textField.Text.Length > length)
-                    errorText.Text = "Возможно допущена ошибка ?!";
-                else
-                    errorText.Text = "";
-            }
+            if (Regex.IsMatch(textField.Text, pattern) && textField.Text.Length <= length)
+                errorText.Text = "";
             else
                 errorText.Text = "Возможно допущена ошибка ?!";
+        }
+
+        /// <summary>
+        /// Проверка на корректность даты (не прошлый век и не будущее)
+        /// </summary>
+        /// <param name="text">Строка с датой в формте dd.mm.yyyy</param>
+        private void DateIsValid(string text)
+        {
+            try
+            {
+                DateOfBirthErrorText.ForeColor = Color.Orange;
+
+                //Проверка допустимой даты
+                if (text.Length == 10)
+                {
+                    string[] DateOfBirthArray = text.Split(".");
+                    DateTime today = DateTime.Now;
+                    DateTime minDate = new DateTime(1900, 12, 31);
+                    DateTime DateOfBirth = new DateTime(int.Parse(DateOfBirthArray[2]), int.Parse(DateOfBirthArray[1]), int.Parse(DateOfBirthArray[0]));
+                    if (DateOfBirth > today || DateOfBirth < minDate)
+                    {
+                        DateOfBirthErrorText.Text = "Ошибка даты!";
+                        DateOfBirthErrorText.ForeColor = Color.Red;
+                    }
+                    else
+                        DateOfBirthErrorText.Text = "";
+                }
+            }
+            catch
+            {
+                DateOfBirthErrorText.Text = "Ошибка даты!";
+                DateOfBirthErrorText.ForeColor = Color.Red;
+            }
         }
 
         #region
@@ -121,10 +152,39 @@ namespace Archive.Forms
         }
         private void DateOfBirthTextField_TextChanged(object? sender, EventArgs e)
         {
-            //if (DateOfBirthTextField.SelectionStart == 2 || DateOfBirthTextField.SelectionStart == 5)
-            //{
-            //    DateOfBirthTextField.Text += ".";
-            //}
+            try
+            {
+                DateOfBirthErrorText.ForeColor = Color.Orange;
+
+                string text = DateOfBirthTextField.Text.Replace(".", "");
+
+                //Проверка, что строка состоит из цифр
+                string pattern = "^[0-9]+$";
+                if (Regex.IsMatch(text, pattern))
+                {
+                    if (text.Length > 8)
+                        DateOfBirthErrorText.Text = "Возможно допущена ошибка ?!";
+                    else
+                        DateOfBirthErrorText.Text = "";
+                }
+                else
+                    DateOfBirthErrorText.Text = "Возможно допущена ошибка ?!";
+
+                //Автоматическое разделение
+                if (text.Length >= 3)
+                    text = text.Insert(2, ".");
+                if (text.Length >= 6)
+                    text = text.Insert(5, ".");
+                DateOfBirthTextField.Text = text;
+                DateOfBirthTextField.SelectionStart = text.Length;
+
+                DateIsValid(text);
+            }
+            catch
+            {
+                DateOfBirthErrorText.Text = "Ошибка даты!";
+                DateOfBirthErrorText.ForeColor = Color.Red;
+            }
         }
         private void RegionTextField_TextChanged(object? sender, EventArgs e)
         {
@@ -179,13 +239,9 @@ namespace Archive.Forms
             }
             catch (Exception error)
             {
-                MessageBox.Show($"Ошибка конвертации: [{error.Message}]");
+                MessageBox.Show($"Ошибка добавления пациента: [{error.Message}]");
             }
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
