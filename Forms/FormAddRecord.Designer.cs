@@ -28,47 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            comboBox1 = new ComboBox();
-            textBox1 = new TextBox();
-            comboBox2 = new ComboBox();
+            DepartmentComboBox = new ComboBox();
+            HistoryNumberTextBox1 = new TextBox();
+            MKBComboBox = new ComboBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
-            button1 = new Button();
-            textBox2 = new TextBox();
-            textBox3 = new TextBox();
+            AddRecordButton = new Button();
+            DischargeDateTextBox = new TextBox();
+            ReceiptDateTextBox = new TextBox();
+            panelTitleBar = new Panel();
+            lblTitle = new Label();
+            panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
-            // comboBox1
+            // DepartmentComboBox
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(204, 68);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(200, 23);
-            comboBox1.TabIndex = 0;
+            DepartmentComboBox.FormattingEnabled = true;
+            DepartmentComboBox.Location = new Point(350, 123);
+            DepartmentComboBox.Name = "DepartmentComboBox";
+            DepartmentComboBox.Size = new Size(200, 23);
+            DepartmentComboBox.TabIndex = 0;
             // 
-            // textBox1
+            // HistoryNumberTextBox1
             // 
-            textBox1.Location = new Point(204, 155);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(200, 23);
-            textBox1.TabIndex = 3;
+            HistoryNumberTextBox1.Location = new Point(350, 210);
+            HistoryNumberTextBox1.Name = "HistoryNumberTextBox1";
+            HistoryNumberTextBox1.Size = new Size(200, 23);
+            HistoryNumberTextBox1.TabIndex = 3;
             // 
-            // comboBox2
+            // MKBComboBox
             // 
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(204, 184);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(200, 23);
-            comboBox2.TabIndex = 4;
+            MKBComboBox.FormattingEnabled = true;
+            MKBComboBox.Location = new Point(350, 239);
+            MKBComboBox.Name = "MKBComboBox";
+            MKBComboBox.Size = new Size(200, 23);
+            MKBComboBox.TabIndex = 4;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(92, 71);
+            label1.Location = new Point(238, 126);
             label1.Name = "label1";
             label1.Size = new Size(66, 15);
             label1.TabIndex = 5;
@@ -79,7 +82,7 @@
             // 
             label2.AutoSize = true;
             label2.ForeColor = Color.Black;
-            label2.Location = new Point(92, 103);
+            label2.Location = new Point(238, 158);
             label2.Name = "label2";
             label2.Size = new Size(106, 15);
             label2.TabIndex = 6;
@@ -90,7 +93,7 @@
             // 
             label3.AutoSize = true;
             label3.ForeColor = Color.Black;
-            label3.Location = new Point(92, 132);
+            label3.Location = new Point(238, 187);
             label3.Name = "label3";
             label3.Size = new Size(83, 15);
             label3.TabIndex = 7;
@@ -100,7 +103,7 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = Color.Black;
-            label4.Location = new Point(92, 158);
+            label4.Location = new Point(238, 213);
             label4.Name = "label4";
             label4.Size = new Size(94, 15);
             label4.TabIndex = 8;
@@ -110,70 +113,98 @@
             // 
             label5.AutoSize = true;
             label5.ForeColor = Color.Black;
-            label5.Location = new Point(92, 187);
+            label5.Location = new Point(238, 242);
             label5.Name = "label5";
             label5.Size = new Size(55, 15);
             label5.TabIndex = 9;
             label5.Text = "Код МКБ";
             // 
-            // button1
+            // AddRecordButton
             // 
-            button1.Location = new Point(329, 213);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 10;
-            button1.Text = "Добавить";
-            button1.UseVisualStyleBackColor = true;
+            AddRecordButton.Location = new Point(475, 268);
+            AddRecordButton.Name = "AddRecordButton";
+            AddRecordButton.Size = new Size(75, 23);
+            AddRecordButton.TabIndex = 10;
+            AddRecordButton.Text = "Добавить";
+            AddRecordButton.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // DischargeDateTextBox
             // 
-            textBox2.Location = new Point(204, 126);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(200, 23);
-            textBox2.TabIndex = 3;
+            DischargeDateTextBox.Location = new Point(350, 181);
+            DischargeDateTextBox.Name = "DischargeDateTextBox";
+            DischargeDateTextBox.Size = new Size(200, 23);
+            DischargeDateTextBox.TabIndex = 3;
             // 
-            // textBox3
+            // ReceiptDateTextBox
             // 
-            textBox3.Location = new Point(204, 97);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(200, 23);
-            textBox3.TabIndex = 3;
+            ReceiptDateTextBox.Location = new Point(350, 152);
+            ReceiptDateTextBox.Name = "ReceiptDateTextBox";
+            ReceiptDateTextBox.Size = new Size(200, 23);
+            ReceiptDateTextBox.TabIndex = 3;
+            // 
+            // panelTitleBar
+            // 
+            panelTitleBar.BackColor = Color.FromArgb(255, 128, 0);
+            panelTitleBar.Controls.Add(lblTitle);
+            panelTitleBar.Dock = DockStyle.Top;
+            panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
+            panelTitleBar.Location = new Point(0, 0);
+            panelTitleBar.Name = "panelTitleBar";
+            panelTitleBar.Size = new Size(800, 80);
+            panelTitleBar.TabIndex = 11;
+            // 
+            // lblTitle
+            // 
+            lblTitle.Anchor = AnchorStyles.None;
+            lblTitle.AutoSize = true;
+            lblTitle.ForeColor = Color.Black;
+            lblTitle.Location = new Point(341, 24);
+            lblTitle.Name = "lblTitle";
+            lblTitle.RightToLeft = RightToLeft.No;
+            lblTitle.Size = new Size(137, 30);
+            lblTitle.TabIndex = 0;
+            lblTitle.Text = "Новая карта";
             // 
             // FormAddRecord
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button1);
+            Controls.Add(panelTitleBar);
+            Controls.Add(AddRecordButton);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(comboBox2);
-            Controls.Add(textBox3);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
-            Controls.Add(comboBox1);
+            Controls.Add(MKBComboBox);
+            Controls.Add(ReceiptDateTextBox);
+            Controls.Add(DischargeDateTextBox);
+            Controls.Add(HistoryNumberTextBox1);
+            Controls.Add(DepartmentComboBox);
             Name = "FormAddRecord";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Добавление карты";
+            panelTitleBar.ResumeLayout(false);
+            panelTitleBar.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private ComboBox comboBox1;
-        private TextBox textBox1;
-        private ComboBox comboBox2;
+        private ComboBox DepartmentComboBox;
+        private TextBox HistoryNumberTextBox1;
+        private ComboBox MKBComboBox;
         private Label label1;
         private Label label2;
         private Label label3;
         private Label label4;
         private Label label5;
-        private Button button1;
-        private TextBox textBox2;
-        private TextBox textBox3;
+        private Button AddRecordButton;
+        private TextBox DischargeDateTextBox;
+        private TextBox ReceiptDateTextBox;
+        private Panel panelTitleBar;
+        private Label lblTitle;
     }
 }

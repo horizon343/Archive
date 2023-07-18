@@ -10,21 +10,22 @@ using System.Windows.Forms;
 
 namespace Archive.Forms
 {
-    public partial class FormAddRecord : Form
+    public partial class FormPatientAndRecords : Form
     {
-        public FormAddRecord()
+        public FormPatientAndRecords()
         {
             InitializeComponent();
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void label12_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-
+            var FormAddRecord = new FormAddRecord();
+            FormAddRecord.Show();
         }
 
         private void lblTitle_Click(object sender, EventArgs e)

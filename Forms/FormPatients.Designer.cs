@@ -31,9 +31,10 @@
             dataGridView1 = new DataGridView();
             comboBox1 = new ComboBox();
             textBox1 = new TextBox();
-            button1 = new Button();
+            AddPatientButton = new Button();
             label1 = new Label();
-            button2 = new Button();
+            AddRecordButton = new Button();
+            OpenRecordsButton = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -51,67 +52,80 @@
             // 
             comboBox1.FormattingEnabled = true;
             comboBox1.Items.AddRange(new object[] { "Номер", "Фамилия", "Дата Рождения" });
-            comboBox1.Location = new Point(235, 12);
+            comboBox1.Location = new Point(194, 12);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(98, 23);
             comboBox1.TabIndex = 1;
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(129, 12);
+            textBox1.Location = new Point(69, 12);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(100, 23);
+            textBox1.Size = new Size(119, 23);
             textBox1.TabIndex = 2;
             textBox1.TextChanged += textBox1_TextChanged;
             // 
-            // button1
+            // AddPatientButton
             // 
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.ForeColor = Color.Black;
-            button1.Location = new Point(607, 10);
-            button1.Name = "button1";
-            button1.Size = new Size(126, 23);
-            button1.TabIndex = 3;
-            button1.Text = "Добавить пациента";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            AddPatientButton.FlatStyle = FlatStyle.Flat;
+            AddPatientButton.ForeColor = Color.Black;
+            AddPatientButton.Location = new Point(547, 12);
+            AddPatientButton.Name = "AddPatientButton";
+            AddPatientButton.Size = new Size(126, 23);
+            AddPatientButton.TabIndex = 3;
+            AddPatientButton.Text = "Добавить пациента";
+            AddPatientButton.UseVisualStyleBackColor = true;
+            AddPatientButton.Click += button1_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(81, 14);
+            label1.Location = new Point(21, 15);
             label1.Name = "label1";
             label1.Size = new Size(42, 15);
             label1.TabIndex = 4;
             label1.Text = "Поиск";
             label1.Click += label1_Click;
             // 
-            // button2
+            // AddRecordButton
             // 
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.ForeColor = Color.Black;
-            button2.Location = new Point(420, 10);
-            button2.Name = "button2";
-            button2.Size = new Size(123, 23);
-            button2.TabIndex = 5;
-            button2.Text = "Добавить Карту";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            AddRecordButton.FlatStyle = FlatStyle.Flat;
+            AddRecordButton.ForeColor = Color.Black;
+            AddRecordButton.Location = new Point(402, 12);
+            AddRecordButton.Name = "AddRecordButton";
+            AddRecordButton.Size = new Size(123, 23);
+            AddRecordButton.TabIndex = 5;
+            AddRecordButton.Text = "Добавить Карту";
+            AddRecordButton.UseVisualStyleBackColor = true;
+            AddRecordButton.Click += button2_Click;
+            // 
+            // OpenRecordsButton
+            // 
+            OpenRecordsButton.FlatStyle = FlatStyle.Flat;
+            OpenRecordsButton.ForeColor = Color.Black;
+            OpenRecordsButton.Location = new Point(308, 12);
+            OpenRecordsButton.Name = "OpenRecordsButton";
+            OpenRecordsButton.Size = new Size(75, 23);
+            OpenRecordsButton.TabIndex = 6;
+            OpenRecordsButton.Text = "Открыть";
+            OpenRecordsButton.UseVisualStyleBackColor = true;
+            OpenRecordsButton.Click += OpenRecordsButton_Click;
             // 
             // FormPatients
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button2);
+            Controls.Add(OpenRecordsButton);
+            Controls.Add(AddRecordButton);
             Controls.Add(label1);
-            Controls.Add(button1);
+            Controls.Add(AddPatientButton);
             Controls.Add(textBox1);
             Controls.Add(comboBox1);
             Controls.Add(dataGridView1);
             Name = "FormPatients";
-            Text = "FormPatients";
+            Text = "Пациенты";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -122,8 +136,9 @@
         private DataGridView dataGridView1;
         private ComboBox comboBox1;
         private TextBox textBox1;
-        private Button button1;
+        private Button AddPatientButton;
         private Label label1;
-        private Button button2;
+        private Button AddRecordButton;
+        private Button OpenRecordsButton;
     }
 }

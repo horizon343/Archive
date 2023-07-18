@@ -183,5 +183,9 @@ namespace Archive.Forms
             }
         }
 
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -43,5 +43,11 @@ namespace Archive.Forms
             var FormAddPatient = new FormAddPatient();
             FormAddPatient.Show();
         }
+
+        private void OpenRecordsButton_Click(object sender, EventArgs e)
+        {
+            var FormPatientAndRecords = new FormPatientAndRecords();
+            FormPatientAndRecords.Show();
+        }
     }
 }
