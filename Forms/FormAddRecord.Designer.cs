@@ -44,6 +44,8 @@
             DateOfReceiptErrorText = new Label();
             DateOfDischargeErrorText = new Label();
             HistoryNumberErrorText = new Label();
+            DepartmentTextField = new TextBox();
+            MKBCodeTextField = new TextBox();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -52,23 +54,25 @@
             DepartmentSelect.FormattingEnabled = true;
             DepartmentSelect.Location = new Point(350, 123);
             DepartmentSelect.Name = "DepartmentSelect";
-            DepartmentSelect.Size = new Size(200, 23);
+            DepartmentSelect.Size = new Size(216, 23);
             DepartmentSelect.TabIndex = 0;
+            DepartmentSelect.TabStop = false;
             // 
             // HistoryNumberTextField
             // 
             HistoryNumberTextField.Location = new Point(350, 210);
             HistoryNumberTextField.Name = "HistoryNumberTextField";
             HistoryNumberTextField.Size = new Size(200, 23);
-            HistoryNumberTextField.TabIndex = 3;
+            HistoryNumberTextField.TabIndex = 4;
             // 
             // MKBCodeSelect
             // 
             MKBCodeSelect.FormattingEnabled = true;
             MKBCodeSelect.Location = new Point(350, 239);
             MKBCodeSelect.Name = "MKBCodeSelect";
-            MKBCodeSelect.Size = new Size(200, 23);
+            MKBCodeSelect.Size = new Size(216, 23);
             MKBCodeSelect.TabIndex = 4;
+            MKBCodeSelect.TabStop = false;
             // 
             // label1
             // 
@@ -125,7 +129,7 @@
             AddRecord.Location = new Point(475, 268);
             AddRecord.Name = "AddRecord";
             AddRecord.Size = new Size(75, 23);
-            AddRecord.TabIndex = 10;
+            AddRecord.TabIndex = 6;
             AddRecord.Text = "Добавить";
             AddRecord.UseVisualStyleBackColor = true;
             AddRecord.Click += AddRecord_Click;
@@ -142,7 +146,7 @@
             DateOfReceiptTextField.Location = new Point(350, 152);
             DateOfReceiptTextField.Name = "DateOfReceiptTextField";
             DateOfReceiptTextField.Size = new Size(200, 23);
-            DateOfReceiptTextField.TabIndex = 3;
+            DateOfReceiptTextField.TabIndex = 2;
             // 
             // panelTitleBar
             // 
@@ -152,7 +156,7 @@
             panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             panelTitleBar.Location = new Point(0, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(800, 80);
+            panelTitleBar.Size = new Size(852, 80);
             panelTitleBar.TabIndex = 11;
             // 
             // lblTitle
@@ -160,7 +164,7 @@
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(341, 24);
+            lblTitle.Location = new Point(367, 24);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(137, 30);
@@ -197,11 +201,25 @@
             HistoryNumberErrorText.TabIndex = 6;
             HistoryNumberErrorText.Text = " ";
             // 
+            // DepartmentTextField
+            // 
+            DepartmentTextField.Location = new Point(350, 123);
+            DepartmentTextField.Name = "DepartmentTextField";
+            DepartmentTextField.Size = new Size(200, 23);
+            DepartmentTextField.TabIndex = 1;
+            // 
+            // MKBCodeTextField
+            // 
+            MKBCodeTextField.Location = new Point(350, 239);
+            MKBCodeTextField.Name = "MKBCodeTextField";
+            MKBCodeTextField.Size = new Size(200, 23);
+            MKBCodeTextField.TabIndex = 5;
+            // 
             // FormAddRecord
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(852, 450);
             Controls.Add(panelTitleBar);
             Controls.Add(AddRecord);
             Controls.Add(label5);
@@ -212,11 +230,13 @@
             Controls.Add(DateOfReceiptErrorText);
             Controls.Add(label2);
             Controls.Add(label1);
-            Controls.Add(MKBCodeSelect);
             Controls.Add(DateOfReceiptTextField);
             Controls.Add(DateOfDischargeTextField);
+            Controls.Add(MKBCodeTextField);
+            Controls.Add(DepartmentTextField);
             Controls.Add(HistoryNumberTextField);
             Controls.Add(DepartmentSelect);
+            Controls.Add(MKBCodeSelect);
             Name = "FormAddRecord";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Добавление карты";
@@ -244,5 +264,7 @@
         private Label DateOfReceiptErrorText;
         private Label DateOfDischargeErrorText;
         private Label HistoryNumberErrorText;
+        private TextBox DepartmentTextField;
+        private TextBox MKBCodeTextField;
     }
 }

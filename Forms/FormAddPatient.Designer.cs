@@ -106,7 +106,7 @@
             RegionTextField.MinimumSize = new Size(425, 0);
             RegionTextField.Name = "RegionTextField";
             RegionTextField.Size = new Size(425, 23);
-            RegionTextField.TabIndex = 3;
+            RegionTextField.TabIndex = 4;
             // 
             // DistrictTextField
             // 
@@ -117,7 +117,7 @@
             DistrictTextField.MinimumSize = new Size(425, 0);
             DistrictTextField.Name = "DistrictTextField";
             DistrictTextField.Size = new Size(425, 23);
-            DistrictTextField.TabIndex = 4;
+            DistrictTextField.TabIndex = 5;
             // 
             // CityTextField
             // 
@@ -128,7 +128,7 @@
             CityTextField.MinimumSize = new Size(425, 0);
             CityTextField.Name = "CityTextField";
             CityTextField.Size = new Size(425, 23);
-            CityTextField.TabIndex = 5;
+            CityTextField.TabIndex = 6;
             // 
             // AddressTextField
             // 
@@ -139,7 +139,7 @@
             AddressTextField.MinimumSize = new Size(425, 0);
             AddressTextField.Name = "AddressTextField";
             AddressTextField.Size = new Size(425, 23);
-            AddressTextField.TabIndex = 6;
+            AddressTextField.TabIndex = 7;
             // 
             // PhoneTextField
             // 
@@ -150,7 +150,7 @@
             PhoneTextField.MinimumSize = new Size(425, 0);
             PhoneTextField.Name = "PhoneTextField";
             PhoneTextField.Size = new Size(425, 23);
-            PhoneTextField.TabIndex = 7;
+            PhoneTextField.TabIndex = 8;
             // 
             // IndexTextField
             // 
@@ -161,7 +161,7 @@
             IndexTextField.MinimumSize = new Size(425, 0);
             IndexTextField.Name = "IndexTextField";
             IndexTextField.Size = new Size(425, 23);
-            IndexTextField.TabIndex = 8;
+            IndexTextField.TabIndex = 9;
             // 
             // label1
             // 
@@ -279,7 +279,7 @@
             AddPatient.Location = new Point(563, 408);
             AddPatient.Name = "AddPatient";
             AddPatient.Size = new Size(81, 36);
-            AddPatient.TabIndex = 20;
+            AddPatient.TabIndex = 10;
             AddPatient.Text = "Добавить";
             AddPatient.UseVisualStyleBackColor = true;
             AddPatient.Click += AddPatient_Click;
@@ -432,7 +432,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(844, 450);
+            ClientSize = new Size(844, 468);
             Controls.Add(panelTitleBar);
             Controls.Add(AddPatient);
             Controls.Add(label10);

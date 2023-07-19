@@ -1,20 +1,12 @@
 ﻿using Archive.DB;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Archive.Validation;
 
 namespace Archive.Forms
 {
     public partial class FormAddRecord : Form
     {
-
+        private List<DepartmentItem> DepartmentItemField { get; set; }
+        private List<MKBItem> MKBItemField { get; set; }
 
         public FormAddRecord()
         {
@@ -29,132 +21,112 @@ namespace Archive.Forms
             HistoryNumberTextField.TextChanged += HistoryNumberTextField_Changed;
             HistoryNumberErrorText.ForeColor = Color.Orange;
 
+            DepartmentSelect.SelectedIndexChanged += DepartmentSelect_SelectedIndexChanged;
+            DepartmentTextField.TextChanged += DepartmentTextField_Changed;
+
+            MKBCodeSelect.SelectedIndexChanged += MKBCodeSelect_SelectedIndexChanged;
+            MKBCodeTextField.TextChanged += MKBCodeTextField_Changed;
+
+            // Получение списка МКБ кодов и отделений
             DBase dBase = new DBase();
             (int, List<DepartmentItem>) departments = dBase.GetTable<DepartmentItem>(-1, 50);
+            (int, List<MKBItem>) MKBCodes = dBase.GetTable<MKBItem>(-1, 50);
             dBase.CloseDatabaseConnection();
+            DepartmentItemField = departments.Item2;
+            MKBItemField = MKBCodes.Item2;
 
-        }
+            // Установление значений для поля "Отделение"
+            List<string> departmentsTitle = new List<string>();
+            foreach (DepartmentItem department in DepartmentItemField)
+                departmentsTitle.Add(department.Title);
 
-        /// <summary>
-        /// Проверка: Строка состоит только из цифр
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        /// <param name="errorText">Текст ошибки</param>
-        private void ValidationIsNumber(TextBox textField, Label errorText)
-        {
-            string pattern = "^[0-9]+$";
-            if (Regex.IsMatch(textField.Text, pattern))
-                errorText.Text = "";
-            else
-                errorText.Text = "Возможно допущена ошибка ?!";
-        }
+            AutoCompleteStringCollection departmentsSource = new AutoCompleteStringCollection();
+            departmentsSource.AddRange(departmentsTitle.ToArray());
 
-        /// <summary>
-        /// Проверка на корректность даты (не прошлый век и не будущее)
-        /// </summary>
-        /// <param name="text">Строка с датой в формте dd.mm.yyyy</param>
-        private void DateIsValid(Label errorText, string text)
-        {
-            try
-            {
-                errorText.ForeColor = Color.Orange;
+            DepartmentTextField.AutoCompleteCustomSource = departmentsSource;
+            DepartmentTextField.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            DepartmentTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
-                //Проверка допустимой даты
-                if (text.Length == 10)
-                {
-                    string[] DateArray = text.Split(".");
-                    DateTime today = DateTime.Now;
-                    DateTime minDate = new DateTime(1900, 12, 31);
-                    DateTime Date = new DateTime(int.Parse(DateArray[2]), int.Parse(DateArray[1]), int.Parse(DateArray[0]));
-                    if (Date > today || Date < minDate)
-                    {
-                        errorText.Text = "Ошибка даты!";
-                        errorText.ForeColor = Color.Red;
-                    }
-                    else
-                        errorText.Text = "";
-                }
-            }
-            catch
-            {
-                errorText.Text = "Ошибка даты!";
-                errorText.ForeColor = Color.Red;
-            }
-        }
+            DepartmentSelect.Items.AddRange(departmentsTitle.ToArray());
 
-        /// <summary>
-        /// Проверка, что строка состоит из цифр и приведение строки в формат dd.mm.yyyy
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        /// <param name="errorText">Текст ошибки</param>
-        private void DateConversion(TextBox textField, Label errorText)
-        {
-            try
-            {
-                errorText.ForeColor = Color.Orange;
+            // Установление значений для поля "МКБ код"
+            List<string> MKBTitle = new List<string>();
+            foreach (MKBItem MKB in MKBItemField)
+                MKBTitle.Add(MKB.Title);
 
-                string text = textField.Text.Replace(".", "");
+            AutoCompleteStringCollection MKBSource = new AutoCompleteStringCollection();
+            MKBSource.AddRange(MKBTitle.ToArray());
 
-                //Проверка, что строка состоит из цифр
-                string pattern = "^[0-9]+$";
-                if (Regex.IsMatch(text, pattern))
-                {
-                    if (text.Length > 8)
-                        errorText.Text = "Возможно допущена ошибка ?!";
-                    else
-                        errorText.Text = "";
-                }
-                else
-                    errorText.Text = "Возможно допущена ошибка ?!";
+            MKBCodeTextField.AutoCompleteCustomSource = MKBSource;
+            MKBCodeTextField.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            MKBCodeTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
-                //Автоматическое разделение
-                if (text.Length >= 3)
-                    text = text.Insert(2, ".");
-                if (text.Length >= 6)
-                    text = text.Insert(5, ".");
-                textField.Text = text;
-                textField.SelectionStart = text.Length;
-
-                DateIsValid(errorText, text);
-            }
-            catch
-            {
-                errorText.Text = "Ошибка даты!";
-                errorText.ForeColor = Color.Red;
-            }
+            MKBCodeSelect.Items.AddRange(MKBTitle.ToArray());
         }
 
         #region
         // Валидация полей ввода
+        private void DepartmentSelect_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            ErrorsAddRecords.Department = false;
+            DepartmentTextField.Text = DepartmentSelect.SelectedItem.ToString();
+        }
+        private void DepartmentTextField_Changed(object? sender, EventArgs e)
+        {
+            ErrorsAddRecords.Department = false;
+        }
         private void DateOfReceiptTextField_Changed(object? sender, EventArgs e)
         {
-            DateConversion(DateOfReceiptTextField, DateOfReceiptErrorText);
+            ErrorsAddRecords.DateOfReceipt = false;
+            string text = DateOfReceiptTextField.Text.Replace(".", "");
+            bool isNotError = ValidationForm.ValidationIsNumber(text, DateOfReceiptErrorText, Color.Red, "Дата может содержать только цифры !");
+            if (isNotError)
+            {
+                ValidationForm.DateFormatting(DateOfReceiptTextField);
+                isNotError = ValidationForm.DateIsValid(DateOfReceiptTextField.Text, DateOfReceiptErrorText);
+            }
+            ErrorsAddRecords.DateOfReceipt = !isNotError;
         }
         private void DateOfDischargeTextField_Changed(object? sender, EventArgs e)
         {
-            DateOfDischargeErrorText.Text = "";
-            DateOfDischargeErrorText.ForeColor = Color.Orange;
-
-            DateConversion(DateOfDischargeTextField, DateOfDischargeErrorText);
-
-            if (DateOfReceiptErrorText.Text == "" && DateOfReceiptTextField.Text.Length == 10 &&
-                DateOfDischargeErrorText.Text == "" && DateOfDischargeTextField.Text.Length == 10)
+            ErrorsAddRecords.DateOfDischarge = false;
+            string text = DateOfDischargeTextField.Text.Replace(".", "");
+            bool isNotError = ValidationForm.ValidationIsNumber(text, DateOfDischargeErrorText, Color.Red, "Дата может содержать только цифры !");
+            if (isNotError)
             {
-                string[] DateOfReceiptArray = DateOfReceiptTextField.Text.Split(".");
-                string[] DateOfDischargeArra = DateOfDischargeTextField.Text.Split(".");
-                DateTime DateOfReceipt = new DateTime(int.Parse(DateOfReceiptArray[2]), int.Parse(DateOfReceiptArray[1]), int.Parse(DateOfReceiptArray[0]));
-                DateTime DateOfDischarge = new DateTime(int.Parse(DateOfDischargeArra[2]), int.Parse(DateOfDischargeArra[1]), int.Parse(DateOfDischargeArra[0]));
-
-                if (DateOfReceipt > DateOfDischarge)
+                ValidationForm.DateFormatting(DateOfDischargeTextField);
+                isNotError = ValidationForm.DateIsValid(DateOfDischargeTextField.Text, DateOfDischargeErrorText);
+                if (isNotError && !ErrorsAddRecords.DateOfDischarge && !ErrorsAddRecords.DateOfReceipt)
                 {
-                    DateOfDischargeErrorText.Text = "Ошибка даты!";
-                    DateOfDischargeErrorText.ForeColor = Color.Red;
+                    string[] DateOfReceiptArray = DateOfReceiptTextField.Text.Split(".");
+                    string[] DateOfDischargeArray = DateOfDischargeTextField.Text.Split(".");
+                    DateTime DateOfReceipt = new DateTime(int.Parse(DateOfReceiptArray[2]), int.Parse(DateOfReceiptArray[1]), int.Parse(DateOfReceiptArray[0]));
+                    DateTime DateOfDischarge = new DateTime(int.Parse(DateOfDischargeArray[2]), int.Parse(DateOfDischargeArray[1]), int.Parse(DateOfDischargeArray[0]));
+
+                    if (DateOfReceipt > DateOfDischarge)
+                    {
+                        DateOfDischargeErrorText.Text = "Дата поступления не может быть больше даты выписки !";
+                        DateOfDischargeErrorText.ForeColor = Color.Red;
+                        isNotError = false;
+                    }
                 }
             }
+            ErrorsAddRecords.DateOfDischarge = !isNotError;
         }
         private void HistoryNumberTextField_Changed(object? sender, EventArgs e)
         {
-            ValidationIsNumber(HistoryNumberTextField, HistoryNumberErrorText);
+            ErrorsAddRecords.HistoryNumber = false;
+            bool isNotError = ValidationForm.ValidationIsNumber(HistoryNumberTextField.Text, HistoryNumberErrorText, Color.Red, "Номер истории может содержать только цифры !");
+            ErrorsAddRecords.HistoryNumber = !isNotError;
+        }
+        private void MKBCodeSelect_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            ErrorsAddRecords.MKB = false;
+            MKBCodeTextField.Text = MKBCodeSelect.SelectedItem.ToString();
+        }
+        private void MKBCodeTextField_Changed(object? sender, EventArgs e)
+        {
+            ErrorsAddRecords.MKB = false;
         }
         #endregion
 
@@ -162,14 +134,68 @@ namespace Archive.Forms
         {
             try
             {
+                // Устанавливаем значение DepartmentID
+                int DepartmentID = -1;
+                foreach (DepartmentItem department in DepartmentItemField)
+                {
+                    if (department.Title.ToLower() == DepartmentTextField.Text.ToLower())
+                    {
+                        DepartmentID = department.DepartmentID;
+                        break;
+                    }
+                }
+                if (DepartmentID == -1)
+                    ErrorsAddRecords.Department = true;
+
+                // Устанавливаем значение MKBCode
+                string MKBCode = "";
+                foreach (MKBItem MKB in MKBItemField)
+                {
+                    if (MKB.Title.ToLower() == MKBCodeTextField.Text.ToLower())
+                    {
+                        MKBCode = MKB.MKBCode;
+                        break;
+                    }
+                }
+                if (MKBCode == "")
+                    ErrorsAddRecords.MKB = true;
+
+                // Проверка, что нет ошибок
+                if (ErrorsAddRecords.Department)
+                {
+                    MessageBox.Show("Ошибка ввода отделения");
+                    return;
+                }
+                if (ErrorsAddRecords.DateOfReceipt)
+                {
+                    MessageBox.Show("Ошибка ввода даты поступления");
+                    return;
+                }
+                if (ErrorsAddRecords.DateOfDischarge)
+                {
+                    MessageBox.Show("Ошибка ввода даты выписки");
+                    return;
+                }
+                if (ErrorsAddRecords.HistoryNumber)
+                {
+                    MessageBox.Show("Ошибка ввода номера истории");
+                    return;
+                }
+                if (ErrorsAddRecords.MKB)
+                {
+                    MessageBox.Show("Ошибка ввода МКБ кода");
+                    return;
+                }
+
+                // Сохранение в базе данных
                 RecordItem record = new RecordItem()
                 {
-                    //DepartmentID = ???
-                    //PatientID = ???
+                    DepartmentID = DepartmentID,
+                    PatientID = 123,
                     DateOfReceipt = DateTime.Parse(DateOfReceiptTextField.Text),
                     DateOfDischarge = DateTime.Parse(DateOfDischargeTextField.Text),
                     HistoryNumber = int.Parse(HistoryNumberTextField.Text),
-                    MKBCode = MKBCodeSelect.Text
+                    MKBCode = MKBCode
                 };
 
                 DBase dBase = new DBase();
@@ -180,9 +206,18 @@ namespace Archive.Forms
             }
             catch (Exception error)
             {
-                MessageBox.Show($"Ошибка добавления карты: [{error.Message}]");
+                MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
         }
 
+    }
+
+    static class ErrorsAddRecords
+    {
+        public static bool Department { get; set; } = true;
+        public static bool DateOfReceipt { get; set; } = true;
+        public static bool DateOfDischarge { get; set; } = true;
+        public static bool HistoryNumber { get; set; } = true;
+        public static bool MKB { get; set; } = true;
     }
 }

@@ -1,16 +1,5 @@
 using Archive.DB;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
+using Archive.Validation;
 
 namespace Archive.Forms
 {
@@ -47,168 +36,82 @@ namespace Archive.Forms
             PhoneTextField.TextChanged += PhoneTextField_TextChanged;
             PhoneErrorText.ForeColor = Color.Orange;
 
-            IndexTextField.TextChanged += TextChanged_TextChanged;
+            IndexTextField.TextChanged += IndexTextField_TextChanged;
             IndexErrorText.ForeColor = Color.Orange;
-        }
-
-        /// <summary>
-        /// Проверки: 1-Строка начинается с буквы, 2-Заменяет первую строчную букву на заглавную
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        /// <param name="errorText">Текст ошибки</param>
-        private void TextFieldValidation_1(TextBox textField, Label errorText)
-        {
-            string pattern = @"^\p{L}";
-
-            if (Regex.IsMatch(textField.Text, pattern))
-            {
-                int selectionStart = textField.SelectionStart;
-                if (textField.Text.Length >= 1)
-                    textField.Text = textField.Text.Substring(0, 1).ToUpper() + textField.Text.Substring(1);
-                textField.SelectionStart = selectionStart;
-
-                errorText.Text = "";
-            }
-            else
-                errorText.Text = "Возможно допущена ошибка ?!";
-        }
-
-        /// <summary>
-        /// Проверка: Строка начинается с буквы
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        /// <param name="errorText">Текст ошибки</param>
-        private void TextFieldValidation_2(TextBox textField, Label errorText)
-        {
-            string pattern = @"^\p{L}";
-
-            if (Regex.IsMatch(textField.Text, pattern))
-                errorText.Text = "";
-            else
-                errorText.Text = "Возможно допущена ошибка ?!";
-        }
-
-        /// <summary>
-        /// Проверки: 1-Строка состоит только из цифр, 2-Длина строки не больше length
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        /// <param name="errorText">Текст ошибки</param>
-        /// <param name="length">Максимальная длина строки</param>
-        private void TextFieldValidation_3(TextBox textField, Label errorText, int length)
-        {
-            string pattern = "^[0-9]+$";
-            if (Regex.IsMatch(textField.Text, pattern) && textField.Text.Length <= length)
-                errorText.Text = "";
-            else
-                errorText.Text = "Возможно допущена ошибка ?!";
-        }
-
-        /// <summary>
-        /// Проверка на корректность даты (не прошлый век и не будущее)
-        /// </summary>
-        /// <param name="text">Строка с датой в формте dd.mm.yyyy</param>
-        private void DateIsValid(string text)
-        {
-            try
-            {
-                DateOfBirthErrorText.ForeColor = Color.Orange;
-
-                //Проверка допустимой даты
-                if (text.Length == 10)
-                {
-                    string[] DateOfBirthArray = text.Split(".");
-                    DateTime today = DateTime.Now;
-                    DateTime minDate = new DateTime(1900, 12, 31);
-                    DateTime DateOfBirth = new DateTime(int.Parse(DateOfBirthArray[2]), int.Parse(DateOfBirthArray[1]), int.Parse(DateOfBirthArray[0]));
-                    if (DateOfBirth > today || DateOfBirth < minDate)
-                    {
-                        DateOfBirthErrorText.Text = "Ошибка даты!";
-                        DateOfBirthErrorText.ForeColor = Color.Red;
-                    }
-                    else
-                        DateOfBirthErrorText.Text = "";
-                }
-            }
-            catch
-            {
-                DateOfBirthErrorText.Text = "Ошибка даты!";
-                DateOfBirthErrorText.ForeColor = Color.Red;
-            }
         }
 
         #region
         // Валидация полей ввода
         private void LastNameTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_1(LastNameTextField, LastNameErrorText);
+            ErrorsAddPatients.LastName = false;
+            ValidationForm.FirstLetterToUpperCase(LastNameTextField);
+            bool isNotError = ValidationForm.StringConsistsOfLetters(LastNameTextField.Text, LastNameErrorText, Color.Red, "Фамилия состоит только из букв !");
+            ErrorsAddPatients.LastName = !isNotError;
         }
         private void FirstNameTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_1(FirstNameTextField, FirstNameErrorText);
+            ErrorsAddPatients.FirstName = false;
+            ValidationForm.FirstLetterToUpperCase(FirstNameTextField);
+            bool isNotError = ValidationForm.StringConsistsOfLetters(FirstNameTextField.Text, FirstNameErrorText, Color.Red, "Имя состоит только из букв !");
+            ErrorsAddPatients.FirstName = !isNotError;
         }
         private void MiddleNameTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_1(MiddleNameTextField, MiddleNameErrorText);
+            ValidationForm.FirstLetterToUpperCase(MiddleNameTextField);
+            bool isNotError = ValidationForm.StringConsistsOfLetters(MiddleNameTextField.Text, MiddleNameErrorText, Color.Red, "Отчество состоит только из букв !");
+            ErrorsAddPatients.MiddleName = !isNotError;
         }
         private void DateOfBirthTextField_TextChanged(object? sender, EventArgs e)
         {
-            try
+            ErrorsAddPatients.DateOfBirth = false;
+            string text = DateOfBirthTextField.Text.Replace(".", "");
+            bool isNotError = ValidationForm.ValidationIsNumber(text, DateOfBirthErrorText, Color.Red, "Дата может содержать только цифры !");
+            if (isNotError)
             {
-                DateOfBirthErrorText.ForeColor = Color.Orange;
-
-                string text = DateOfBirthTextField.Text.Replace(".", "");
-
-                //Проверка, что строка состоит из цифр
-                string pattern = "^[0-9]+$";
-                if (Regex.IsMatch(text, pattern))
-                {
-                    if (text.Length > 8)
-                        DateOfBirthErrorText.Text = "Возможно допущена ошибка ?!";
-                    else
-                        DateOfBirthErrorText.Text = "";
-                }
-                else
-                    DateOfBirthErrorText.Text = "Возможно допущена ошибка ?!";
-
-                //Автоматическое разделение
-                if (text.Length >= 3)
-                    text = text.Insert(2, ".");
-                if (text.Length >= 6)
-                    text = text.Insert(5, ".");
-                DateOfBirthTextField.Text = text;
-                DateOfBirthTextField.SelectionStart = text.Length;
-
-                DateIsValid(text);
+                ValidationForm.DateFormatting(DateOfBirthTextField);
+                isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text, DateOfBirthErrorText);
             }
-            catch
-            {
-                DateOfBirthErrorText.Text = "Ошибка даты!";
-                DateOfBirthErrorText.ForeColor = Color.Red;
-            }
+            ErrorsAddPatients.DateOfBirth = !isNotError;
         }
         private void RegionTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_1(RegionTextField, RegionErrorText);
+            ValidationForm.FirstLetterToUpperCase(RegionTextField);
+            bool isNotError = ValidationForm.StringStartsWithLetter(RegionTextField, RegionErrorText, Color.Red, "Регион должен начинаться с буквы !");
+            ErrorsAddPatients.Region = !isNotError;
         }
         private void DistrictTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_1(DistrictTextField, DistrictErrorText);
+            ValidationForm.FirstLetterToUpperCase(DistrictTextField);
+            bool isNotError = ValidationForm.StringStartsWithLetter(DistrictTextField, DistrictErrorText, Color.Red, "Район должен начинаться с буквы !");
+            ErrorsAddPatients.District = !isNotError;
         }
         private void CityTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_2(CityTextField, CityErrorText);
+            ErrorsAddPatients.City = false;
+            bool isNotError = ValidationForm.StringStartsWithLetter(CityTextField, CityErrorText, Color.Red, "Город должен начинаться с буквы !");
+            ErrorsAddPatients.City = !isNotError;
         }
         private void AddressTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_2(AddressTextField, AddressErrorText);
+            ErrorsAddPatients.Address = false;
+            bool isNotError = ValidationForm.StringStartsWithLetter(AddressTextField, AddressErrorText, Color.Red, "Адрес должен начинаться с буквы !");
+            ErrorsAddPatients.Address = !isNotError;
         }
         private void PhoneTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_3(PhoneTextField, PhoneErrorText, 11);
+            ErrorsAddPatients.Phone = false;
+            bool isNotError = ValidationForm.ValidationIsNumber(PhoneTextField.Text, PhoneErrorText, Color.Red, "Номер телефона может состоять только из цифр !");
+            if (isNotError)
+                isNotError = ValidationForm.CheckingLengthOfString(PhoneTextField.Text, 11, PhoneErrorText, Color.Red, "Длина номера телефона не может быть больше 11 символов !");
+            ErrorsAddPatients.Phone = !isNotError;
         }
-        private void TextChanged_TextChanged(object? sender, EventArgs e)
+        private void IndexTextField_TextChanged(object? sender, EventArgs e)
         {
-            TextFieldValidation_3(IndexTextField, IndexErrorText, 6);
+            bool isNotError = ValidationForm.ValidationIsNumber(IndexTextField.Text, IndexErrorText, Color.Red, "Индекс может состоять только из цифр !");
+            if (isNotError)
+                isNotError = ValidationForm.CheckingLengthOfString(IndexTextField.Text, 6, IndexErrorText, Color.Red, "Длина индекса не может быть больше 6 символов !");
+            ErrorsAddPatients.Index = !isNotError;
         }
         #endregion
 
@@ -216,6 +119,64 @@ namespace Archive.Forms
         {
             try
             {
+                // Устанавливаем значение Index
+                int Index = 0;
+                if (IndexTextField.Text != "")
+                    Index = int.Parse(IndexTextField.Text);
+
+                // Проверка, что нет ошибок
+                if (ErrorsAddPatients.LastName)
+                {
+                    MessageBox.Show("Ошибка ввода фамилии");
+                    return;
+                }
+                if (ErrorsAddPatients.FirstName)
+                {
+                    MessageBox.Show("Ошибка ввода имени");
+                    return;
+                }
+                if (ErrorsAddPatients.MiddleName)
+                {
+                    MessageBox.Show("Ошибка ввода отчества");
+                    return;
+                }
+                if (ErrorsAddPatients.DateOfBirth)
+                {
+                    MessageBox.Show("Ошибка ввода даты рождения");
+                    return;
+                }
+                if (ErrorsAddPatients.Region)
+                {
+                    MessageBox.Show("Ошибка ввода региона");
+                    return;
+                }
+                if (ErrorsAddPatients.District)
+                {
+                    MessageBox.Show("Ошибка ввода района");
+                    return;
+                }
+                if (ErrorsAddPatients.City)
+                {
+                    MessageBox.Show("Ошибка ввода города");
+                    return;
+                }
+                if (ErrorsAddPatients.Address)
+                {
+                    MessageBox.Show("Ошибка ввода адреса");
+                    return;
+                }
+                if (ErrorsAddPatients.Phone)
+                {
+                    MessageBox.Show("Ошибка ввода телефона");
+                    return;
+                }
+                if (ErrorsAddPatients.Index)
+                {
+                    MessageBox.Show("Ошибка ввода индекса");
+                    return;
+                }
+
+                // Сохранение в базе данных
                 PatientItem patient = new PatientItem()
                 {
                     //PatientID = ???
@@ -228,7 +189,7 @@ namespace Archive.Forms
                     City = CityTextField.Text,
                     Address = AddressTextField.Text,
                     Phone = PhoneTextField.Text,
-                    Index = int.Parse(IndexTextField.Text),
+                    Index = Index,
                 };
 
                 DBase dBase = new DBase();
@@ -239,9 +200,22 @@ namespace Archive.Forms
             }
             catch (Exception error)
             {
-                MessageBox.Show($"Ошибка добавления пациента: [{error.Message}]");
+                MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
         }
 
+    }
+    static class ErrorsAddPatients
+    {
+        static public bool LastName { get; set; } = true;
+        static public bool FirstName { get; set; } = true;
+        static public bool MiddleName { get; set; } = false;
+        static public bool DateOfBirth { get; set; } = true;
+        static public bool Region { get; set; } = false;
+        static public bool District { get; set; } = false;
+        static public bool City { get; set; } = true;
+        static public bool Address { get; set; } = true;
+        static public bool Phone { get; set; } = true;
+        static public bool Index { get; set; } = false;
     }
 }
