@@ -190,7 +190,7 @@
             label10.ForeColor = Color.Black;
             label10.Location = new Point(418, 172);
             label10.Name = "label10";
-            label10.Size = new Size(56, 15);
+            label10.Size = new Size(55, 15);
             label10.TabIndex = 20;
             label10.Text = "Телефон";
             // 
@@ -331,6 +331,7 @@
             Controls.Add(LastNameTextBox);
             Controls.Add(PatientIDTextBox);
             Name = "FormPatientAndRecords";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FormPatientAndRecords";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panelTitleBar.ResumeLayout(false);

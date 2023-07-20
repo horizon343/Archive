@@ -30,9 +30,6 @@ namespace Archive
         /// </summary>
         private void InitializeComponent()
         {
-            //InitDB
-            InitDB();
-
             panelMenu = new Panel();
             button3 = new Button();
             button2 = new Button();
@@ -55,7 +52,7 @@ namespace Archive
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 0);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(220, 463);
+            panelMenu.Size = new Size(220, 542);
             panelMenu.TabIndex = 0;
             // 
             // button3
@@ -117,7 +114,7 @@ namespace Archive
             panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             panelTitleBar.Location = new Point(220, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(745, 80);
+            panelTitleBar.Size = new Size(965, 80);
             panelTitleBar.TabIndex = 1;
             panelTitleBar.Paint += panelTitleBar_Paint;
             // 
@@ -125,7 +122,7 @@ namespace Archive
             // 
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(317, 27);
+            lblTitle.Location = new Point(427, 27);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(76, 30);
@@ -138,19 +135,20 @@ namespace Archive
             panelDesktopPanel.Dock = DockStyle.Fill;
             panelDesktopPanel.Location = new Point(220, 80);
             panelDesktopPanel.Name = "panelDesktopPanel";
-            panelDesktopPanel.Size = new Size(745, 383);
+            panelDesktopPanel.Size = new Size(965, 462);
             panelDesktopPanel.TabIndex = 2;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(965, 463);
+            ClientSize = new Size(1185, 542);
             Controls.Add(panelDesktopPanel);
             Controls.Add(panelTitleBar);
             Controls.Add(panelMenu);
             ForeColor = Color.White;
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
             panelMenu.ResumeLayout(false);
             panelTitleBar.ResumeLayout(false);

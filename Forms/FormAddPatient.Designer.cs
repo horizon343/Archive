@@ -402,7 +402,7 @@
             panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             panelTitleBar.Location = new Point(0, 0);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(844, 80);
+            panelTitleBar.Size = new Size(917, 80);
             panelTitleBar.TabIndex = 21;
             // 
             // lblTitle
@@ -410,7 +410,7 @@
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(341, 27);
+            lblTitle.Location = new Point(377, 27);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(173, 30);
@@ -432,7 +432,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(844, 468);
+            ClientSize = new Size(917, 468);
             Controls.Add(panelTitleBar);
             Controls.Add(AddPatient);
             Controls.Add(label10);

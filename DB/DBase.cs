@@ -1,12 +1,4 @@
 ﻿using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Archive.DB
 {
@@ -76,7 +68,7 @@ namespace Archive.DB
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
         /// <param name="fieldAndValue">Словарь {Поле, значение}</param>
         /// <returns>Массив записей List<T></returns>
-        public List<T> SearchData<T>(Dictionary<string, string> fieldAndValue) where T : new()
+        public List<T> SearchData<T>(Dictionary<string, object> fieldAndValue) where T : new()
         {
             List<string> conditions = new List<string>();
             List<object> parameters = new List<object>();
