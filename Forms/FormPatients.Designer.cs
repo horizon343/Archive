@@ -40,6 +40,7 @@
             panel1 = new Panel();
             panel2 = new Panel();
             panel3 = new Panel();
+            PatientNumberTextField = new TextBox();
             DateOfBirthTextField = new TextBox();
             MiddleNameTextField = new TextBox();
             FirstNameTextField = new TextBox();
@@ -70,10 +71,11 @@
             PatientsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             PatientsTable.Size = new Size(935, 352);
             PatientsTable.TabIndex = 0;
+            PatientsTable.TabStop = false;
             // 
             // LastNameTextField
             // 
-            LastNameTextField.Location = new Point(51, 5);
+            LastNameTextField.Location = new Point(143, 5);
             LastNameTextField.Name = "LastNameTextField";
             LastNameTextField.PlaceholderText = "Фамилия";
             LastNameTextField.Size = new Size(120, 23);
@@ -86,7 +88,7 @@
             AddPatientButton.Location = new Point(3, 5);
             AddPatientButton.Name = "AddPatientButton";
             AddPatientButton.Size = new Size(126, 23);
-            AddPatientButton.TabIndex = 3;
+            AddPatientButton.TabIndex = 7;
             AddPatientButton.Text = "Добавить пациента";
             AddPatientButton.UseVisualStyleBackColor = true;
             AddPatientButton.Click += AddPatientButton_Click;
@@ -105,7 +107,7 @@
             // 
             SearchButton.FlatStyle = FlatStyle.Flat;
             SearchButton.ForeColor = Color.Black;
-            SearchButton.Location = new Point(527, 5);
+            SearchButton.Location = new Point(619, 5);
             SearchButton.Name = "SearchButton";
             SearchButton.Size = new Size(75, 23);
             SearchButton.TabIndex = 6;
@@ -120,7 +122,7 @@
             PrevPageButton.Location = new Point(0, 3);
             PrevPageButton.Name = "PrevPageButton";
             PrevPageButton.Size = new Size(123, 23);
-            PrevPageButton.TabIndex = 5;
+            PrevPageButton.TabIndex = 8;
             PrevPageButton.Text = "Предыдущая";
             PrevPageButton.UseVisualStyleBackColor = true;
             PrevPageButton.Click += PrevPageButton_Click;
@@ -132,7 +134,7 @@
             NextPageButton.Location = new Point(213, 3);
             NextPageButton.Name = "NextPageButton";
             NextPageButton.Size = new Size(123, 23);
-            NextPageButton.TabIndex = 5;
+            NextPageButton.TabIndex = 9;
             NextPageButton.Text = "Следующая";
             NextPageButton.UseVisualStyleBackColor = true;
             NextPageButton.Click += NextPageButton_Click;
@@ -173,6 +175,7 @@
             // 
             panel3.BackColor = Color.Transparent;
             panel3.Controls.Add(label1);
+            panel3.Controls.Add(PatientNumberTextField);
             panel3.Controls.Add(DateOfBirthTextField);
             panel3.Controls.Add(MiddleNameTextField);
             panel3.Controls.Add(SearchButton);
@@ -180,32 +183,40 @@
             panel3.Controls.Add(LastNameTextField);
             panel3.Location = new Point(12, 12);
             panel3.Name = "panel3";
-            panel3.Size = new Size(607, 31);
+            panel3.Size = new Size(701, 31);
             panel3.TabIndex = 9;
+            // 
+            // PatientNumberTextField
+            // 
+            PatientNumberTextField.Location = new Point(47, 5);
+            PatientNumberTextField.Name = "PatientNumberTextField";
+            PatientNumberTextField.PlaceholderText = "Номер";
+            PatientNumberTextField.Size = new Size(90, 23);
+            PatientNumberTextField.TabIndex = 1;
             // 
             // DateOfBirthTextField
             // 
-            DateOfBirthTextField.Location = new Point(431, 5);
+            DateOfBirthTextField.Location = new Point(523, 5);
             DateOfBirthTextField.Name = "DateOfBirthTextField";
             DateOfBirthTextField.PlaceholderText = "Дата рождения";
             DateOfBirthTextField.Size = new Size(90, 23);
-            DateOfBirthTextField.TabIndex = 2;
+            DateOfBirthTextField.TabIndex = 5;
             // 
             // MiddleNameTextField
             // 
-            MiddleNameTextField.Location = new Point(305, 5);
+            MiddleNameTextField.Location = new Point(397, 5);
             MiddleNameTextField.Name = "MiddleNameTextField";
             MiddleNameTextField.PlaceholderText = "Отчество";
             MiddleNameTextField.Size = new Size(120, 23);
-            MiddleNameTextField.TabIndex = 2;
+            MiddleNameTextField.TabIndex = 4;
             // 
             // FirstNameTextField
             // 
-            FirstNameTextField.Location = new Point(179, 5);
+            FirstNameTextField.Location = new Point(271, 5);
             FirstNameTextField.Name = "FirstNameTextField";
             FirstNameTextField.PlaceholderText = "Имя";
             FirstNameTextField.Size = new Size(120, 23);
-            FirstNameTextField.TabIndex = 2;
+            FirstNameTextField.TabIndex = 3;
             // 
             // TextError
             // 
@@ -257,5 +268,6 @@
         private TextBox MiddleNameTextField;
         private TextBox FirstNameTextField;
         private Label TextError;
+        private TextBox PatientNumberTextField;
     }
 }

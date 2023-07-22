@@ -5,6 +5,9 @@ namespace Archive.Forms
 {
     public partial class FormAddPatient : Form
     {
+        private Guid PatientID { get; set; }
+        private bool AddPatientNotError = false;
+
         public FormAddPatient()
         {
             InitializeComponent();
@@ -119,11 +122,6 @@ namespace Archive.Forms
         {
             try
             {
-                // Устанавливаем значение Index
-                int Index = 0;
-                if (IndexTextField.Text != "")
-                    Index = int.Parse(IndexTextField.Text);
-
                 // Проверка, что нет ошибок
                 if (ErrorsAddPatients.LastName)
                 {
@@ -176,10 +174,31 @@ namespace Archive.Forms
                     return;
                 }
 
+                // Устанавливаем значение Index
+                int Index = 0;
+                if (IndexTextField.Text != "")
+                    Index = int.Parse(IndexTextField.Text);
+
+                DBase dBase = new DBase();
+                List<PatientItem> patients = dBase.GetEntriesStartingWithLetter<PatientItem>(LastNameTextField.Text.Substring(0, 1), "LastName");
+
+                // Устанавливаем значение PatientNumber
+                patients.Sort((p1, p2) => p1.PatientNumber.CompareTo(p2.PatientNumber));
+                int PatientNumber = 1;
+                foreach (PatientItem patientSorted in patients)
+                {
+                    if (PatientNumber == patientSorted.PatientNumber)
+                        PatientNumber += 1;
+                    else
+                        break;
+                }
+
                 // Сохранение в базе данных
+                PatientID = Guid.NewGuid();
                 PatientItem patient = new PatientItem()
                 {
-                    //PatientID = ???
+                    PatientID = PatientID,
+                    PatientNumber = PatientNumber,
                     LastName = LastNameTextField.Text,
                     FirstName = FirstNameTextField.Text,
                     MiddleName = MiddleNameTextField.Text,
@@ -192,10 +211,10 @@ namespace Archive.Forms
                     Index = Index,
                 };
 
-                DBase dBase = new DBase();
                 dBase.SetDataTable<PatientItem>(patient);
                 dBase.CloseDatabaseConnection();
 
+                AddPatientNotError = true;
                 this.Close();
             }
             catch (Exception error)
@@ -204,6 +223,16 @@ namespace Archive.Forms
             }
         }
 
+        private void AddPatientAndRecords_Click(object sender, EventArgs e)
+        {
+            AddPatient_Click(sender, e);
+
+            if (AddPatientNotError)
+            {
+                var FormAddRecord = new FormAddRecord(PatientID);
+                FormAddRecord.Show();
+            }
+        }
     }
     static class ErrorsAddPatients
     {

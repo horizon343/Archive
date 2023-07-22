@@ -28,11 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            PatientIDTextBox = new TextBox();
-            LastNameTextBox = new TextBox();
-            FirstNameTextBox = new TextBox();
-            MiddleNameTextBox = new TextBox();
-            RegionTextBox = new TextBox();
+            LastNameTextField = new TextBox();
+            FirstNameTextField = new TextBox();
+            MiddleNameTextField = new TextBox();
+            RegionTextField = new TextBox();
             label1 = new Label();
             label2 = new Label();
             label3 = new Label();
@@ -44,55 +43,51 @@
             label9 = new Label();
             label10 = new Label();
             label11 = new Label();
-            dataGridView1 = new DataGridView();
+            RecordsTable = new DataGridView();
             label12 = new Label();
             AddRecordButton = new Button();
-            PhoneTextBox = new TextBox();
-            AddressTextBox = new TextBox();
-            CityTextBox = new TextBox();
-            DistrictTextBox = new TextBox();
-            IndexTextBox = new TextBox();
+            PhoneTextField = new TextBox();
+            AddressTextField = new TextBox();
+            CityTextField = new TextBox();
+            DistrictTextField = new TextBox();
+            IndexTextField = new TextBox();
             panelTitleBar = new Panel();
             lblTitle = new Label();
-            DateOfBirthTextBox = new TextBox();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            DateOfBirthTextField = new TextBox();
+            PatientNumberLabel = new Label();
+            ErrorTextLabel = new Label();
+            SaveButton = new Button();
+            ((System.ComponentModel.ISupportInitialize)RecordsTable).BeginInit();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
-            // PatientIDTextBox
+            // LastNameTextField
             // 
-            PatientIDTextBox.Location = new Point(103, 82);
-            PatientIDTextBox.Name = "PatientIDTextBox";
-            PatientIDTextBox.Size = new Size(265, 23);
-            PatientIDTextBox.TabIndex = 0;
+            LastNameTextField.Location = new Point(103, 111);
+            LastNameTextField.Name = "LastNameTextField";
+            LastNameTextField.Size = new Size(265, 23);
+            LastNameTextField.TabIndex = 1;
             // 
-            // LastNameTextBox
+            // FirstNameTextField
             // 
-            LastNameTextBox.Location = new Point(103, 111);
-            LastNameTextBox.Name = "LastNameTextBox";
-            LastNameTextBox.Size = new Size(265, 23);
-            LastNameTextBox.TabIndex = 1;
+            FirstNameTextField.Location = new Point(103, 140);
+            FirstNameTextField.Name = "FirstNameTextField";
+            FirstNameTextField.Size = new Size(265, 23);
+            FirstNameTextField.TabIndex = 2;
             // 
-            // FirstNameTextBox
+            // MiddleNameTextField
             // 
-            FirstNameTextBox.Location = new Point(103, 140);
-            FirstNameTextBox.Name = "FirstNameTextBox";
-            FirstNameTextBox.Size = new Size(265, 23);
-            FirstNameTextBox.TabIndex = 2;
+            MiddleNameTextField.Location = new Point(103, 169);
+            MiddleNameTextField.Name = "MiddleNameTextField";
+            MiddleNameTextField.Size = new Size(265, 23);
+            MiddleNameTextField.TabIndex = 3;
             // 
-            // MiddleNameTextBox
+            // RegionTextField
             // 
-            MiddleNameTextBox.Location = new Point(103, 169);
-            MiddleNameTextBox.Name = "MiddleNameTextBox";
-            MiddleNameTextBox.Size = new Size(265, 23);
-            MiddleNameTextBox.TabIndex = 3;
-            // 
-            // RegionTextBox
-            // 
-            RegionTextBox.Location = new Point(103, 227);
-            RegionTextBox.Name = "RegionTextBox";
-            RegionTextBox.Size = new Size(265, 23);
-            RegionTextBox.TabIndex = 5;
+            RegionTextField.Location = new Point(103, 227);
+            RegionTextField.Name = "RegionTextField";
+            RegionTextField.Size = new Size(265, 23);
+            RegionTextField.TabIndex = 5;
             // 
             // label1
             // 
@@ -150,9 +145,9 @@
             label6.ForeColor = Color.Black;
             label6.Location = new Point(12, 235);
             label6.Name = "label6";
-            label6.Size = new Size(53, 15);
+            label6.Size = new Size(46, 15);
             label6.TabIndex = 16;
-            label6.Text = "Область";
+            label6.Text = "Регион";
             // 
             // label7
             // 
@@ -204,14 +199,15 @@
             label11.TabIndex = 21;
             label11.Text = "Индекс";
             // 
-            // dataGridView1
+            // RecordsTable
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(103, 256);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(601, 182);
-            dataGridView1.TabIndex = 22;
+            RecordsTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            RecordsTable.Location = new Point(103, 256);
+            RecordsTable.Name = "RecordsTable";
+            RecordsTable.RowTemplate.Height = 25;
+            RecordsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            RecordsTable.Size = new Size(645, 182);
+            RecordsTable.TabIndex = 22;
             // 
             // label12
             // 
@@ -221,7 +217,6 @@
             label12.Size = new Size(41, 15);
             label12.TabIndex = 23;
             label12.Text = "Карты";
-            label12.Click += label12_Click;
             // 
             // AddRecordButton
             // 
@@ -229,45 +224,45 @@
             AddRecordButton.Location = new Point(103, 444);
             AddRecordButton.Name = "AddRecordButton";
             AddRecordButton.Size = new Size(119, 23);
-            AddRecordButton.TabIndex = 24;
+            AddRecordButton.TabIndex = 11;
             AddRecordButton.Text = "Добавить карту";
             AddRecordButton.UseVisualStyleBackColor = true;
-            AddRecordButton.Click += button1_Click;
+            AddRecordButton.Click += AddRecordButton_Click;
             // 
-            // PhoneTextBox
+            // PhoneTextField
             // 
-            PhoneTextBox.Location = new Point(483, 169);
-            PhoneTextBox.Name = "PhoneTextBox";
-            PhoneTextBox.Size = new Size(265, 23);
-            PhoneTextBox.TabIndex = 28;
+            PhoneTextField.Location = new Point(483, 169);
+            PhoneTextField.Name = "PhoneTextField";
+            PhoneTextField.Size = new Size(265, 23);
+            PhoneTextField.TabIndex = 9;
             // 
-            // AddressTextBox
+            // AddressTextField
             // 
-            AddressTextBox.Location = new Point(483, 140);
-            AddressTextBox.Name = "AddressTextBox";
-            AddressTextBox.Size = new Size(265, 23);
-            AddressTextBox.TabIndex = 27;
+            AddressTextField.Location = new Point(483, 140);
+            AddressTextField.Name = "AddressTextField";
+            AddressTextField.Size = new Size(265, 23);
+            AddressTextField.TabIndex = 8;
             // 
-            // CityTextBox
+            // CityTextField
             // 
-            CityTextBox.Location = new Point(483, 111);
-            CityTextBox.Name = "CityTextBox";
-            CityTextBox.Size = new Size(265, 23);
-            CityTextBox.TabIndex = 26;
+            CityTextField.Location = new Point(483, 111);
+            CityTextField.Name = "CityTextField";
+            CityTextField.Size = new Size(265, 23);
+            CityTextField.TabIndex = 7;
             // 
-            // DistrictTextBox
+            // DistrictTextField
             // 
-            DistrictTextBox.Location = new Point(483, 82);
-            DistrictTextBox.Name = "DistrictTextBox";
-            DistrictTextBox.Size = new Size(265, 23);
-            DistrictTextBox.TabIndex = 25;
+            DistrictTextField.Location = new Point(483, 82);
+            DistrictTextField.Name = "DistrictTextField";
+            DistrictTextField.Size = new Size(265, 23);
+            DistrictTextField.TabIndex = 6;
             // 
-            // IndexTextBox
+            // IndexTextField
             // 
-            IndexTextBox.Location = new Point(483, 198);
-            IndexTextBox.Name = "IndexTextBox";
-            IndexTextBox.Size = new Size(265, 23);
-            IndexTextBox.TabIndex = 29;
+            IndexTextField.Location = new Point(483, 198);
+            IndexTextField.Name = "IndexTextField";
+            IndexTextField.Size = new Size(265, 23);
+            IndexTextField.TabIndex = 10;
             // 
             // panelTitleBar
             // 
@@ -284,36 +279,68 @@
             // 
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(272, 22);
+            lblTitle.Location = new Point(222, 22);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(267, 30);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Информация о пациенте";
-            lblTitle.Click += lblTitle_Click;
             // 
-            // DateOfBirthTextBox
+            // DateOfBirthTextField
             // 
-            DateOfBirthTextBox.Location = new Point(103, 198);
-            DateOfBirthTextBox.Name = "DateOfBirthTextBox";
-            DateOfBirthTextBox.Size = new Size(265, 23);
-            DateOfBirthTextBox.TabIndex = 31;
+            DateOfBirthTextField.Location = new Point(103, 198);
+            DateOfBirthTextField.Name = "DateOfBirthTextField";
+            DateOfBirthTextField.Size = new Size(265, 23);
+            DateOfBirthTextField.TabIndex = 4;
+            // 
+            // PatientNumberLabel
+            // 
+            PatientNumberLabel.AutoSize = true;
+            PatientNumberLabel.ForeColor = Color.Black;
+            PatientNumberLabel.Location = new Point(103, 85);
+            PatientNumberLabel.Name = "PatientNumberLabel";
+            PatientNumberLabel.Size = new Size(45, 15);
+            PatientNumberLabel.TabIndex = 11;
+            PatientNumberLabel.Text = "Номер";
+            // 
+            // ErrorTextLabel
+            // 
+            ErrorTextLabel.AutoSize = true;
+            ErrorTextLabel.ForeColor = Color.Black;
+            ErrorTextLabel.Location = new Point(483, 230);
+            ErrorTextLabel.Name = "ErrorTextLabel";
+            ErrorTextLabel.Size = new Size(0, 15);
+            ErrorTextLabel.TabIndex = 21;
+            // 
+            // SaveButton
+            // 
+            SaveButton.Enabled = false;
+            SaveButton.ForeColor = Color.Black;
+            SaveButton.Location = new Point(629, 444);
+            SaveButton.Name = "SaveButton";
+            SaveButton.Size = new Size(119, 23);
+            SaveButton.TabIndex = 12;
+            SaveButton.Text = "Сохранить";
+            SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.Click += SaveButton_Click;
             // 
             // FormPatientAndRecords
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 474);
-            Controls.Add(DateOfBirthTextBox);
+            Controls.Add(DateOfBirthTextField);
             Controls.Add(panelTitleBar);
-            Controls.Add(IndexTextBox);
-            Controls.Add(PhoneTextBox);
-            Controls.Add(AddressTextBox);
-            Controls.Add(CityTextBox);
-            Controls.Add(DistrictTextBox);
+            Controls.Add(IndexTextField);
+            Controls.Add(PhoneTextField);
+            Controls.Add(AddressTextField);
+            Controls.Add(CityTextField);
+            Controls.Add(DistrictTextField);
+            Controls.Add(SaveButton);
             Controls.Add(AddRecordButton);
             Controls.Add(label12);
-            Controls.Add(dataGridView1);
+            Controls.Add(RecordsTable);
+            Controls.Add(ErrorTextLabel);
             Controls.Add(label11);
             Controls.Add(label10);
             Controls.Add(label9);
@@ -324,16 +351,16 @@
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
+            Controls.Add(PatientNumberLabel);
             Controls.Add(label1);
-            Controls.Add(RegionTextBox);
-            Controls.Add(MiddleNameTextBox);
-            Controls.Add(FirstNameTextBox);
-            Controls.Add(LastNameTextBox);
-            Controls.Add(PatientIDTextBox);
+            Controls.Add(RegionTextField);
+            Controls.Add(MiddleNameTextField);
+            Controls.Add(FirstNameTextField);
+            Controls.Add(LastNameTextField);
             Name = "FormPatientAndRecords";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FormPatientAndRecords";
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)RecordsTable).EndInit();
             panelTitleBar.ResumeLayout(false);
             panelTitleBar.PerformLayout();
             ResumeLayout(false);
@@ -341,12 +368,10 @@
         }
 
         #endregion
-
-        private TextBox PatientIDTextBox;
-        private TextBox LastNameTextBox;
-        private TextBox FirstNameTextBox;
-        private TextBox MiddleNameTextBox;
-        private TextBox RegionTextBox;
+        private TextBox LastNameTextField;
+        private TextBox FirstNameTextField;
+        private TextBox MiddleNameTextField;
+        private TextBox RegionTextField;
         private Label label1;
         private Label label2;
         private Label label3;
@@ -358,16 +383,19 @@
         private Label label9;
         private Label label10;
         private Label label11;
-        private DataGridView dataGridView1;
+        private DataGridView RecordsTable;
         private Label label12;
         private Button AddRecordButton;
-        private TextBox PhoneTextBox;
-        private TextBox AddressTextBox;
-        private TextBox CityTextBox;
-        private TextBox DistrictTextBox;
-        private TextBox IndexTextBox;
+        private TextBox PhoneTextField;
+        private TextBox AddressTextField;
+        private TextBox CityTextField;
+        private TextBox DistrictTextField;
+        private TextBox IndexTextField;
         private Panel panelTitleBar;
         private Label lblTitle;
-        private TextBox DateOfBirthTextBox;
+        private TextBox DateOfBirthTextField;
+        private Label PatientNumberLabel;
+        private Label ErrorTextLabel;
+        private Button SaveButton;
     }
 }

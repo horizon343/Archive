@@ -61,6 +61,7 @@
             panelTitleBar = new Panel();
             lblTitle = new Label();
             DateOfBirthErrorText = new Label();
+            AddPatientAndRecords = new Button();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -278,7 +279,7 @@
             AddPatient.ForeColor = Color.Black;
             AddPatient.Location = new Point(563, 408);
             AddPatient.Name = "AddPatient";
-            AddPatient.Size = new Size(81, 36);
+            AddPatient.Size = new Size(81, 25);
             AddPatient.TabIndex = 10;
             AddPatient.Text = "Добавить";
             AddPatient.UseVisualStyleBackColor = true;
@@ -428,12 +429,24 @@
             DateOfBirthErrorText.TabIndex = 10;
             DateOfBirthErrorText.Text = " ";
             // 
+            // AddPatientAndRecords
+            // 
+            AddPatientAndRecords.ForeColor = Color.Black;
+            AddPatientAndRecords.Location = new Point(402, 408);
+            AddPatientAndRecords.Name = "AddPatientAndRecords";
+            AddPatientAndRecords.Size = new Size(155, 25);
+            AddPatientAndRecords.TabIndex = 10;
+            AddPatientAndRecords.Text = "Добавить и создать карту";
+            AddPatientAndRecords.UseVisualStyleBackColor = true;
+            AddPatientAndRecords.Click += AddPatientAndRecords_Click;
+            // 
             // FormAddPatient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(917, 468);
             Controls.Add(panelTitleBar);
+            Controls.Add(AddPatientAndRecords);
             Controls.Add(AddPatient);
             Controls.Add(label10);
             Controls.Add(label9);
@@ -509,5 +522,6 @@
         private Panel panelTitleBar;
         private Label lblTitle;
         private Label DateOfBirthErrorText;
+        private Button AddPatientAndRecords;
     }
 }

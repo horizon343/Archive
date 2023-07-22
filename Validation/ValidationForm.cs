@@ -18,6 +18,24 @@ namespace Archive.Validation
         }
 
         /// <summary>
+        /// Приведение даты к формату dd.mm.yyyy
+        /// </summary>
+        /// <param name="textField">Текстовое поле</param>
+        static public void DateFormatting(TextBox textField)
+        {
+            string text = textField.Text.Replace(".", "");
+
+            if (text.Length >= 3)
+                text = text.Insert(2, ".");
+            if (text.Length >= 6)
+                text = text.Insert(5, ".");
+            textField.Text = text;
+            textField.SelectionStart = text.Length;
+        }
+
+
+
+        /// <summary>
         /// Проверка, что строка состоит только из букв
         /// </summary>
         /// <param name="textField">Текст</param>
@@ -39,28 +57,7 @@ namespace Archive.Validation
         }
 
         /// <summary>
-        /// Проверка, что строка начинается с буквы
-        /// </summary>
-        /// <param name="textField">Текст</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        static public bool StringStartsWithLetter(TextBox textField, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            string pattern = @"^\p{L}";
-
-            if (Regex.IsMatch(textField.Text, pattern))
-            {
-                errorTextLabel.Text = "";
-                return true;
-            }
-            errorTextLabel.Text = errorText;
-            errorTextLabel.ForeColor = color;
-            return false;
-        }
-
-        /// <summary>
-        /// Проверка: Строка состоит только из цифр
+        /// Проверка, что строка состоит только из цифр
         /// </summary>
         /// <param name="textField">Текст</param>
         /// <param name="errorTextLabel">Label: Поле ошибки</param>
@@ -69,51 +66,15 @@ namespace Archive.Validation
         static public bool ValidationIsNumber(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
         {
             string pattern = "^[0-9]+$";
-            errorTextLabel.ForeColor = color;
 
             if (Regex.IsMatch(text, pattern))
             {
                 errorTextLabel.Text = "";
                 return true;
             }
+            errorTextLabel.ForeColor = color;
             errorTextLabel.Text = errorText;
             return false;
-        }
-
-        /// <summary>
-        /// Проверка длины строки
-        /// </summary>
-        /// <param name="text">Текст</param>
-        /// <param name="length">Максимальная длина строки</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        static public bool CheckingLengthOfString(string text, int length, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            if (text.Length > length)
-            {
-                errorTextLabel.Text = errorText;
-                errorTextLabel.ForeColor = color;
-                return false;
-            }
-            errorTextLabel.Text = "";
-            return true;
-        }
-
-        /// <summary>
-        /// Приведение даты к формату dd.mm.yyyy
-        /// </summary>
-        /// <param name="textField">Текстовое поле</param>
-        static public void DateFormatting(TextBox textField)
-        {
-            string text = textField.Text.Replace(".", "");
-
-            if (text.Length >= 3)
-                text = text.Insert(2, ".");
-            if (text.Length >= 6)
-                text = text.Insert(5, ".");
-            textField.Text = text;
-            textField.SelectionStart = text.Length;
         }
 
         /// <summary>
@@ -156,6 +117,91 @@ namespace Archive.Validation
                 errorText.Text = "Некорректная дата !";
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Проверка, что строка начинается с буквы
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <param name="errorTextLabel">Label: Поле ошибки</param>
+        /// <param name="color">Цвет ошибки</param>
+        /// <param name="errorText">Текст ошибки</param>
+        static public bool StringStartsWithLetter(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
+        {
+            string pattern = @"^\p{L}";
+
+            if (Regex.IsMatch(text, pattern))
+            {
+                errorTextLabel.Text = "";
+                return true;
+            }
+            errorTextLabel.ForeColor = color;
+            errorTextLabel.Text = errorText;
+            return false;
+        }
+
+        /// <summary>
+        /// Проверка длины строки
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <param name="length">Максимальная длина строки</param>
+        /// <param name="errorTextLabel">Label: Поле ошибки</param>
+        /// <param name="color">Цвет ошибки</param>
+        /// <param name="errorText">Текст ошибки</param>
+        static public bool CheckingLengthOfString(string text, int length, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
+        {
+            if (text.Length <= length)
+            {
+                errorTextLabel.Text = "";
+                return true;
+            }
+            errorTextLabel.ForeColor = color;
+            errorTextLabel.Text = errorText;
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// Проверка, что строка начинается с буквы
+        /// </summary>
+        /// <param name="textField">Текст</param>
+        /// <param name="errorTextLabel">Label: Поле ошибки</param>
+        /// <param name="color">Цвет ошибки</param>
+        /// <param name="errorText">Текст ошибки</param>
+        static public bool StringStartsWithLetter(TextBox textField, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
+        {
+            string pattern = @"^\p{L}";
+
+            if (Regex.IsMatch(textField.Text, pattern))
+            {
+                errorTextLabel.Text = "";
+                return true;
+            }
+            errorTextLabel.ForeColor = color;
+            errorTextLabel.Text = errorText;
+            return false;
+        }
+
+        /// <summary>
+        /// Проверка корректности номера пациента (формта А-123)
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <param name="errorTextLabel">Label: Поле ошибки</param>
+        /// <param name="color">Цвет ошибки</param>
+        /// <param name="errorText">Текст ошибки</param>
+        /// <returns></returns>
+        static public bool PatientNumberFormat(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
+        {
+            string pattern = @"^\p{L}-\d+$";
+            if (Regex.IsMatch(text, pattern))
+            {
+                errorTextLabel.Text = "";
+                return true;
+            }
+            errorTextLabel.ForeColor = color;
+            errorTextLabel.Text = errorText;
+            return false;
         }
 
     }

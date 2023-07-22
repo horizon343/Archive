@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SQLite;
 
 namespace Archive.DB
 {
     [Table("Patient")]
     class PatientItem
     {
-        [Column("PatientID")]
-        public int PatientID { get; set; }
+        [PrimaryKey, Column("PatientID")]
+        public Guid PatientID { get; set; }
+
+        [Column("PatientNumber")]
+        public int PatientNumber { get; set; }
 
         [Column("LastName")]
         public string LastName { get; set; }

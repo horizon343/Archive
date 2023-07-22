@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SQLite;
+﻿using SQLite;
 
 namespace Archive.DB
 {
@@ -14,7 +9,7 @@ namespace Archive.DB
         public int DepartmentID { get; set; }
 
         [Column("PatientID")]
-        public int PatientID { get; set; }
+        public Guid PatientID { get; set; }
 
         [Column("DateOfReceipt")]
         public DateTime DateOfReceipt { get; set; }

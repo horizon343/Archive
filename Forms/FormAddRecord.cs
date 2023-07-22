@@ -8,9 +8,12 @@ namespace Archive.Forms
         private List<DepartmentItem> DepartmentItemField { get; set; }
         private List<MKBItem> MKBItemField { get; set; }
 
-        public FormAddRecord()
+        private Guid PatientID { get; }
+
+        public FormAddRecord(Guid patientID)
         {
             InitializeComponent();
+            PatientID = patientID;
 
             DateOfReceiptTextField.TextChanged += DateOfReceiptTextField_Changed;
             DateOfReceiptErrorText.ForeColor = Color.Orange;
@@ -191,7 +194,7 @@ namespace Archive.Forms
                 RecordItem record = new RecordItem()
                 {
                     DepartmentID = DepartmentID,
-                    PatientID = 123,
+                    PatientID = PatientID,
                     DateOfReceipt = DateTime.Parse(DateOfReceiptTextField.Text),
                     DateOfDischarge = DateTime.Parse(DateOfDischargeTextField.Text),
                     HistoryNumber = int.Parse(HistoryNumberTextField.Text),

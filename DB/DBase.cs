@@ -88,6 +88,47 @@ namespace Archive.DB
             return connection.Query<T>(query, parameters.ToArray()).ToList();
         }
 
+        /// <summary>
+        /// Поиск записей по первому символу
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <param name="symbol">Символ для поиска</param>
+        /// <param name="field">Поле из таблицы для поиска</param>
+        public List<T> GetEntriesStartingWithLetter<T>(string symbol, string field) where T : new()
+        {
+            string table = (typeof(T).Name).Remove(typeof(T).Name.IndexOf("Item"));
+            string query = $"SELECT * FROM {table} WHERE {field} LIKE '{symbol}%'";
+
+            return connection.Query<T>(query).ToList();
+        }
+
+        /// <summary>
+        /// Обновить запись в базе данных
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <typeparam name="I">Тип ID из таблицы (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <param name="ID">ID</param>
+        /// <param name="newRecordDB">Новая запись</param>
+        /// <returns></returns>
+        public bool UpdateEntryInDB<T, I>(I ID, T newRecordDB) where T : new()
+        {
+            try
+            {
+                T recordDB = connection.Find<T>(ID);
+                if (recordDB != null)
+                {
+                    recordDB = newRecordDB;
+                    connection.Update(recordDB);
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }

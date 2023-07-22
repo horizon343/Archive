@@ -1,13 +1,5 @@
 ﻿using Archive.DB;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Archive.Validation;
 
 namespace Archive.Forms
@@ -18,6 +10,8 @@ namespace Archive.Forms
         public int CurrentPage { get; set; } = 1;
         private int limit = 100;
 
+        private List<PatientItem> PatientItem { get; set; }
+
         public FormPatients()
         {
             InitializeComponent();
@@ -25,6 +19,7 @@ namespace Archive.Forms
             PatientsTableInit(CurrentPage, limit);
 
             PatientsTable.CellDoubleClick += PatientsTable_CellDoubleClick;
+            PatientNumberTextField.TextChanged += PatientNumberTextField_Changed;
             LastNameTextField.TextChanged += LastNameTextField_Changed;
             FirstNameTextField.TextChanged += FirstNameTextField_Changed;
             MiddleNameTextField.TextChanged += MiddleNameTextField_Changed;
@@ -40,10 +35,11 @@ namespace Archive.Forms
                 column.ReadOnly = true;
 
             // Задаем названия полям
-            PatientsTable.Columns[0].HeaderText = "Фамилия";
-            PatientsTable.Columns[1].HeaderText = "Имя";
-            PatientsTable.Columns[2].HeaderText = "Отчество";
-            PatientsTable.Columns[3].HeaderText = "Дата рождения";
+            PatientsTable.Columns[0].HeaderText = "Номер";
+            PatientsTable.Columns[1].HeaderText = "Фамилия";
+            PatientsTable.Columns[2].HeaderText = "Имя";
+            PatientsTable.Columns[3].HeaderText = "Отчество";
+            PatientsTable.Columns[4].HeaderText = "Дата рождения";
 
             //Устанавливаем стили для таблицы
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle
@@ -51,10 +47,11 @@ namespace Archive.Forms
                 BackColor = Color.White,
                 ForeColor = Color.Black,
             };
-            PatientsTable.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            PatientsTable.Columns[0].Width = 100;
             PatientsTable.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             PatientsTable.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            PatientsTable.Columns[3].Width = 200;
+            PatientsTable.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            PatientsTable.Columns[4].Width = 200;
             PatientsTable.DefaultCellStyle = cellStyle;
         }
 
@@ -64,11 +61,13 @@ namespace Archive.Forms
             DBase dBase = new DBase();
             (int, List<PatientItem>) patients = dBase.GetTable<PatientItem>(currentPage, limit);
             dBase.CloseDatabaseConnection();
+            PatientItem = patients.Item2;
             TotalCount = patients.Item1;
 
-            // Выбираем только необходимые поля и добавляем пациентов втаблицу
+            // Выбираем только необходимые поля и добавляем пациентов в таблицу
             List<PatientViewItem> patientsDataSource = patients.Item2.Select(patient => new PatientViewItem()
             {
+                PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
                 LastName = patient.LastName,
                 FirstName = patient.FirstName,
                 MiddleName = patient.MiddleName,
@@ -116,6 +115,24 @@ namespace Archive.Forms
 
         #region
         // Валидация полей ввода
+        private void PatientNumberTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(PatientNumberTextField);
+            bool isNotError = true;
+            if (PatientNumberTextField.Text.Length > 2)
+                isNotError = ValidationForm.PatientNumberFormat(PatientNumberTextField.Text, TextError, Color.Red, "Некорректный номер !");
+            ErrorsFormPatients.PatientNumber = !isNotError;
+            if (PatientNumberTextField.Text == "" || PatientNumberTextField.Text.Length < 3)
+            {
+                TextError.Text = "";
+                ErrorsFormPatients.PatientNumber = false;
+            }
+            if (ErrorsFormPatients.PatientNumber)
+                PatientNumberTextField.ForeColor = Color.Red;
+            else
+                PatientNumberTextField.ForeColor = Color.Black;
+        }
+
         private void LastNameTextField_Changed(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(LastNameTextField);
@@ -190,78 +207,113 @@ namespace Archive.Forms
         {
             if (e.RowIndex >= 0)
             {
-                var FormPatientAndRecords = new FormPatientAndRecords();
+                var FormPatientAndRecords = new FormPatientAndRecords(PatientItem[e.RowIndex].PatientID);
                 FormPatientAndRecords.Show();
             }
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            if (ErrorsFormPatients.LastName)
+            try
             {
-                MessageBox.Show("LastName");
-                return;
-            }
-            if (ErrorsFormPatients.FirstName)
-            {
-                MessageBox.Show("FirstName");
-                return;
-            }
-            if (ErrorsFormPatients.MiddleName)
-            {
-                MessageBox.Show("MiddleName");
-                return;
-            }
-            if (ErrorsFormPatients.DateOfBirth)
-            {
-                MessageBox.Show("DateOfBirth");
-                return;
-            }
-
-            TotalCount = 1;
-            CurrentPage = 1;
-
-            Dictionary<string, object> fields = new Dictionary<string, object>();
-            if (LastNameTextField.Text != "")
-                fields.Add("LastName", LastNameTextField.Text);
-            if (FirstNameTextField.Text != "")
-                fields.Add("FirstName", FirstNameTextField.Text);
-            if (MiddleNameTextField.Text != "")
-                fields.Add("MiddleName", MiddleNameTextField.Text);
-            if (DateOfBirthTextField.Text != "")
-                fields.Add("DateOfBirth", DateTime.Parse(DateOfBirthTextField.Text));
-
-            if (fields.Count != 0)
-            {
-                DBase dBase = new DBase();
-                List<PatientItem> patients = dBase.SearchData<PatientItem>(fields);
-                dBase.CloseDatabaseConnection();
-
-                // Выбираем только необходимые поля и добавляем пациентов в таблицу
-                List<PatientViewItem> patientsDataSource = patients.Select(patient => new PatientViewItem()
+                if (ErrorsFormPatients.PatientNumber || (PatientNumberTextField.Text != "" && PatientNumberTextField.Text.Length < 3))
                 {
-                    LastName = patient.LastName,
-                    FirstName = patient.FirstName,
-                    MiddleName = patient.MiddleName,
-                    DateOfBirth = patient.DateOfBirth
-                }).ToList();
-                PatientsTable.DataSource = patientsDataSource;
+                    MessageBox.Show("Ошибка в номере");
+                    return;
+                }
+                if (ErrorsFormPatients.LastName)
+                {
+                    MessageBox.Show("Ошибка в фамилии");
+                    return;
+                }
+                if (ErrorsFormPatients.FirstName)
+                {
+                    MessageBox.Show("Ошибка в имени");
+                    return;
+                }
+                if (ErrorsFormPatients.MiddleName)
+                {
+                    MessageBox.Show("Ошибка в отчестве");
+                    return;
+                }
+                if (ErrorsFormPatients.DateOfBirth)
+                {
+                    MessageBox.Show("Ошибка в дате рождения");
+                    return;
+                }
 
-                CountPageTextBox.Text = $"1 / 1";
-                PrevPageButton.Enabled = false;
-                NextPageButton.Enabled = false;
+                TotalCount = 1;
+                CurrentPage = 1;
+
+                Dictionary<string, object> fields = new Dictionary<string, object>();
+                if (PatientNumberTextField.Text != "")
+                    fields.Add("PatientNumber", int.Parse(PatientNumberTextField.Text.Substring(2)));
+                if (LastNameTextField.Text != "")
+                    fields.Add("LastName", LastNameTextField.Text);
+                if (FirstNameTextField.Text != "")
+                    fields.Add("FirstName", FirstNameTextField.Text);
+                if (MiddleNameTextField.Text != "")
+                    fields.Add("MiddleName", MiddleNameTextField.Text);
+                if (DateOfBirthTextField.Text != "")
+                    fields.Add("DateOfBirth", DateTime.Parse(DateOfBirthTextField.Text));
+
+                if (fields.Count != 0)
+                {
+                    DBase dBase = new DBase();
+                    List<PatientItem> patients = dBase.SearchData<PatientItem>(fields);
+                    dBase.CloseDatabaseConnection();
+                    PatientItem = patients;
+
+                    // Выбираем только необходимые поля и добавляем пациентов в таблицу
+                    List<PatientViewItem> patientsDataSource;
+                    if (PatientNumberTextField.Text.Length == 0)
+                        patientsDataSource = patients.Select(patient => new PatientViewItem()
+                        {
+                            PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
+                            LastName = patient.LastName,
+                            FirstName = patient.FirstName,
+                            MiddleName = patient.MiddleName,
+                            DateOfBirth = patient.DateOfBirth
+
+                        }).ToList();
+                    else
+                        patientsDataSource = patients.Select(patient =>
+                            {
+                                if (patient.LastName.Substring(0, 1) == PatientNumberTextField.Text.Substring(0, 1))
+                                    return new PatientViewItem()
+                                    {
+                                        PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
+                                        LastName = patient.LastName,
+                                        FirstName = patient.FirstName,
+                                        MiddleName = patient.MiddleName,
+                                        DateOfBirth = patient.DateOfBirth
+                                    };
+                                return new PatientViewItem();
+                            }).Where(item => item.PatientNumber != null).ToList();
+                    PatientsTable.DataSource = patientsDataSource;
+
+                    CountPageTextBox.Text = $"1 / 1";
+                    PrevPageButton.Enabled = false;
+                    NextPageButton.Enabled = false;
+                }
+                else
+                {
+                    PatientsTableInit(CurrentPage, limit);
+                    PrevPageButton.Enabled = false;
+                    if (CurrentPage + 1 > TotalCount)
+                        NextPageButton.Enabled = false;
+                }
             }
-            else
+            catch (Exception error)
             {
-                PatientsTableInit(CurrentPage, limit);
-                PrevPageButton.Enabled = false;
-                NextPageButton.Enabled = true;
+                MessageBox.Show($"Ошибка запроса [{error.Message}]");
             }
         }
     }
 
     class PatientViewItem
     {
+        public string PatientNumber { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -270,6 +322,7 @@ namespace Archive.Forms
 
     static class ErrorsFormPatients
     {
+        static public bool PatientNumber { get; set; } = false;
         static public bool LastName { get; set; } = false;
         static public bool FirstName { get; set; } = false;
         static public bool MiddleName { get; set; } = false;

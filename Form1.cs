@@ -1,3 +1,5 @@
+using Archive.DB;
+
 namespace Archive
 {
     public partial class Form1 : Form
@@ -9,6 +11,10 @@ namespace Archive
         public Form1()
         {
             InitializeComponent();
+
+            DBase dBase = new DBase();
+            dBase.CreateTables();
+            dBase.CloseDatabaseConnection();
         }
         private void ActivateButton(object btnSender)
         {
