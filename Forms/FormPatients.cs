@@ -9,6 +9,9 @@ namespace Archive.Forms
         public int TotalCount { get; set; } = 0;
         public int CurrentPage { get; set; } = 1;
         private int limit = 100;
+        private List<PatientViewItem> patientsDataSource;
+
+        private int columnIndex = -1;
 
         private List<PatientItem> PatientItem { get; set; }
 
@@ -19,6 +22,7 @@ namespace Archive.Forms
             PatientsTableInit(CurrentPage, limit);
 
             PatientsTable.CellDoubleClick += PatientsTable_CellDoubleClick;
+            PatientsTable.CellClick += PatientsTable_CellClick;
             PatientNumberTextField.TextChanged += PatientNumberTextField_Changed;
             LastNameTextField.TextChanged += LastNameTextField_Changed;
             FirstNameTextField.TextChanged += FirstNameTextField_Changed;
@@ -65,7 +69,7 @@ namespace Archive.Forms
             TotalCount = patients.Item1;
 
             // Выбираем только необходимые поля и добавляем пациентов в таблицу
-            List<PatientViewItem> patientsDataSource = patients.Item2.Select(patient => new PatientViewItem()
+            patientsDataSource = patients.Item2.Select(patient => new PatientViewItem()
             {
                 PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
                 LastName = patient.LastName,
@@ -203,6 +207,46 @@ namespace Archive.Forms
         }
         #endregion
 
+        private void PatientsTable_CellClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1) return;
+
+            Func<PatientViewItem, object> sortingFunc;
+
+            switch (e.ColumnIndex)
+            {
+                case 1:
+                    sortingFunc = patient => patient.LastName;
+                    break;
+                case 2:
+                    sortingFunc = patient => patient.FirstName;
+                    break;
+                case 3:
+                    sortingFunc = patient => patient.MiddleName;
+                    break;
+                case 4:
+                    sortingFunc = patient => patient.DateOfBirth;
+                    break;
+                default:
+                    sortingFunc = patient => patient.PatientNumber;
+                    break;
+            }
+
+            if (columnIndex != e.ColumnIndex)
+            {
+                patientsDataSource = patientsDataSource.OrderBy(sortingFunc).ToList();
+                columnIndex = e.ColumnIndex;
+            }
+            else
+            {
+                List<PatientViewItem> patientsDataSourceNew = patientsDataSource.ToList();
+                patientsDataSourceNew.Reverse();
+                patientsDataSource = patientsDataSourceNew;
+            }
+
+            PatientsTable.DataSource = patientsDataSource;
+        }
+
         private void PatientsTable_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -265,7 +309,6 @@ namespace Archive.Forms
                     PatientItem = patients;
 
                     // Выбираем только необходимые поля и добавляем пациентов в таблицу
-                    List<PatientViewItem> patientsDataSource;
                     if (PatientNumberTextField.Text.Length == 0)
                         patientsDataSource = patients.Select(patient => new PatientViewItem()
                         {

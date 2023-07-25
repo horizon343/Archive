@@ -57,6 +57,7 @@
             PatientNumberLabel = new Label();
             ErrorTextLabel = new Label();
             SaveButton = new Button();
+            ShowOrHideButton = new Button();
             ((System.ComponentModel.ISupportInitialize)RecordsTable).BeginInit();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
@@ -207,7 +208,8 @@
             RecordsTable.RowTemplate.Height = 25;
             RecordsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             RecordsTable.Size = new Size(645, 182);
-            RecordsTable.TabIndex = 22;
+            RecordsTable.TabIndex = 0;
+            RecordsTable.TabStop = false;
             // 
             // label12
             // 
@@ -319,10 +321,21 @@
             SaveButton.Location = new Point(629, 444);
             SaveButton.Name = "SaveButton";
             SaveButton.Size = new Size(119, 23);
-            SaveButton.TabIndex = 12;
+            SaveButton.TabIndex = 13;
             SaveButton.Text = "Сохранить";
             SaveButton.UseVisualStyleBackColor = true;
             SaveButton.Click += SaveButton_Click;
+            // 
+            // ShowOrHideButton
+            // 
+            ShowOrHideButton.ForeColor = Color.Black;
+            ShowOrHideButton.Location = new Point(504, 444);
+            ShowOrHideButton.Name = "ShowOrHideButton";
+            ShowOrHideButton.Size = new Size(119, 23);
+            ShowOrHideButton.TabIndex = 12;
+            ShowOrHideButton.Text = "Скрыть";
+            ShowOrHideButton.UseVisualStyleBackColor = true;
+            ShowOrHideButton.Click += ShowOrHideButton_Click;
             // 
             // FormPatientAndRecords
             // 
@@ -336,6 +349,7 @@
             Controls.Add(AddressTextField);
             Controls.Add(CityTextField);
             Controls.Add(DistrictTextField);
+            Controls.Add(ShowOrHideButton);
             Controls.Add(SaveButton);
             Controls.Add(AddRecordButton);
             Controls.Add(label12);
@@ -397,5 +411,6 @@
         private Label PatientNumberLabel;
         private Label ErrorTextLabel;
         private Button SaveButton;
+        private Button ShowOrHideButton;
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Archive.DB;
 using Archive.Validation;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Archive.Forms
 {
@@ -12,6 +10,11 @@ namespace Archive.Forms
         private List<DepartmentItem> Departments { get; set; }
         private List<MKBItem> MKB { get; set; }
 
+        private List<RecordViewItem> recordsDataSource;
+        private List<RecordViewItem> recordsDataSourceClone;
+        private int columnIndex = -1;
+        private bool isVisible = true;
+
         private bool[] Edited = new bool[10];
 
         private Color DefaultColor = Color.Black;
@@ -21,6 +24,8 @@ namespace Archive.Forms
         public FormPatientAndRecords(Guid PatientID)
         {
             InitializeComponent();
+
+            RecordsTable.CellClick += RecordsTable_CellClick;
 
             InitDefaultValues(PatientID);
             InitTextFieldsDefaultValues();
@@ -64,17 +69,17 @@ namespace Archive.Forms
         /// </summary>
         private void InitRecordsTable()
         {
-            List<RecordViewItem> recordsDataSource = Records
-                .Join(Departments, record => record.DepartmentID, department => department.DepartmentID, (record, department) => new { Record = record, DepartmentTitle = department.Title })
-                .Join(MKB, record => record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
-                {
-                    DepartmentTitle = record.DepartmentTitle,
-                    DateOfReceipt = record.Record.DateOfReceipt,
-                    DateOfDischarge = record.Record.DateOfDischarge,
-                    HistoryNumber = record.Record.HistoryNumber,
-                    MKBCodeTitle = mkb.Title
-                })
-                .ToList();
+            recordsDataSource = Records
+                 .Join(Departments, record => record.DepartmentID, department => department.DepartmentID, (record, department) => new { Record = record, DepartmentTitle = department.Title })
+                 .Join(MKB, record => record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
+                 {
+                     DepartmentTitle = record.DepartmentTitle,
+                     DateOfReceipt = record.Record.DateOfReceipt,
+                     DateOfDischarge = record.Record.DateOfDischarge,
+                     HistoryNumber = record.Record.HistoryNumber,
+                     MKBCodeTitle = mkb.Title
+                 })
+                 .ToList();
             RecordsTable.DataSource = recordsDataSource;
 
             //RecordsTable.DataSource = records;
@@ -367,8 +372,49 @@ namespace Archive.Forms
             }
 
             ErrorsFormPatientAndRecords.Index = !isNotError;
+            MakeSaveButtonActive();
         }
         #endregion
+
+        private void RecordsTable_CellClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1) return;
+
+            Func<RecordViewItem, object> sortingFunc;
+
+            switch (e.ColumnIndex)
+            {
+                case 1:
+                    sortingFunc = record => record.DateOfReceipt;
+                    break;
+                case 2:
+                    sortingFunc = record => record.DateOfDischarge;
+                    break;
+                case 3:
+                    sortingFunc = record => record.HistoryNumber;
+                    break;
+                case 4:
+                    sortingFunc = record => record.MKBCodeTitle;
+                    break;
+                default:
+                    sortingFunc = record => record.DepartmentTitle;
+                    break;
+            }
+
+            if (columnIndex != e.ColumnIndex)
+            {
+                recordsDataSource = recordsDataSource.OrderBy(sortingFunc).ToList();
+                columnIndex = e.ColumnIndex;
+            }
+            else
+            {
+                List<RecordViewItem> recordsDataSourceNew = recordsDataSource.ToList();
+                recordsDataSourceNew.Reverse();
+                recordsDataSource = recordsDataSourceNew;
+            }
+
+            RecordsTable.DataSource = recordsDataSource;
+        }
 
         private void AddRecordButton_Click(object sender, EventArgs e)
         {
@@ -486,6 +532,29 @@ namespace Archive.Forms
             {
                 MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
+        }
+
+        private void ShowOrHideButton_Click(object sender, EventArgs e)
+        {
+            if (isVisible)
+            {
+                recordsDataSourceClone = recordsDataSource;
+                List<RecordViewItem> recordsViewItems = recordsDataSource
+                    .GroupBy(record => record.DepartmentTitle)
+                    .Select(group => group.OrderByDescending(record => record.DateOfDischarge).First())
+                    .ToList();
+                recordsDataSource = recordsViewItems;
+                RecordsTable.DataSource = recordsDataSource;
+                ShowOrHideButton.Text = "Показать";
+            }
+            else
+            {
+                recordsDataSource = recordsDataSourceClone;
+                RecordsTable.DataSource = recordsDataSource;
+                ShowOrHideButton.Text = "Скрыть";
+            }
+
+            isVisible = !isVisible;
         }
     }
 
