@@ -51,7 +51,7 @@
             MKBTable.Location = new Point(12, 49);
             MKBTable.Name = "MKBTable";
             MKBTable.RowTemplate.Height = 25;
-            MKBTable.Size = new Size(935, 352);
+            MKBTable.Size = new Size(960, 428);
             MKBTable.TabIndex = 5;
             // 
             // panel1
@@ -60,7 +60,7 @@
             panel1.Controls.Add(NextPageButton);
             panel1.Controls.Add(PrevPageButton);
             panel1.Controls.Add(CountPageTextBox);
-            panel1.Location = new Point(309, 407);
+            panel1.Location = new Point(322, 483);
             panel1.Name = "panel1";
             panel1.Size = new Size(341, 29);
             panel1.TabIndex = 10;
@@ -163,7 +163,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(959, 448);
+            ClientSize = new Size(984, 524);
             Controls.Add(TextError);
             Controls.Add(panel3);
             Controls.Add(panel1);

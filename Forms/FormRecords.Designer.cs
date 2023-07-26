@@ -68,14 +68,14 @@
             dataGridView1.Location = new Point(12, 50);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(776, 389);
+            dataGridView1.Size = new Size(960, 463);
             dataGridView1.TabIndex = 5;
             // 
             // FormRecords
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(984, 524);
             Controls.Add(label1);
             Controls.Add(textBox1);
             Controls.Add(comboBox1);

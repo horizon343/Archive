@@ -69,7 +69,7 @@
             PatientsTable.Name = "PatientsTable";
             PatientsTable.RowTemplate.Height = 25;
             PatientsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            PatientsTable.Size = new Size(935, 352);
+            PatientsTable.Size = new Size(960, 428);
             PatientsTable.TabIndex = 0;
             PatientsTable.TabStop = false;
             // 
@@ -157,7 +157,7 @@
             panel1.Controls.Add(NextPageButton);
             panel1.Controls.Add(PrevPageButton);
             panel1.Controls.Add(CountPageTextBox);
-            panel1.Location = new Point(315, 407);
+            panel1.Location = new Point(328, 483);
             panel1.Name = "panel1";
             panel1.Size = new Size(341, 29);
             panel1.TabIndex = 7;
@@ -166,7 +166,7 @@
             // 
             panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             panel2.Controls.Add(AddPatientButton);
-            panel2.Location = new Point(814, 12);
+            panel2.Location = new Point(839, 12);
             panel2.Name = "panel2";
             panel2.Size = new Size(133, 31);
             panel2.TabIndex = 8;
@@ -232,7 +232,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(959, 448);
+            ClientSize = new Size(984, 524);
             Controls.Add(TextError);
             Controls.Add(panel3);
             Controls.Add(panel2);

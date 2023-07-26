@@ -5,14 +5,18 @@ namespace Archive.DB
     internal class DBase
     {
         private SQLiteConnection connection;
+        private SQLiteAsyncConnection connectionAsync;
 
         /// <summary>
         /// Создает базу данных и подключение к ней
         /// </summary>
         /// <param name="DBPath">Путь к базе данных (Default: Archive.sqlite)</param>
-        public DBase(string DBPath = "Archive.sqlite")
+        public DBase(bool async = false, string DBPath = "Archive.sqlite")
         {
-            connection = new SQLiteConnection(DBPath);
+            if (!async)
+                connection = new SQLiteConnection(DBPath);
+            else
+                connectionAsync = new SQLiteAsyncConnection(DBPath);
         }
 
         /// <summary>
@@ -21,6 +25,10 @@ namespace Archive.DB
         public void CloseDatabaseConnection()
         {
             connection.Close();
+        }
+        public async Task CloseDatabaseConnectionAsync()
+        {
+            await connectionAsync.CloseAsync();
         }
 
         /// <summary>
@@ -53,6 +61,28 @@ namespace Archive.DB
         }
 
         /// <summary>
+        /// Получить значения определенного поля из таблицы <T>
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <typeparam name="TResult">Тип результата</typeparam>
+        /// <param name="columnName">Название поля</param>
+        /// <returns>Список значений из поля</returns>
+        public List<TResult> GetColumnValues<T, TResult>(string columnName) where TResult : new()
+        {
+            string table = (typeof(T).Name).Remove(typeof(T).Name.IndexOf("Item"));
+            string query = $"SELECT {columnName} FROM {table}";
+
+            return connection.Query<TResult>(query).ToList();
+        }
+        public async Task<List<TResult>> GetColumnValuesAsync<T, TResult>(string columnName) where TResult : new()
+        {
+            string table = (typeof(T).Name).Remove(typeof(T).Name.IndexOf("Item"));
+            string query = $"SELECT {columnName} FROM {table}";
+
+            return await connectionAsync.QueryAsync<TResult>(query);
+        }
+
+        /// <summary>
         /// Добавляет данные в таблицу <T>
         /// </summary>
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
@@ -60,6 +90,10 @@ namespace Archive.DB
         public void SetDataTable<T>(T data) where T : new()
         {
             connection.Insert(data);
+        }
+        public void SetDataTable<T>(List<T> data) where T : new()
+        {
+            connection.InsertAll(data);
         }
 
         /// <summary>
@@ -128,6 +162,15 @@ namespace Archive.DB
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Очистить содержимое таблицы <T>
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        public void ClearTable<T>() where T : new()
+        {
+            connection.DeleteAll<T>();
         }
 
     }

@@ -77,7 +77,7 @@ namespace Archive.Forms
                      DateOfReceipt = record.Record.DateOfReceipt,
                      DateOfDischarge = record.Record.DateOfDischarge,
                      HistoryNumber = record.Record.HistoryNumber,
-                     MKBCodeTitle = mkb.Title
+                     MKBCodeTitle = mkb.MKBCode
                  })
                  .ToList();
             RecordsTable.DataSource = recordsDataSource;
@@ -103,7 +103,7 @@ namespace Archive.Forms
             RecordsTable.Columns[1].Width = 100;
             RecordsTable.Columns[2].Width = 100;
             RecordsTable.Columns[3].Width = 100;
-            RecordsTable.Columns[4].Width = 50;
+            RecordsTable.Columns[4].Width = 100;
             RecordsTable.DefaultCellStyle = cellStyle;
         }
 

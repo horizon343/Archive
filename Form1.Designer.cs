@@ -38,6 +38,7 @@ namespace Archive
             panelTitleBar = new Panel();
             lblTitle = new Label();
             panelDesktopPanel = new Panel();
+            ImportDataButton = new Button();
             panelMenu.SuspendLayout();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
@@ -45,6 +46,7 @@ namespace Archive
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(51, 51, 76);
+            panelMenu.Controls.Add(ImportDataButton);
             panelMenu.Controls.Add(button3);
             panelMenu.Controls.Add(button2);
             panelMenu.Controls.Add(button1);
@@ -116,7 +118,6 @@ namespace Archive
             panelTitleBar.Name = "panelTitleBar";
             panelTitleBar.Size = new Size(965, 80);
             panelTitleBar.TabIndex = 1;
-            panelTitleBar.Paint += panelTitleBar_Paint;
             // 
             // lblTitle
             // 
@@ -128,7 +129,6 @@ namespace Archive
             lblTitle.Size = new Size(76, 30);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Меню";
-            lblTitle.Click += lblTitle_Click;
             // 
             // panelDesktopPanel
             // 
@@ -137,6 +137,20 @@ namespace Archive
             panelDesktopPanel.Name = "panelDesktopPanel";
             panelDesktopPanel.Size = new Size(965, 462);
             panelDesktopPanel.TabIndex = 2;
+            // 
+            // ImportDataButton
+            // 
+            ImportDataButton.Dock = DockStyle.Top;
+            ImportDataButton.FlatAppearance.BorderSize = 0;
+            ImportDataButton.FlatStyle = FlatStyle.Flat;
+            ImportDataButton.ForeColor = Color.Gainsboro;
+            ImportDataButton.Location = new Point(0, 260);
+            ImportDataButton.Name = "ImportDataButton";
+            ImportDataButton.Size = new Size(220, 60);
+            ImportDataButton.TabIndex = 4;
+            ImportDataButton.Text = "Import Data";
+            ImportDataButton.UseVisualStyleBackColor = true;
+            ImportDataButton.Click += ImportDataButton_Click;
             // 
             // Form1
             // 
@@ -175,5 +189,6 @@ namespace Archive
         private Panel panelTitleBar;
         private Label lblTitle;
         private Panel panelDesktopPanel;
+        private Button ImportDataButton;
     }
 }

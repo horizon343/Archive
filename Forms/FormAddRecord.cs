@@ -6,13 +6,14 @@ namespace Archive.Forms
     public partial class FormAddRecord : Form
     {
         private List<DepartmentItem> DepartmentItemField { get; set; }
-        private List<MKBItem> MKBItemField { get; set; }
+        private List<MKBItemView> MKBItemField { get; set; }
 
         private Guid PatientID { get; }
 
         public FormAddRecord(Guid patientID)
         {
             InitializeComponent();
+            SetMKBItemField();
             PatientID = patientID;
 
             DateOfReceiptTextField.TextChanged += DateOfReceiptTextField_Changed;
@@ -33,10 +34,8 @@ namespace Archive.Forms
             // Получение списка МКБ кодов и отделений
             DBase dBase = new DBase();
             (int, List<DepartmentItem>) departments = dBase.GetTable<DepartmentItem>(-1, 50);
-            (int, List<MKBItem>) MKBCodes = dBase.GetTable<MKBItem>(-1, 50);
             dBase.CloseDatabaseConnection();
             DepartmentItemField = departments.Item2;
-            MKBItemField = MKBCodes.Item2;
 
             // Установление значений для поля "Отделение"
             List<string> departmentsTitle = new List<string>();
@@ -51,20 +50,27 @@ namespace Archive.Forms
             DepartmentTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
             DepartmentSelect.Items.AddRange(departmentsTitle.ToArray());
+        }
+
+        private async void SetMKBItemField()
+        {
+            DBase dBaseAsync = new DBase(true);
+            MKBItemField = await dBaseAsync.GetColumnValuesAsync<MKBItem, MKBItemView>("MKBCode");
+            await dBaseAsync.CloseDatabaseConnectionAsync();
 
             // Установление значений для поля "МКБ код"
-            List<string> MKBTitle = new List<string>();
-            foreach (MKBItem MKB in MKBItemField)
-                MKBTitle.Add(MKB.Title);
+            List<string> MKBCode = new List<string>();
+            foreach (MKBItemView MKB in MKBItemField)
+                MKBCode.Add(MKB.MKBCode);
 
             AutoCompleteStringCollection MKBSource = new AutoCompleteStringCollection();
-            MKBSource.AddRange(MKBTitle.ToArray());
+            MKBSource.AddRange(MKBCode.ToArray());
 
             MKBCodeTextField.AutoCompleteCustomSource = MKBSource;
             MKBCodeTextField.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             MKBCodeTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
-            MKBCodeSelect.Items.AddRange(MKBTitle.ToArray());
+            MKBCodeSelect.Items.AddRange(MKBCode.ToArray());
         }
 
         #region
@@ -152,9 +158,9 @@ namespace Archive.Forms
 
                 // Устанавливаем значение MKBCode
                 string MKBCode = "";
-                foreach (MKBItem MKB in MKBItemField)
+                foreach (MKBItemView MKB in MKBItemField)
                 {
-                    if (MKB.Title.ToLower() == MKBCodeTextField.Text.ToLower())
+                    if (MKB.MKBCode == MKBCodeTextField.Text)
                     {
                         MKBCode = MKB.MKBCode;
                         break;
@@ -213,6 +219,11 @@ namespace Archive.Forms
             }
         }
 
+    }
+
+    class MKBItemView
+    {
+        public string MKBCode { get; set; }
     }
 
     static class ErrorsAddRecords

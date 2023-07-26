@@ -11,6 +11,9 @@
     <Compile Update="Forms\FormAddRecord.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Forms\FormImportData.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Forms\FormMKB.cs">
       <SubType>Form</SubType>
     </Compile>

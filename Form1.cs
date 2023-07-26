@@ -91,14 +91,9 @@ namespace Archive
             ActivateButton(sender);
         }
 
-        private void panelTitleBar_Paint(object sender, PaintEventArgs e)
+        private void ImportDataButton_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
+            OpenChildForm(new Forms.FormImportData(), sender);
         }
     }
 }
