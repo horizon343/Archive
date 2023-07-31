@@ -12,16 +12,16 @@ using Archive.Validation;
 
 namespace Archive.Forms
 {
-    public partial class FormMKB : Form
+    public partial class FormDepartments : Form
     {
         public int TotalCount { get; set; } = 0;
         public int CurrentPage { get; set; } = 1;
         private int limit = 100;
-        public FormMKB()
+        public FormDepartments()
         {
             InitializeComponent();
 
-            MKBTableInit(CurrentPage, limit);
+            DepartmentsTableInit(CurrentPage, limit);
 
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle
             {
@@ -31,7 +31,7 @@ namespace Archive.Forms
 
 
 
-            foreach (DataGridViewColumn column in MKBTable.Columns)
+            foreach (DataGridViewColumn column in DepartmentsTable.Columns)
                 column.ReadOnly = true;
 
             PrevPageButton.Enabled = false;
@@ -39,11 +39,11 @@ namespace Archive.Forms
                 NextPageButton.Enabled = false;
 
 
-            MKBTable.Columns[0].HeaderText = "Код";
-            MKBTable.Columns[1].HeaderText = "Болезнь";
-            MKBTable.Columns[0].Width = 100;
-            MKBTable.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            MKBTable.DefaultCellStyle = cellStyle;
+            DepartmentsTable.Columns[0].HeaderText = "ID";
+            DepartmentsTable.Columns[1].HeaderText = "Отделение";
+            DepartmentsTable.Columns[0].Width = 100;
+            DepartmentsTable.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            DepartmentsTable.DefaultCellStyle = cellStyle;
 
         }
         private void data_show()
@@ -51,21 +51,21 @@ namespace Archive.Forms
 
 
         }
-        private void MKBTableInit(int currentPage, int limit)
+        private void DepartmentsTableInit(int currentPage, int limit)
         {
             // Получение таблицы пациентов из базы данных
             DBase dBase = new DBase();
-            (int, List<MKBItem>) MKB = dBase.GetTable<MKBItem>(currentPage, limit);
+            (int, List<DepartmentItem>) Department = dBase.GetTable<DepartmentItem>(currentPage, limit);
             dBase.CloseDatabaseConnection();
-            TotalCount = MKB.Item1;
+            TotalCount = Department.Item1;
 
             // Выбираем только необходимые поля и добавляем пациентов втаблицу
-            List<MKBViewItem> MKBDataSource = MKB.Item2.Select(MKB => new MKBViewItem()
+            List<DepartmentViewItem> DepartmentDataSource = Department.Item2.Select(Department => new DepartmentViewItem()
             {
-                MKBCode = MKB.MKBCode,
-                Title = MKB.Title
+                DepartmentID = Department.DepartmentID,
+                Title = Department.Title
             }).ToList();
-            MKBTable.DataSource = MKBDataSource;
+            DepartmentsTable.DataSource = DepartmentDataSource;
 
             CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
         }
@@ -76,7 +76,7 @@ namespace Archive.Forms
             {
                 CurrentPage += 1;
                 PrevPageButton.Enabled = true;
-                MKBTableInit(CurrentPage, limit);
+                DepartmentsTableInit(CurrentPage, limit);
 
                 if (CurrentPage + 1 > TotalCount)
                     NextPageButton.Enabled = false;
@@ -89,7 +89,7 @@ namespace Archive.Forms
             {
                 CurrentPage -= 1;
                 NextPageButton.Enabled = true;
-                MKBTableInit(CurrentPage, limit);
+                DepartmentsTableInit(CurrentPage, limit);
 
                 if (CurrentPage - 1 < 1)
                     PrevPageButton.Enabled = false;
@@ -102,24 +102,24 @@ namespace Archive.Forms
             CurrentPage = 1;
 
             Dictionary<string, object> fields = new Dictionary<string, object>();
-            if (MKBCodeTextField.Text != "")
-                fields.Add("MKBCode", MKBCodeTextField.Text);
-            if (DiseaseTextField.Text != "")
-                fields.Add("Title", DiseaseTextField.Text);
+            if (DepartmentIDTextField.Text != "")
+                fields.Add("DepartmentID", DepartmentIDTextField.Text);
+            if (DepartmentTitleTextField.Text != "")
+                fields.Add("Title", DepartmentTitleTextField.Text);
 
 
             if (fields.Count != 0)
             {
                 DBase dBase = new DBase();
-                List<MKBItem> MKB = dBase.SearchData<MKBItem>(fields);
+                List<DepartmentItem> Department = dBase.SearchData<DepartmentItem>(fields);
                 dBase.CloseDatabaseConnection();
 
-                List<MKBViewItem> MKBDataSource = MKB.Select(MKB => new MKBViewItem()
+                List<DepartmentViewItem> DepartmentDataSource = Department.Select(Department => new DepartmentViewItem()
                 {
-                    MKBCode = MKB.MKBCode,
-                    Title = MKB.Title
+                    DepartmentID = Department.DepartmentID,
+                    Title = Department.Title
                 }).ToList();
-                MKBTable.DataSource = MKBDataSource;
+                DepartmentsTable.DataSource = DepartmentDataSource;
 
                 CountPageTextBox.Text = $"1 / 1";
                 PrevPageButton.Enabled = false;
@@ -127,7 +127,7 @@ namespace Archive.Forms
             }
             else
             {
-                MKBTableInit(CurrentPage, limit);
+                DepartmentsTableInit(CurrentPage, limit);
                 PrevPageButton.Enabled = false;
                 NextPageButton.Enabled = true;
             }
@@ -135,10 +135,12 @@ namespace Archive.Forms
     }
 
 
-    class MKBViewItem
+    class DepartmentViewItem
     {
-        public string MKBCode { get; set; }
+        public int DepartmentID { get; set; }
         public string Title { get; set; }
 
     }
 }
+
+
