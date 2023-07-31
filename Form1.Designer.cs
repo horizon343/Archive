@@ -153,7 +153,7 @@ namespace Archive
             // 
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(427, 27);
+            lblTitle.Location = new Point(444, 27);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(76, 30);
@@ -179,7 +179,7 @@ namespace Archive
             ForeColor = Color.White;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "Database";
             panelMenu.ResumeLayout(false);
             panelTitleBar.ResumeLayout(false);
             panelTitleBar.PerformLayout();
