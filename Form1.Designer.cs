@@ -31,6 +31,8 @@ namespace Archive
         private void InitializeComponent()
         {
             panelMenu = new Panel();
+            ImportDataButton = new Button();
+            Departments_button = new Button();
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
@@ -38,7 +40,6 @@ namespace Archive
             panelTitleBar = new Panel();
             lblTitle = new Label();
             panelDesktopPanel = new Panel();
-            ImportDataButton = new Button();
             panelMenu.SuspendLayout();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
@@ -47,6 +48,7 @@ namespace Archive
             // 
             panelMenu.BackColor = Color.FromArgb(51, 51, 76);
             panelMenu.Controls.Add(ImportDataButton);
+            panelMenu.Controls.Add(Departments_button);
             panelMenu.Controls.Add(button3);
             panelMenu.Controls.Add(button2);
             panelMenu.Controls.Add(button1);
@@ -56,6 +58,34 @@ namespace Archive
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(220, 542);
             panelMenu.TabIndex = 0;
+            // 
+            // ImportDataButton
+            // 
+            ImportDataButton.Dock = DockStyle.Top;
+            ImportDataButton.FlatAppearance.BorderSize = 0;
+            ImportDataButton.FlatStyle = FlatStyle.Flat;
+            ImportDataButton.ForeColor = Color.Gainsboro;
+            ImportDataButton.Location = new Point(0, 320);
+            ImportDataButton.Name = "ImportDataButton";
+            ImportDataButton.Size = new Size(220, 60);
+            ImportDataButton.TabIndex = 6;
+            ImportDataButton.Text = "Import Data";
+            ImportDataButton.UseVisualStyleBackColor = true;
+            ImportDataButton.Click += ImportDataButton_Click;
+            // 
+            // Departments_button
+            // 
+            Departments_button.Dock = DockStyle.Top;
+            Departments_button.FlatAppearance.BorderSize = 0;
+            Departments_button.FlatStyle = FlatStyle.Flat;
+            Departments_button.ForeColor = Color.Gainsboro;
+            Departments_button.Location = new Point(0, 260);
+            Departments_button.Name = "Departments_button";
+            Departments_button.Size = new Size(220, 60);
+            Departments_button.TabIndex = 5;
+            Departments_button.Text = "Отделения";
+            Departments_button.UseVisualStyleBackColor = true;
+            Departments_button.Click += Departments_button_Click;
             // 
             // button3
             // 
@@ -138,20 +168,6 @@ namespace Archive
             panelDesktopPanel.Size = new Size(965, 462);
             panelDesktopPanel.TabIndex = 2;
             // 
-            // ImportDataButton
-            // 
-            ImportDataButton.Dock = DockStyle.Top;
-            ImportDataButton.FlatAppearance.BorderSize = 0;
-            ImportDataButton.FlatStyle = FlatStyle.Flat;
-            ImportDataButton.ForeColor = Color.Gainsboro;
-            ImportDataButton.Location = new Point(0, 260);
-            ImportDataButton.Name = "ImportDataButton";
-            ImportDataButton.Size = new Size(220, 60);
-            ImportDataButton.TabIndex = 4;
-            ImportDataButton.Text = "Import Data";
-            ImportDataButton.UseVisualStyleBackColor = true;
-            ImportDataButton.Click += ImportDataButton_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -189,6 +205,7 @@ namespace Archive
         private Panel panelTitleBar;
         private Label lblTitle;
         private Panel panelDesktopPanel;
+        private Button Departments_button;
         private Button ImportDataButton;
     }
 }

@@ -95,5 +95,10 @@ namespace Archive
         {
             OpenChildForm(new Forms.FormImportData(), sender);
         }
+
+        private void Departments_button_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new Forms.FormDepartments(), sender);
+        }
     }
 }
