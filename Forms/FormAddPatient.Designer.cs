@@ -259,7 +259,7 @@
             label9.ForeColor = Color.Black;
             label9.Location = new Point(186, 363);
             label9.Name = "label9";
-            label9.Size = new Size(55, 15);
+            label9.Size = new Size(56, 15);
             label9.TabIndex = 18;
             label9.Text = "Телефон";
             // 
@@ -411,7 +411,7 @@
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(372, 27);
+            lblTitle.Location = new Point(406, 25);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(173, 30);

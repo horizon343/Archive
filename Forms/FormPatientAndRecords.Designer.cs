@@ -186,7 +186,7 @@
             label10.ForeColor = Color.Black;
             label10.Location = new Point(513, 188);
             label10.Name = "label10";
-            label10.Size = new Size(55, 15);
+            label10.Size = new Size(56, 15);
             label10.TabIndex = 20;
             label10.Text = "Телефон";
             // 
@@ -281,7 +281,7 @@
             // 
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
-            lblTitle.Location = new Point(314, 22);
+            lblTitle.Location = new Point(359, 23);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
             lblTitle.Size = new Size(267, 30);
