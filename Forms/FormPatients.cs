@@ -212,6 +212,7 @@ namespace Archive.Forms
             if (e.RowIndex != -1) return;
 
             Func<PatientViewItem, object> sortingFunc;
+            bool sortingFuncPatientNumber = false;
 
             switch (e.ColumnIndex)
             {
@@ -228,13 +229,20 @@ namespace Archive.Forms
                     sortingFunc = patient => patient.DateOfBirth;
                     break;
                 default:
+                    sortingFuncPatientNumber = true;
                     sortingFunc = patient => patient.PatientNumber;
                     break;
             }
 
-            if (columnIndex != e.ColumnIndex)
+            if (columnIndex != e.ColumnIndex && !sortingFuncPatientNumber)
             {
                 patientsDataSource = patientsDataSource.OrderBy(sortingFunc).ToList();
+                columnIndex = e.ColumnIndex;
+            }
+            else if (columnIndex != e.ColumnIndex && sortingFuncPatientNumber)
+            {
+                PatientNumberComparer patientNumberComparer = new PatientNumberComparer();
+                patientsDataSource = patientsDataSource.OrderBy(patient => patient.PatientNumber, patientNumberComparer).ToList();
                 columnIndex = e.ColumnIndex;
             }
             else
@@ -343,6 +351,7 @@ namespace Archive.Forms
                 {
                     PatientsTableInit(CurrentPage, limit);
                     PrevPageButton.Enabled = false;
+                    NextPageButton.Enabled = true;
                     if (CurrentPage + 1 > TotalCount)
                         NextPageButton.Enabled = false;
                 }
@@ -370,5 +379,33 @@ namespace Archive.Forms
         static public bool FirstName { get; set; } = false;
         static public bool MiddleName { get; set; } = false;
         static public bool DateOfBirth { get; set; } = false;
+    }
+
+    public class PatientNumberComparer : IComparer<string>
+    {
+        public int Compare(string x, string y)
+        {
+            if (x == null && y == null) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+
+            string[] xParts = x.Split('-');
+            string[] yParts = y.Split('-');
+
+            if (xParts.Length != 2 || yParts.Length != 2)
+                return string.Compare(x, y);
+
+            int prefixComparison = string.Compare(xParts[0], yParts[0]);
+
+            if (prefixComparison != 0)
+            {
+                return prefixComparison;
+            }
+
+            int xNumber = int.Parse(xParts[1]);
+            int yNumber = int.Parse(yParts[1]);
+
+            return xNumber.CompareTo(yNumber);
+        }
     }
 }

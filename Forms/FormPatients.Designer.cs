@@ -223,7 +223,7 @@
             TextError.AutoSize = true;
             TextError.BackColor = Color.Transparent;
             TextError.ForeColor = Color.Black;
-            TextError.Location = new Point(66, -1);
+            TextError.Location = new Point(56, -1);
             TextError.Name = "TextError";
             TextError.Size = new Size(0, 15);
             TextError.TabIndex = 4;

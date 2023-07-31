@@ -69,7 +69,7 @@
             // 
             LastNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LastNameTextField.ForeColor = Color.Black;
-            LastNameTextField.Location = new Point(282, 128);
+            LastNameTextField.Location = new Point(282, 143);
             LastNameTextField.MaximumSize = new Size(425, 0);
             LastNameTextField.MinimumSize = new Size(425, 0);
             LastNameTextField.Name = "LastNameTextField";
@@ -80,7 +80,7 @@
             // 
             FirstNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             FirstNameTextField.ForeColor = Color.Black;
-            FirstNameTextField.Location = new Point(282, 157);
+            FirstNameTextField.Location = new Point(282, 172);
             FirstNameTextField.MaximumSize = new Size(425, 0);
             FirstNameTextField.MinimumSize = new Size(425, 0);
             FirstNameTextField.Name = "FirstNameTextField";
@@ -91,7 +91,7 @@
             // 
             MiddleNameTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MiddleNameTextField.ForeColor = Color.Black;
-            MiddleNameTextField.Location = new Point(282, 186);
+            MiddleNameTextField.Location = new Point(282, 201);
             MiddleNameTextField.MaximumSize = new Size(425, 0);
             MiddleNameTextField.MinimumSize = new Size(425, 0);
             MiddleNameTextField.Name = "MiddleNameTextField";
@@ -102,7 +102,7 @@
             // 
             RegionTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RegionTextField.ForeColor = Color.Black;
-            RegionTextField.Location = new Point(282, 244);
+            RegionTextField.Location = new Point(282, 259);
             RegionTextField.MaximumSize = new Size(425, 0);
             RegionTextField.MinimumSize = new Size(425, 0);
             RegionTextField.Name = "RegionTextField";
@@ -113,7 +113,7 @@
             // 
             DistrictTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DistrictTextField.ForeColor = Color.Black;
-            DistrictTextField.Location = new Point(282, 273);
+            DistrictTextField.Location = new Point(282, 288);
             DistrictTextField.MaximumSize = new Size(425, 0);
             DistrictTextField.MinimumSize = new Size(425, 0);
             DistrictTextField.Name = "DistrictTextField";
@@ -124,7 +124,7 @@
             // 
             CityTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             CityTextField.ForeColor = Color.Black;
-            CityTextField.Location = new Point(282, 302);
+            CityTextField.Location = new Point(282, 317);
             CityTextField.MaximumSize = new Size(425, 0);
             CityTextField.MinimumSize = new Size(425, 0);
             CityTextField.Name = "CityTextField";
@@ -135,7 +135,7 @@
             // 
             AddressTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             AddressTextField.ForeColor = Color.Black;
-            AddressTextField.Location = new Point(282, 331);
+            AddressTextField.Location = new Point(282, 346);
             AddressTextField.MaximumSize = new Size(425, 0);
             AddressTextField.MinimumSize = new Size(425, 0);
             AddressTextField.Name = "AddressTextField";
@@ -146,7 +146,7 @@
             // 
             PhoneTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PhoneTextField.ForeColor = Color.Black;
-            PhoneTextField.Location = new Point(282, 360);
+            PhoneTextField.Location = new Point(282, 375);
             PhoneTextField.MaximumSize = new Size(425, 0);
             PhoneTextField.MinimumSize = new Size(425, 0);
             PhoneTextField.Name = "PhoneTextField";
@@ -157,7 +157,7 @@
             // 
             IndexTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             IndexTextField.ForeColor = Color.Black;
-            IndexTextField.Location = new Point(282, 389);
+            IndexTextField.Location = new Point(282, 404);
             IndexTextField.MaximumSize = new Size(425, 0);
             IndexTextField.MinimumSize = new Size(425, 0);
             IndexTextField.Name = "IndexTextField";
@@ -169,7 +169,7 @@
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(186, 131);
+            label1.Location = new Point(186, 146);
             label1.Name = "label1";
             label1.Size = new Size(58, 15);
             label1.TabIndex = 10;
@@ -180,7 +180,7 @@
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label2.AutoSize = true;
             label2.ForeColor = Color.Black;
-            label2.Location = new Point(186, 160);
+            label2.Location = new Point(186, 175);
             label2.Name = "label2";
             label2.Size = new Size(31, 15);
             label2.TabIndex = 11;
@@ -191,7 +191,7 @@
             label3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label3.AutoSize = true;
             label3.ForeColor = Color.Black;
-            label3.Location = new Point(186, 189);
+            label3.Location = new Point(186, 204);
             label3.Name = "label3";
             label3.Size = new Size(58, 15);
             label3.TabIndex = 12;
@@ -202,7 +202,7 @@
             label4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label4.AutoSize = true;
             label4.ForeColor = Color.Black;
-            label4.Location = new Point(186, 221);
+            label4.Location = new Point(186, 236);
             label4.Name = "label4";
             label4.Size = new Size(90, 15);
             label4.TabIndex = 13;
@@ -213,7 +213,7 @@
             label5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label5.AutoSize = true;
             label5.ForeColor = Color.Black;
-            label5.Location = new Point(186, 247);
+            label5.Location = new Point(186, 262);
             label5.Name = "label5";
             label5.Size = new Size(46, 15);
             label5.TabIndex = 14;
@@ -224,7 +224,7 @@
             label6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label6.AutoSize = true;
             label6.ForeColor = Color.Black;
-            label6.Location = new Point(186, 276);
+            label6.Location = new Point(186, 291);
             label6.Name = "label6";
             label6.Size = new Size(41, 15);
             label6.TabIndex = 15;
@@ -235,7 +235,7 @@
             label7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label7.AutoSize = true;
             label7.ForeColor = Color.Black;
-            label7.Location = new Point(186, 305);
+            label7.Location = new Point(186, 320);
             label7.Name = "label7";
             label7.Size = new Size(40, 15);
             label7.TabIndex = 16;
@@ -246,7 +246,7 @@
             label8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label8.AutoSize = true;
             label8.ForeColor = Color.Black;
-            label8.Location = new Point(186, 334);
+            label8.Location = new Point(186, 349);
             label8.Name = "label8";
             label8.Size = new Size(40, 15);
             label8.TabIndex = 17;
@@ -257,7 +257,7 @@
             label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label9.AutoSize = true;
             label9.ForeColor = Color.Black;
-            label9.Location = new Point(186, 363);
+            label9.Location = new Point(186, 378);
             label9.Name = "label9";
             label9.Size = new Size(56, 15);
             label9.TabIndex = 18;
@@ -268,7 +268,7 @@
             label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label10.AutoSize = true;
             label10.ForeColor = Color.Black;
-            label10.Location = new Point(186, 392);
+            label10.Location = new Point(186, 407);
             label10.Name = "label10";
             label10.Size = new Size(87, 15);
             label10.TabIndex = 19;
@@ -277,7 +277,7 @@
             // AddPatient
             // 
             AddPatient.ForeColor = Color.Black;
-            AddPatient.Location = new Point(626, 418);
+            AddPatient.Location = new Point(626, 433);
             AddPatient.Name = "AddPatient";
             AddPatient.Size = new Size(81, 25);
             AddPatient.TabIndex = 10;
@@ -289,7 +289,7 @@
             // 
             DateOfBirthTextField.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DateOfBirthTextField.ForeColor = Color.Black;
-            DateOfBirthTextField.Location = new Point(282, 215);
+            DateOfBirthTextField.Location = new Point(282, 230);
             DateOfBirthTextField.MaximumSize = new Size(425, 0);
             DateOfBirthTextField.MinimumSize = new Size(425, 0);
             DateOfBirthTextField.Name = "DateOfBirthTextField";
@@ -301,7 +301,7 @@
             LastNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             LastNameErrorText.AutoSize = true;
             LastNameErrorText.ForeColor = Color.Black;
-            LastNameErrorText.Location = new Point(713, 131);
+            LastNameErrorText.Location = new Point(713, 146);
             LastNameErrorText.Name = "LastNameErrorText";
             LastNameErrorText.Size = new Size(10, 15);
             LastNameErrorText.TabIndex = 10;
@@ -312,7 +312,7 @@
             FirstNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             FirstNameErrorText.AutoSize = true;
             FirstNameErrorText.ForeColor = Color.Black;
-            FirstNameErrorText.Location = new Point(713, 160);
+            FirstNameErrorText.Location = new Point(713, 175);
             FirstNameErrorText.Name = "FirstNameErrorText";
             FirstNameErrorText.Size = new Size(10, 15);
             FirstNameErrorText.TabIndex = 10;
@@ -323,7 +323,7 @@
             MiddleNameErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             MiddleNameErrorText.AutoSize = true;
             MiddleNameErrorText.ForeColor = Color.Black;
-            MiddleNameErrorText.Location = new Point(713, 189);
+            MiddleNameErrorText.Location = new Point(713, 204);
             MiddleNameErrorText.Name = "MiddleNameErrorText";
             MiddleNameErrorText.Size = new Size(10, 15);
             MiddleNameErrorText.TabIndex = 10;
@@ -334,7 +334,7 @@
             RegionErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             RegionErrorText.AutoSize = true;
             RegionErrorText.ForeColor = Color.Black;
-            RegionErrorText.Location = new Point(713, 247);
+            RegionErrorText.Location = new Point(713, 262);
             RegionErrorText.Name = "RegionErrorText";
             RegionErrorText.Size = new Size(10, 15);
             RegionErrorText.TabIndex = 10;
@@ -345,7 +345,7 @@
             DistrictErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DistrictErrorText.AutoSize = true;
             DistrictErrorText.ForeColor = Color.Black;
-            DistrictErrorText.Location = new Point(713, 276);
+            DistrictErrorText.Location = new Point(713, 291);
             DistrictErrorText.Name = "DistrictErrorText";
             DistrictErrorText.Size = new Size(10, 15);
             DistrictErrorText.TabIndex = 10;
@@ -356,7 +356,7 @@
             IndexErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             IndexErrorText.AutoSize = true;
             IndexErrorText.ForeColor = Color.Black;
-            IndexErrorText.Location = new Point(713, 392);
+            IndexErrorText.Location = new Point(713, 407);
             IndexErrorText.Name = "IndexErrorText";
             IndexErrorText.Size = new Size(10, 15);
             IndexErrorText.TabIndex = 10;
@@ -367,7 +367,7 @@
             PhoneErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             PhoneErrorText.AutoSize = true;
             PhoneErrorText.ForeColor = Color.Black;
-            PhoneErrorText.Location = new Point(713, 363);
+            PhoneErrorText.Location = new Point(713, 378);
             PhoneErrorText.Name = "PhoneErrorText";
             PhoneErrorText.Size = new Size(10, 15);
             PhoneErrorText.TabIndex = 10;
@@ -378,7 +378,7 @@
             CityErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             CityErrorText.AutoSize = true;
             CityErrorText.ForeColor = Color.Black;
-            CityErrorText.Location = new Point(713, 305);
+            CityErrorText.Location = new Point(713, 320);
             CityErrorText.Name = "CityErrorText";
             CityErrorText.Size = new Size(10, 15);
             CityErrorText.TabIndex = 10;
@@ -389,7 +389,7 @@
             AddressErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             AddressErrorText.AutoSize = true;
             AddressErrorText.ForeColor = Color.Black;
-            AddressErrorText.Location = new Point(713, 334);
+            AddressErrorText.Location = new Point(713, 349);
             AddressErrorText.Name = "AddressErrorText";
             AddressErrorText.Size = new Size(10, 15);
             AddressErrorText.TabIndex = 10;
@@ -423,7 +423,7 @@
             DateOfBirthErrorText.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             DateOfBirthErrorText.AutoSize = true;
             DateOfBirthErrorText.ForeColor = Color.Black;
-            DateOfBirthErrorText.Location = new Point(713, 218);
+            DateOfBirthErrorText.Location = new Point(713, 233);
             DateOfBirthErrorText.Name = "DateOfBirthErrorText";
             DateOfBirthErrorText.Size = new Size(10, 15);
             DateOfBirthErrorText.TabIndex = 10;
@@ -432,7 +432,7 @@
             // AddPatientAndRecords
             // 
             AddPatientAndRecords.ForeColor = Color.Black;
-            AddPatientAndRecords.Location = new Point(465, 418);
+            AddPatientAndRecords.Location = new Point(465, 433);
             AddPatientAndRecords.Name = "AddPatientAndRecords";
             AddPatientAndRecords.Size = new Size(155, 25);
             AddPatientAndRecords.TabIndex = 10;
