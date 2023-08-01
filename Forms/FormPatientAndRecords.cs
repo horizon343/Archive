@@ -358,7 +358,7 @@ namespace Archive.Forms
             {
                 if (!isNotError)
                     IndexTextField.ForeColor = ErrorColor;
-                else if (int.Parse(IndexTextField.Text) != DefaultPatientItem.Index)
+                else if (IndexTextField.Text != DefaultPatientItem.Index)
                 {
                     IndexTextField.ForeColor = EditColor;
                     Edited[9] = true;
@@ -494,7 +494,7 @@ namespace Archive.Forms
                     City = CityTextField.Text,
                     Address = AddressTextField.Text,
                     Phone = PhoneTextField.Text,
-                    Index = int.Parse(IndexTextField.Text),
+                    Index = IndexTextField.Text,
                 };
 
                 bool isNotError = dBase.UpdateEntryInDB<PatientItem, Guid>(DefaultPatientItem.PatientID, patient);

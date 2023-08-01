@@ -8,186 +8,194 @@ namespace Archive.Forms
         private Guid PatientID { get; set; }
         private bool AddPatientNotError = false;
 
+        private string EndSymbol = "К"; // Заменить на постфикс отделения, где создана карта
+
         public FormAddPatient()
         {
             InitializeComponent();
 
-            LastNameTextField.TextChanged += LastNameTextField_TextChanged;
-            LastNameErrorText.ForeColor = Color.Orange;
-
-            FirstNameTextField.TextChanged += FirstNameTextField_TextChanged;
-            FirstNameErrorText.ForeColor = Color.Orange;
-
-            MiddleNameTextField.TextChanged += MiddleNameTextField_TextChanged;
-            MiddleNameErrorText.ForeColor = Color.Orange;
-
-            DateOfBirthTextField.TextChanged += DateOfBirthTextField_TextChanged;
-            DateOfBirthErrorText.ForeColor = Color.Orange;
-
-            RegionTextField.TextChanged += RegionTextField_TextChanged;
-            RegionErrorText.ForeColor = Color.Orange;
-
-            DistrictTextField.TextChanged += DistrictTextField_TextChanged;
-            DistrictErrorText.ForeColor = Color.Orange;
-
-            CityTextField.TextChanged += CityTextField_TextChanged;
-            CityErrorText.ForeColor = Color.Orange;
-
-            AddressTextField.TextChanged += AddressTextField_TextChanged;
-            AddressErrorText.ForeColor = Color.Orange;
-
-            PhoneTextField.TextChanged += PhoneTextField_TextChanged;
-            PhoneErrorText.ForeColor = Color.Orange;
-
-            IndexTextField.TextChanged += IndexTextField_TextChanged;
-            IndexErrorText.ForeColor = Color.Orange;
+            InitTextField();
+            InitErrorsAddPatients();
+            InitButton();
         }
 
-        #region
-        // Валидация полей ввода
+        #region Init
+        public void InitTextField()
+        {
+            LastNameTextField.TextChanged += LastNameTextField_TextChanged;
+            LastNameErrorText.ForeColor = Color.Red;
+
+            FirstNameTextField.TextChanged += FirstNameTextField_TextChanged;
+            FirstNameErrorText.ForeColor = Color.Red;
+
+            MiddleNameTextField.TextChanged += MiddleNameTextField_TextChanged;
+
+            DateOfBirthTextField.TextChanged += DateOfBirthTextField_TextChanged;
+            DateOfBirthErrorText.ForeColor = Color.Red;
+
+            RegionTextField.TextChanged += RegionTextField_TextChanged;
+
+            DistrictTextField.TextChanged += DistrictTextField_TextChanged;
+
+            CityTextField.TextChanged += CityTextField_TextChanged;
+
+            PhoneTextField.TextChanged += PhoneTextField_TextChanged;
+
+            IndexTextField.TextChanged += IndexTextField_TextChanged;
+        }
+        public void InitErrorsAddPatients()
+        {
+            ErrorsAddPatients.LastName = true;
+            ErrorsAddPatients.FirstName = true;
+            ErrorsAddPatients.MiddleName = false;
+            ErrorsAddPatients.DateOfBirth = true;
+            ErrorsAddPatients.Region = false;
+            ErrorsAddPatients.District = false;
+            ErrorsAddPatients.City = false;
+            ErrorsAddPatients.Address = false;
+            ErrorsAddPatients.Phone = false;
+            ErrorsAddPatients.Index = false;
+        }
+        public void InitButton()
+        {
+            AddPatient.Enabled = false;
+            AddPatientAndRecords.Enabled = false;
+        }
+        #endregion
+
+        #region TextChanged
         private void LastNameTextField_TextChanged(object? sender, EventArgs e)
         {
-            ErrorsAddPatients.LastName = false;
             ValidationForm.FirstLetterToUpperCase(LastNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(LastNameTextField.Text, LastNameErrorText, Color.Red, "Фамилия состоит только из букв !");
-            ErrorsAddPatients.LastName = !isNotError;
+            ValidationForm.StringOfLetter(LastNameTextField);
+            if (LastNameTextField.Text.Length > 0)
+            {
+                LastNameErrorText.Text = "";
+                ErrorsAddPatients.LastName = false;
+            }
+            else
+            {
+                LastNameErrorText.Text = "Заполните поле";
+                ErrorsAddPatients.LastName = true;
+            }
+
+            ButtonStatusToggle();
         }
         private void FirstNameTextField_TextChanged(object? sender, EventArgs e)
         {
-            ErrorsAddPatients.FirstName = false;
             ValidationForm.FirstLetterToUpperCase(FirstNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(FirstNameTextField.Text, FirstNameErrorText, Color.Red, "Имя состоит только из букв !");
-            ErrorsAddPatients.FirstName = !isNotError;
+            ValidationForm.StringOfLetter(FirstNameTextField);
+            if (FirstNameTextField.Text.Length > 0)
+            {
+                FirstNameErrorText.Text = "";
+                ErrorsAddPatients.FirstName = false;
+            }
+            else
+            {
+                FirstNameErrorText.Text = "Заполните поле";
+                ErrorsAddPatients.FirstName = true;
+            }
+
+            ButtonStatusToggle();
         }
         private void MiddleNameTextField_TextChanged(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(MiddleNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(MiddleNameTextField.Text, MiddleNameErrorText, Color.Red, "Отчество состоит только из букв !");
-            ErrorsAddPatients.MiddleName = !isNotError;
+            ValidationForm.StringOfLetter(MiddleNameTextField);
         }
         private void DateOfBirthTextField_TextChanged(object? sender, EventArgs e)
         {
-            ErrorsAddPatients.DateOfBirth = false;
-            string text = DateOfBirthTextField.Text.Replace(".", "");
-            bool isNotError = ValidationForm.ValidationIsNumber(text, DateOfBirthErrorText, Color.Red, "Дата может содержать только цифры !");
-            if (isNotError)
+            DateOfBirthTextField.MaxLength = 10;
+
+            ValidationForm.DateFormatting(DateOfBirthTextField);
+            if (DateOfBirthTextField.Text.Length <= 0)
             {
-                ValidationForm.DateFormatting(DateOfBirthTextField);
-                isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text, DateOfBirthErrorText);
+                DateOfBirthErrorText.Text = "Заполните поле";
+                ErrorsAddPatients.DateOfBirth = true;
             }
-            ErrorsAddPatients.DateOfBirth = !isNotError;
+            else if (DateOfBirthTextField.Text.Length == 10)
+            {
+                bool isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text);
+                if (isNotError)
+                {
+                    DateOfBirthErrorText.Text = "";
+                    ErrorsAddPatients.DateOfBirth = false;
+                }
+                else
+                {
+                    DateOfBirthErrorText.Text = "Некорректная дата";
+                    ErrorsAddPatients.DateOfBirth = true;
+                }
+            }
+            else
+            {
+                DateOfBirthErrorText.Text = "";
+                ErrorsAddPatients.DateOfBirth = true;
+            }
+
+            ButtonStatusToggle();
         }
         private void RegionTextField_TextChanged(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(RegionTextField);
-            bool isNotError = ValidationForm.StringStartsWithLetter(RegionTextField, RegionErrorText, Color.Red, "Регион должен начинаться с буквы !");
-            ErrorsAddPatients.Region = !isNotError;
+            ValidationForm.StringOfLetter(RegionTextField, true);
         }
         private void DistrictTextField_TextChanged(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(DistrictTextField);
-            bool isNotError = ValidationForm.StringStartsWithLetter(DistrictTextField, DistrictErrorText, Color.Red, "Район должен начинаться с буквы !");
-            ErrorsAddPatients.District = !isNotError;
+            ValidationForm.StringOfLetter(DistrictTextField, true);
         }
         private void CityTextField_TextChanged(object? sender, EventArgs e)
         {
-            ErrorsAddPatients.City = false;
-            bool isNotError = ValidationForm.StringStartsWithLetter(CityTextField, CityErrorText, Color.Red, "Город должен начинаться с буквы !");
-            ErrorsAddPatients.City = !isNotError;
-        }
-        private void AddressTextField_TextChanged(object? sender, EventArgs e)
-        {
-            ErrorsAddPatients.Address = false;
-            bool isNotError = ValidationForm.StringStartsWithLetter(AddressTextField, AddressErrorText, Color.Red, "Адрес должен начинаться с буквы !");
-            ErrorsAddPatients.Address = !isNotError;
+            ValidationForm.FirstLetterToUpperCase(CityTextField);
+            ValidationForm.StringOfLetter(CityTextField, true);
         }
         private void PhoneTextField_TextChanged(object? sender, EventArgs e)
         {
-            ErrorsAddPatients.Phone = false;
-            bool isNotError = ValidationForm.ValidationIsNumber(PhoneTextField.Text, PhoneErrorText, Color.Red, "Номер телефона может состоять только из цифр !");
-            if (isNotError)
-                isNotError = ValidationForm.CheckingLengthOfString(PhoneTextField.Text, 11, PhoneErrorText, Color.Red, "Длина номера телефона не может быть больше 11 символов !");
-            ErrorsAddPatients.Phone = !isNotError;
+            PhoneTextField.MaxLength = 11;
+            ValidationForm.StringOfNumber(PhoneTextField);
         }
         private void IndexTextField_TextChanged(object? sender, EventArgs e)
         {
-            bool isNotError = ValidationForm.ValidationIsNumber(IndexTextField.Text, IndexErrorText, Color.Red, "Индекс может состоять только из цифр !");
-            if (isNotError)
-                isNotError = ValidationForm.CheckingLengthOfString(IndexTextField.Text, 6, IndexErrorText, Color.Red, "Длина индекса не может быть больше 6 символов !");
-            ErrorsAddPatients.Index = !isNotError;
+            IndexTextField.MaxLength = 6;
+            ValidationForm.StringOfNumber(IndexTextField);
         }
         #endregion
+
+        // Button status toggle
+        private void ButtonStatusToggle()
+        {
+            if (ErrorsAddPatients.LastName || ErrorsAddPatients.FirstName || ErrorsAddPatients.DateOfBirth)
+            {
+                AddPatient.Enabled = false;
+                AddPatientAndRecords.Enabled = false;
+            }
+            else
+            {
+                AddPatient.Enabled = true;
+                AddPatientAndRecords.Enabled = true;
+            }
+        }
 
         private void AddPatient_Click(object sender, EventArgs e)
         {
             try
             {
-                // Проверка, что нет ошибок
-                if (ErrorsAddPatients.LastName)
-                {
-                    MessageBox.Show("Ошибка ввода фамилии");
-                    return;
-                }
-                if (ErrorsAddPatients.FirstName)
-                {
-                    MessageBox.Show("Ошибка ввода имени");
-                    return;
-                }
-                if (ErrorsAddPatients.MiddleName)
-                {
-                    MessageBox.Show("Ошибка ввода отчества");
-                    return;
-                }
-                if (ErrorsAddPatients.DateOfBirth)
-                {
-                    MessageBox.Show("Ошибка ввода даты рождения");
-                    return;
-                }
-                if (ErrorsAddPatients.Region)
-                {
-                    MessageBox.Show("Ошибка ввода региона");
-                    return;
-                }
-                if (ErrorsAddPatients.District)
-                {
-                    MessageBox.Show("Ошибка ввода района");
-                    return;
-                }
-                if (ErrorsAddPatients.City)
-                {
-                    MessageBox.Show("Ошибка ввода города");
-                    return;
-                }
-                if (ErrorsAddPatients.Address)
-                {
-                    MessageBox.Show("Ошибка ввода адреса");
-                    return;
-                }
-                if (ErrorsAddPatients.Phone)
-                {
-                    MessageBox.Show("Ошибка ввода телефона");
-                    return;
-                }
-                if (ErrorsAddPatients.Index)
-                {
-                    MessageBox.Show("Ошибка ввода индекса");
-                    return;
-                }
-
-                // Устанавливаем значение Index
-                int Index = 0;
-                if (IndexTextField.Text != "")
-                    Index = int.Parse(IndexTextField.Text);
-
                 DBase dBase = new DBase();
-                List<PatientItem> patients = dBase.GetEntriesStartingWithLetter<PatientItem>(LastNameTextField.Text.Substring(0, 1), "LastName");
+                List<PatientItem> patients = dBase.GetEntriesStartingWithLetter<PatientItem>(LastNameTextField.Text.Substring(0, 1), EndSymbol, "PatientNumber", "PatientNumber");
 
-                // Устанавливаем значение PatientNumber
-                patients.Sort((p1, p2) => p1.PatientNumber.CompareTo(p2.PatientNumber));
+                // Устанавливаем PatientNumber
                 int PatientNumber = 1;
-                foreach (PatientItem patientSorted in patients)
+                List<int> patientNumbers = new List<int>();
+                foreach (PatientItem patientItem in patients)
                 {
-                    if (PatientNumber == patientSorted.PatientNumber)
+                    string[] patientNumberParse = patientItem.PatientNumber.Split("-");
+                    patientNumbers.Add(int.Parse(patientNumberParse[1]));
+                }
+                patientNumbers.Sort();
+                foreach (int number in patientNumbers)
+                {
+                    if (PatientNumber == number)
                         PatientNumber += 1;
                     else
                         break;
@@ -195,10 +203,10 @@ namespace Archive.Forms
 
                 // Сохранение в базе данных
                 PatientID = Guid.NewGuid();
-                PatientItem patient = new PatientItem()
+                PatientItem newPatient = new PatientItem()
                 {
                     PatientID = PatientID,
-                    PatientNumber = PatientNumber,
+                    PatientNumber = $"{LastNameTextField.Text.Substring(0, 1)}-{PatientNumber}-{EndSymbol}",
                     LastName = LastNameTextField.Text,
                     FirstName = FirstNameTextField.Text,
                     MiddleName = MiddleNameTextField.Text,
@@ -208,10 +216,10 @@ namespace Archive.Forms
                     City = CityTextField.Text,
                     Address = AddressTextField.Text,
                     Phone = PhoneTextField.Text,
-                    Index = Index,
+                    Index = IndexTextField.Text,
                 };
 
-                dBase.SetDataTable<PatientItem>(patient);
+                dBase.SetDataTable<PatientItem>(newPatient);
                 dBase.CloseDatabaseConnection();
 
                 AddPatientNotError = true;
@@ -234,17 +242,18 @@ namespace Archive.Forms
             }
         }
     }
+
     static class ErrorsAddPatients
     {
-        static public bool LastName { get; set; } = true;
-        static public bool FirstName { get; set; } = true;
-        static public bool MiddleName { get; set; } = false;
-        static public bool DateOfBirth { get; set; } = true;
-        static public bool Region { get; set; } = false;
-        static public bool District { get; set; } = false;
-        static public bool City { get; set; } = true;
-        static public bool Address { get; set; } = true;
-        static public bool Phone { get; set; } = true;
-        static public bool Index { get; set; } = false;
+        static public bool LastName { get; set; }
+        static public bool FirstName { get; set; }
+        static public bool MiddleName { get; set; }
+        static public bool DateOfBirth { get; set; }
+        static public bool Region { get; set; }
+        static public bool District { get; set; }
+        static public bool City { get; set; }
+        static public bool Address { get; set; }
+        static public bool Phone { get; set; }
+        static public bool Index { get; set; }
     }
 }

@@ -218,7 +218,7 @@ namespace Archive.Forms
                             patientItem.Add(new PatientItem()
                             {
                                 PatientID = PatientID,
-                                PatientNumber = PatientNumber,
+                                PatientNumber = $"{PatientNumber}",
                                 LastName = patientWorksheet.Cells[row, 3].Text,
                                 FirstName = patientWorksheet.Cells[row, 4].Text,
                                 MiddleName = patientWorksheet.Cells[row, 5].Text,
@@ -228,7 +228,7 @@ namespace Archive.Forms
                                 City = patientWorksheet.Cells[row, 9].Text,
                                 Address = patientWorksheet.Cells[row, 10].Text,
                                 Phone = patientWorksheet.Cells[row, 11].Text,
-                                Index = int.TryParse(patientWorksheet.Cells[row, 12].Text, out int index) ? index : default,
+                                Index = patientWorksheet.Cells[row, 12].Text,
                             });
                         }
                         else

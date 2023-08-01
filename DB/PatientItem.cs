@@ -9,7 +9,7 @@ namespace Archive.DB
         public Guid PatientID { get; set; }
 
         [Column("PatientNumber")]
-        public int PatientNumber { get; set; }
+        public string PatientNumber { get; set; }
 
         [Column("LastName")]
         public string LastName { get; set; }
@@ -39,7 +39,6 @@ namespace Archive.DB
         public string Phone { get; set; }
 
         [Column("Index")]
-        public int Index { get; set; }
-
+        public string Index { get; set; }
     }
 }

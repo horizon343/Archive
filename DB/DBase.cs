@@ -135,6 +135,22 @@ namespace Archive.DB
 
             return connection.Query<T>(query).ToList();
         }
+        /// <summary>
+        /// Поиск записей по первому символу
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <param name="startSymbol">Символ в начале строки</param>
+        /// <param name="endSymbol">Символ в конце строки</param>
+        /// <param name="field">Поле из таблицы для поиска</param>
+        /// <param name="fields">Поля, которые нужно вернуть (по умолчания: *)</param>
+        /// <returns></returns>
+        public List<T> GetEntriesStartingWithLetter<T>(string startSymbol, string endSymbol, string field, string fields = "*") where T : new()
+        {
+            string table = (typeof(T).Name).Remove(typeof(T).Name.IndexOf("Item"));
+            string query = $"SELECT {fields} FROM {table} WHERE {field} LIKE '{startSymbol}%%{endSymbol}'";
+
+            return connection.Query<T>(query).ToList();
+        }
 
         /// <summary>
         /// Обновить запись в базе данных

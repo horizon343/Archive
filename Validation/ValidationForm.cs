@@ -4,7 +4,7 @@ namespace Archive.Validation
 {
     static class ValidationForm
     {
-
+        #region Formatting data
         /// <summary>
         /// Меняет регистр первой буквы (с прописной на заглавную)
         /// </summary>
@@ -23,25 +23,57 @@ namespace Archive.Validation
         /// <param name="textField">Текстовое поле</param>
         static public void DateFormatting(TextBox textField)
         {
-            string text = textField.Text.Replace(".", "");
+            string text = textField.Text;
+            text = new string(text.Where(symbol => char.IsDigit(symbol)).ToArray());
 
             if (text.Length >= 3)
                 text = text.Insert(2, ".");
             if (text.Length >= 6)
                 text = text.Insert(5, ".");
+
             textField.Text = text;
             textField.SelectionStart = text.Length;
         }
 
+        /// <summary>
+        /// Оставляет в строке только буквы
+        /// </summary>
+        /// <param name="textField">Текстовое поле</param>
+        /// <param name="considerGaps">Учитывать ли пробелы в строке</param>
+        static public void StringOfLetter(TextBox textField, bool considerGaps = false)
+        {
+            int selectionStart = textField.SelectionStart;
+            string text = textField.Text;
+            text = new string(text.Where(symbol => char.IsLetter(symbol) || (symbol == ' ' && considerGaps)).ToArray());
 
+            textField.Text = text;
+            textField.SelectionStart = selectionStart;
+        }
 
+        /// <summary>
+        /// Оставляет в строке только цифры
+        /// </summary>
+        /// <param name="textField">Текстовое поле</param>
+        static public void StringOfNumber(TextBox textField)
+        {
+            int selectionStart = textField.SelectionStart;
+            string text = textField.Text;
+            text = new string(text.Where(symbol => char.IsDigit(symbol)).ToArray());
+
+            textField.Text = text;
+            textField.SelectionStart = selectionStart;
+        }
+        #endregion
+
+        #region Text validation
         /// <summary>
         /// Проверка, что строка состоит только из букв
         /// </summary>
-        /// <param name="textField">Текст</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
+        /// <param name="text">Текст</param>
+        /// <param name="errorTextLabel">Поле ошибки</param>
         /// <param name="color">Цвет ошибки</param>
         /// <param name="errorText">Текст ошибки</param>
+        /// <returns></returns>
         static public bool StringConsistsOfLetters(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
         {
             string pattern = @"^\p{L}+$";
@@ -118,6 +150,28 @@ namespace Archive.Validation
                 return false;
             }
         }
+        /// <summary>
+        /// Проверка на корректность даты (не прошлый век и не будущее)
+        /// </summary>
+        /// <param name="text">Строка с датой в формате dd.mm.yyyy</param>
+        static public bool DateIsValid(string text)
+        {
+            try
+            {
+                string[] dateArray = text.Split(".");
+                DateTime todayDate = DateTime.Now;
+                DateTime minDate = new DateTime(1900, 12, 31);
+                DateTime date = new DateTime(int.Parse(dateArray[2]), int.Parse(dateArray[1]), int.Parse(dateArray[0]));
+                if (date > todayDate || date < minDate)
+                    return false;
+                else
+                    return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Проверка, что строка начинается с буквы
@@ -159,7 +213,7 @@ namespace Archive.Validation
             errorTextLabel.Text = errorText;
             return false;
         }
-
+        #endregion
 
 
         /// <summary>
