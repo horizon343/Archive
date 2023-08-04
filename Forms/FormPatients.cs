@@ -6,21 +6,32 @@ namespace Archive.Forms
 {
     public partial class FormPatients : Form
     {
-        public int TotalCount { get; set; } = 0;
-        public int CurrentPage { get; set; } = 1;
+        private int TotalCount { get; set; }
+        private int CurrentPage { get; set; }
         private int limit = 100;
+
+        private List<PatientItem> PatientItem { get; set; }
         private List<PatientViewItem> patientsDataSource;
 
         private int columnIndex = -1;
-
-        private List<PatientItem> PatientItem { get; set; }
 
         public FormPatients()
         {
             InitializeComponent();
 
-            PatientsTableInit(CurrentPage, limit);
+            InitPatientsTable(1, limit);
+            InitEvent();
+            InitTable();
+            InitErrorsFormPatients();
 
+            PrevPageButton.Enabled = false;
+            if (CurrentPage >= TotalCount)
+                NextPageButton.Enabled = false;
+        }
+
+        #region Init
+        private void InitEvent()
+        {
             PatientsTable.CellDoubleClick += PatientsTable_CellDoubleClick;
             PatientsTable.CellClick += PatientsTable_CellClick;
             PatientNumberTextField.TextChanged += PatientNumberTextField_Changed;
@@ -28,16 +39,14 @@ namespace Archive.Forms
             FirstNameTextField.TextChanged += FirstNameTextField_Changed;
             MiddleNameTextField.TextChanged += MiddleNameTextField_Changed;
             DateOfBirthTextField.TextChanged += DateOfBirthTextField_Changed;
-
-            CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
-
-            PrevPageButton.Enabled = false;
-            if (CurrentPage >= TotalCount)
-                NextPageButton.Enabled = false;
-
-            foreach (DataGridViewColumn column in PatientsTable.Columns)
-                column.ReadOnly = true;
-
+            PatientNumberTextField.KeyPress += PressingEnterInTextField;
+            LastNameTextField.KeyPress += PressingEnterInTextField;
+            FirstNameTextField.KeyPress += PressingEnterInTextField;
+            MiddleNameTextField.KeyPress += PressingEnterInTextField;
+            DateOfBirthTextField.KeyPress += PressingEnterInTextField;
+        }
+        private void InitTable()
+        {
             // Задаем названия полям
             PatientsTable.Columns[0].HeaderText = "Номер";
             PatientsTable.Columns[1].HeaderText = "Фамилия";
@@ -45,33 +54,47 @@ namespace Archive.Forms
             PatientsTable.Columns[3].HeaderText = "Отчество";
             PatientsTable.Columns[4].HeaderText = "Дата рождения";
 
-            //Устанавливаем стили для таблицы
+            // Устанавливаем стили для таблицы
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle
             {
                 BackColor = Color.White,
                 ForeColor = Color.Black,
             };
+            PatientsTable.DefaultCellStyle = cellStyle;
+
+            // Устанавливаем размер столбцов
             PatientsTable.Columns[0].Width = 100;
             PatientsTable.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             PatientsTable.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             PatientsTable.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             PatientsTable.Columns[4].Width = 200;
-            PatientsTable.DefaultCellStyle = cellStyle;
-        }
 
-        private void PatientsTableInit(int currentPage, int limit)
+            foreach (DataGridViewColumn column in PatientsTable.Columns)
+                column.ReadOnly = true;
+        }
+        private void InitErrorsFormPatients()
+        {
+            ErrorsFormPatients.PatientNumber = false;
+            ErrorsFormPatients.LastName = false;
+            ErrorsFormPatients.FirstName = false;
+            ErrorsFormPatients.MiddleName = false;
+            ErrorsFormPatients.DateOfBirth = false;
+        }
+        private void InitPatientsTable(int currentPage, int limit)
         {
             // Получение таблицы пациентов из базы данных
             DBase dBase = new DBase();
             (int, List<PatientItem>) patients = dBase.GetTable<PatientItem>(currentPage, limit);
             dBase.CloseDatabaseConnection();
+
             PatientItem = patients.Item2;
             TotalCount = patients.Item1;
+            CurrentPage = TotalCount == 0 ? 0 : currentPage;
 
             // Выбираем только необходимые поля и добавляем пациентов в таблицу
-            patientsDataSource = patients.Item2.Select(patient => new PatientViewItem()
+            patientsDataSource = PatientItem.Select(patient => new PatientViewItem()
             {
-                PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
+                PatientNumber = patient.PatientNumber,
                 LastName = patient.LastName,
                 FirstName = patient.FirstName,
                 MiddleName = patient.MiddleName,
@@ -81,131 +104,168 @@ namespace Archive.Forms
 
             CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
         }
+        #endregion
 
-        #region
-        // Клики по кнопкам
+        #region ButtonClick
         private void AddPatientButton_Click(object sender, EventArgs e)
         {
             var FormAddPatient = new FormAddPatient();
             FormAddPatient.Show();
         }
-
         private void NextPageButton_Click(object sender, EventArgs e)
         {
             if (CurrentPage + 1 <= TotalCount)
             {
                 CurrentPage += 1;
                 PrevPageButton.Enabled = true;
-                PatientsTableInit(CurrentPage, limit);
+                InitPatientsTable(CurrentPage, limit);
 
                 if (CurrentPage + 1 > TotalCount)
                     NextPageButton.Enabled = false;
             }
         }
-
         private void PrevPageButton_Click(object sender, EventArgs e)
         {
             if (CurrentPage - 1 >= 1)
             {
                 CurrentPage -= 1;
                 NextPageButton.Enabled = true;
-                PatientsTableInit(CurrentPage, limit);
+                InitPatientsTable(CurrentPage, limit);
 
                 if (CurrentPage - 1 < 1)
                     PrevPageButton.Enabled = false;
             }
         }
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TotalCount = 1;
+                CurrentPage = 1;
+
+                // Собираем поля и значения для запроса
+                Dictionary<string, object> fields = new Dictionary<string, object>();
+                if (PatientNumberTextField.Text != "")
+                    fields.Add("PatientNumber", PatientNumberTextField.Text);
+                if (LastNameTextField.Text != "")
+                    fields.Add("LastName", LastNameTextField.Text);
+                if (FirstNameTextField.Text != "")
+                    fields.Add("FirstName", FirstNameTextField.Text);
+                if (MiddleNameTextField.Text != "")
+                    fields.Add("MiddleName", MiddleNameTextField.Text);
+                if (DateOfBirthTextField.Text != "")
+                    fields.Add("DateOfBirth", DateTime.Parse(DateOfBirthTextField.Text));
+
+                if (fields.Count != 0)
+                {
+                    DBase dBase = new DBase();
+                    PatientItem = dBase.SearchData<PatientItem>(fields);
+                    dBase.CloseDatabaseConnection();
+
+                    // Выбираем только необходимые поля и добавляем пациентов в таблицу
+                    patientsDataSource = PatientItem.Select(patient => new PatientViewItem()
+                    {
+                        PatientNumber = patient.PatientNumber,
+                        LastName = patient.LastName,
+                        FirstName = patient.FirstName,
+                        MiddleName = patient.MiddleName,
+                        DateOfBirth = patient.DateOfBirth
+
+                    }).ToList();
+                    PatientsTable.DataSource = patientsDataSource;
+
+                    CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
+                    PrevPageButton.Enabled = false;
+                    NextPageButton.Enabled = false;
+                }
+                else
+                {
+                    InitPatientsTable(CurrentPage, limit);
+
+                    PrevPageButton.Enabled = false;
+                    NextPageButton.Enabled = true;
+                    if (CurrentPage + 1 > TotalCount)
+                        NextPageButton.Enabled = false;
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
+            }
+        }
         #endregion
 
-        #region
-        // Валидация полей ввода
+        #region TextChanged
         private void PatientNumberTextField_Changed(object? sender, EventArgs e)
         {
-            ValidationForm.FirstLetterToUpperCase(PatientNumberTextField);
-            bool isNotError = true;
-            if (PatientNumberTextField.Text.Length > 2)
-                isNotError = ValidationForm.PatientNumberFormat(PatientNumberTextField.Text, TextError, Color.Red, "Некорректный номер !");
-            ErrorsFormPatients.PatientNumber = !isNotError;
-            if (PatientNumberTextField.Text == "" || PatientNumberTextField.Text.Length < 3)
-            {
-                TextError.Text = "";
-                ErrorsFormPatients.PatientNumber = false;
-            }
-            if (ErrorsFormPatients.PatientNumber)
-                PatientNumberTextField.ForeColor = Color.Red;
-            else
-                PatientNumberTextField.ForeColor = Color.Black;
-        }
+            string text = PatientNumberTextField.Text;
+            int selectionStart = PatientNumberTextField.SelectionStart;
 
+            PatientNumberTextField.Text = text.ToUpper();
+            PatientNumberTextField.SelectionStart = selectionStart;
+
+            bool isNotError = ValidationForm.ValidationPatientNumber(text);
+            if (isNotError || text.Length == 0)
+                ErrorsFormPatients.PatientNumber = false;
+            else
+                ErrorsFormPatients.PatientNumber = true;
+
+            SearchButtonStatusToggle();
+        }
         private void LastNameTextField_Changed(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(LastNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(LastNameTextField.Text, TextError, Color.Red, "Фамилия состоит только из букв !");
-            ErrorsFormPatients.LastName = !isNotError;
-            if (LastNameTextField.Text == "")
-            {
-                TextError.Text = "";
-                ErrorsFormPatients.LastName = false;
-            }
-            if (ErrorsFormPatients.LastName)
-                LastNameTextField.ForeColor = Color.Red;
-            else
-                LastNameTextField.ForeColor = Color.Black;
+            ValidationForm.StringOfLetter(LastNameTextField);
         }
-
         private void FirstNameTextField_Changed(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(FirstNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(FirstNameTextField.Text, TextError, Color.Red, "Имя состоит только из букв !");
-            ErrorsFormPatients.FirstName = !isNotError;
-            if (FirstNameTextField.Text == "")
-            {
-                TextError.Text = "";
-                ErrorsFormPatients.FirstName = false;
-            }
-            if (ErrorsFormPatients.FirstName)
-                FirstNameTextField.ForeColor = Color.Red;
-            else
-                FirstNameTextField.ForeColor = Color.Black;
+            ValidationForm.StringOfLetter(FirstNameTextField);
         }
-
         private void MiddleNameTextField_Changed(object? sender, EventArgs e)
         {
             ValidationForm.FirstLetterToUpperCase(MiddleNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(MiddleNameTextField.Text, TextError, Color.Red, "Отчество состоит только из букв !");
-            ErrorsFormPatients.MiddleName = !isNotError;
-            if (MiddleNameTextField.Text == "")
-            {
-                TextError.Text = "";
-                ErrorsFormPatients.MiddleName = false;
-            }
-            if (ErrorsFormPatients.MiddleName)
-                MiddleNameTextField.ForeColor = Color.Red;
-            else
-                MiddleNameTextField.ForeColor = Color.Black;
+            ValidationForm.StringOfLetter(MiddleNameTextField);
         }
-
         private void DateOfBirthTextField_Changed(object? sender, EventArgs e)
         {
-            string text = DateOfBirthTextField.Text.Replace(".", "");
-            bool isNotError = ValidationForm.ValidationIsNumber(text, TextError, Color.Red, "Дата может содержать только цифры !");
-            if (isNotError)
+            DateOfBirthTextField.MaxLength = 10;
+
+            ValidationForm.DateFormatting(DateOfBirthTextField);
+            if (DateOfBirthTextField.Text.Length < 10 && DateOfBirthTextField.Text.Length > 0)
+                ErrorsFormPatients.DateOfBirth = true;
+            else if (DateOfBirthTextField.Text.Length == 10)
             {
-                ValidationForm.DateFormatting(DateOfBirthTextField);
-                isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text, TextError);
+                bool isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text);
+                if (isNotError)
+                    ErrorsFormPatients.DateOfBirth = false;
+                else
+                    ErrorsFormPatients.DateOfBirth = true;
             }
-            ErrorsFormPatients.DateOfBirth = !isNotError;
-            if (DateOfBirthTextField.Text == "")
-            {
-                TextError.Text = "";
-                ErrorsFormPatients.DateOfBirth = false;
-            }
-            if (ErrorsFormPatients.DateOfBirth && TextError.Text != "")
-                DateOfBirthTextField.ForeColor = Color.Red;
             else
-                DateOfBirthTextField.ForeColor = Color.Black;
+                ErrorsFormPatients.DateOfBirth = false;
+
+            SearchButtonStatusToggle();
         }
         #endregion
+
+        // Button status toggle
+        private void SearchButtonStatusToggle()
+        {
+            if (ErrorsFormPatients.PatientNumber || ErrorsFormPatients.DateOfBirth)
+                SearchButton.Enabled = false;
+            else
+                SearchButton.Enabled = true;
+        }
+
+        private void PressingEnterInTextField(object? sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter && SearchButton.Enabled == true)
+            {
+                SearchButton_Click(sender, e);
+                e.Handled = true;
+            }
+        }
 
         private void PatientsTable_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
@@ -235,24 +295,21 @@ namespace Archive.Forms
             }
 
             if (columnIndex != e.ColumnIndex && !sortingFuncPatientNumber)
-            {
                 patientsDataSource = patientsDataSource.OrderBy(sortingFunc).ToList();
-                columnIndex = e.ColumnIndex;
-            }
             else if (columnIndex != e.ColumnIndex && sortingFuncPatientNumber)
             {
                 PatientNumberComparer patientNumberComparer = new PatientNumberComparer();
                 patientsDataSource = patientsDataSource.OrderBy(patient => patient.PatientNumber, patientNumberComparer).ToList();
-                columnIndex = e.ColumnIndex;
             }
             else
             {
-                List<PatientViewItem> patientsDataSourceNew = patientsDataSource.ToList();
-                patientsDataSourceNew.Reverse();
-                patientsDataSource = patientsDataSourceNew;
+                List<PatientViewItem> patientsDataSourceReverse = patientsDataSource.ToList();
+                patientsDataSourceReverse.Reverse();
+                patientsDataSource = patientsDataSourceReverse;
             }
 
             PatientsTable.DataSource = patientsDataSource;
+            columnIndex = e.ColumnIndex;
         }
 
         private void PatientsTable_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
@@ -261,104 +318,6 @@ namespace Archive.Forms
             {
                 var FormPatientAndRecords = new FormPatientAndRecords(PatientItem[e.RowIndex].PatientID);
                 FormPatientAndRecords.Show();
-            }
-        }
-
-        private void SearchButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (ErrorsFormPatients.PatientNumber || (PatientNumberTextField.Text != "" && PatientNumberTextField.Text.Length < 3))
-                {
-                    MessageBox.Show("Ошибка в номере");
-                    return;
-                }
-                if (ErrorsFormPatients.LastName)
-                {
-                    MessageBox.Show("Ошибка в фамилии");
-                    return;
-                }
-                if (ErrorsFormPatients.FirstName)
-                {
-                    MessageBox.Show("Ошибка в имени");
-                    return;
-                }
-                if (ErrorsFormPatients.MiddleName)
-                {
-                    MessageBox.Show("Ошибка в отчестве");
-                    return;
-                }
-                if (ErrorsFormPatients.DateOfBirth)
-                {
-                    MessageBox.Show("Ошибка в дате рождения");
-                    return;
-                }
-
-                TotalCount = 1;
-                CurrentPage = 1;
-
-                Dictionary<string, object> fields = new Dictionary<string, object>();
-                if (PatientNumberTextField.Text != "")
-                    fields.Add("PatientNumber", int.Parse(PatientNumberTextField.Text.Substring(2)));
-                if (LastNameTextField.Text != "")
-                    fields.Add("LastName", LastNameTextField.Text);
-                if (FirstNameTextField.Text != "")
-                    fields.Add("FirstName", FirstNameTextField.Text);
-                if (MiddleNameTextField.Text != "")
-                    fields.Add("MiddleName", MiddleNameTextField.Text);
-                if (DateOfBirthTextField.Text != "")
-                    fields.Add("DateOfBirth", DateTime.Parse(DateOfBirthTextField.Text));
-
-                if (fields.Count != 0)
-                {
-                    DBase dBase = new DBase();
-                    List<PatientItem> patients = dBase.SearchData<PatientItem>(fields);
-                    dBase.CloseDatabaseConnection();
-                    PatientItem = patients;
-
-                    // Выбираем только необходимые поля и добавляем пациентов в таблицу
-                    if (PatientNumberTextField.Text.Length == 0)
-                        patientsDataSource = patients.Select(patient => new PatientViewItem()
-                        {
-                            PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
-                            LastName = patient.LastName,
-                            FirstName = patient.FirstName,
-                            MiddleName = patient.MiddleName,
-                            DateOfBirth = patient.DateOfBirth
-
-                        }).ToList();
-                    else
-                        patientsDataSource = patients.Select(patient =>
-                            {
-                                if (patient.LastName.Substring(0, 1) == PatientNumberTextField.Text.Substring(0, 1))
-                                    return new PatientViewItem()
-                                    {
-                                        PatientNumber = $"{patient.LastName.Substring(0, 1)}-{patient.PatientNumber}",
-                                        LastName = patient.LastName,
-                                        FirstName = patient.FirstName,
-                                        MiddleName = patient.MiddleName,
-                                        DateOfBirth = patient.DateOfBirth
-                                    };
-                                return new PatientViewItem();
-                            }).Where(item => item.PatientNumber != null).ToList();
-                    PatientsTable.DataSource = patientsDataSource;
-
-                    CountPageTextBox.Text = $"1 / 1";
-                    PrevPageButton.Enabled = false;
-                    NextPageButton.Enabled = false;
-                }
-                else
-                {
-                    PatientsTableInit(CurrentPage, limit);
-                    PrevPageButton.Enabled = false;
-                    NextPageButton.Enabled = true;
-                    if (CurrentPage + 1 > TotalCount)
-                        NextPageButton.Enabled = false;
-                }
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show($"Ошибка запроса [{error.Message}]");
             }
         }
     }
@@ -374,38 +333,40 @@ namespace Archive.Forms
 
     static class ErrorsFormPatients
     {
-        static public bool PatientNumber { get; set; } = false;
-        static public bool LastName { get; set; } = false;
-        static public bool FirstName { get; set; } = false;
-        static public bool MiddleName { get; set; } = false;
-        static public bool DateOfBirth { get; set; } = false;
+        static public bool PatientNumber { get; set; }
+        static public bool LastName { get; set; }
+        static public bool FirstName { get; set; }
+        static public bool MiddleName { get; set; }
+        static public bool DateOfBirth { get; set; }
     }
 
     public class PatientNumberComparer : IComparer<string>
     {
         public int Compare(string x, string y)
         {
-            if (x == null && y == null) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
-
-            string[] xParts = x.Split('-');
-            string[] yParts = y.Split('-');
-
-            if (xParts.Length != 2 || yParts.Length != 2)
-                return string.Compare(x, y);
-
-            int prefixComparison = string.Compare(xParts[0], yParts[0]);
-
-            if (prefixComparison != 0)
+            try
             {
-                return prefixComparison;
+                if (x == null && y == null) return 0;
+                if (x == null) return -1;
+                if (y == null) return 1;
+
+                string[] xParts = x.Split('-');
+                string[] yParts = y.Split('-');
+
+                int prefixComparison = string.Compare(xParts[0], yParts[0]);
+
+                if (prefixComparison != 0)
+                    return prefixComparison;
+
+                int xNumber = int.Parse(xParts[1]);
+                int yNumber = int.Parse(yParts[1]);
+
+                return xNumber.CompareTo(yNumber);
             }
-
-            int xNumber = int.Parse(xParts[1]);
-            int yNumber = int.Parse(yParts[1]);
-
-            return xNumber.CompareTo(yNumber);
+            catch
+            {
+                return -1;
+            }
         }
     }
 }

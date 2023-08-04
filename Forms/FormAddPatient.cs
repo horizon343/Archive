@@ -22,25 +22,18 @@ namespace Archive.Forms
         #region Init
         public void InitTextField()
         {
-            LastNameTextField.TextChanged += LastNameTextField_TextChanged;
             LastNameErrorText.ForeColor = Color.Red;
-
-            FirstNameTextField.TextChanged += FirstNameTextField_TextChanged;
             FirstNameErrorText.ForeColor = Color.Red;
-
-            MiddleNameTextField.TextChanged += MiddleNameTextField_TextChanged;
-
-            DateOfBirthTextField.TextChanged += DateOfBirthTextField_TextChanged;
             DateOfBirthErrorText.ForeColor = Color.Red;
 
+            LastNameTextField.TextChanged += LastNameTextField_TextChanged;
+            FirstNameTextField.TextChanged += FirstNameTextField_TextChanged;
+            MiddleNameTextField.TextChanged += MiddleNameTextField_TextChanged;
+            DateOfBirthTextField.TextChanged += DateOfBirthTextField_TextChanged;
             RegionTextField.TextChanged += RegionTextField_TextChanged;
-
             DistrictTextField.TextChanged += DistrictTextField_TextChanged;
-
             CityTextField.TextChanged += CityTextField_TextChanged;
-
             PhoneTextField.TextChanged += PhoneTextField_TextChanged;
-
             IndexTextField.TextChanged += IndexTextField_TextChanged;
         }
         public void InitErrorsAddPatients()

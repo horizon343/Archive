@@ -67,6 +67,20 @@ namespace Archive.Validation
 
         #region Text validation
         /// <summary>
+        /// Проверка правильности номера пациента
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <returns></returns>
+        static public bool ValidationPatientNumber(string text)
+        {
+            string pattern = @"^\p{L}-\d+-\p{L}$";
+
+            if (Regex.IsMatch(text, pattern))
+                return true;
+            return false;
+        }
+
+        /// <summary>
         /// Проверка, что строка состоит только из букв
         /// </summary>
         /// <param name="text">Текст</param>
@@ -164,8 +178,7 @@ namespace Archive.Validation
                 DateTime date = new DateTime(int.Parse(dateArray[2]), int.Parse(dateArray[1]), int.Parse(dateArray[0]));
                 if (date > todayDate || date < minDate)
                     return false;
-                else
-                    return true;
+                return true;
             }
             catch
             {
