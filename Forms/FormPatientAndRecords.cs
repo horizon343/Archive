@@ -122,7 +122,7 @@ namespace Archive.Forms
             CityTextField.Text = DefaultPatientItem.City;
             AddressTextField.Text = DefaultPatientItem.Address;
             PhoneTextField.Text = DefaultPatientItem.Phone;
-            IndexTextField.Text = DefaultPatientItem.Index.ToString();
+            IndexTextField.Text = DefaultPatientItem.IndexAddress.ToString();
         }
 
         /// <summary>
@@ -358,7 +358,7 @@ namespace Archive.Forms
             {
                 if (!isNotError)
                     IndexTextField.ForeColor = ErrorColor;
-                else if (IndexTextField.Text != DefaultPatientItem.Index)
+                else if (IndexTextField.Text != DefaultPatientItem.IndexAddress)
                 {
                     IndexTextField.ForeColor = EditColor;
                     Edited[9] = true;
@@ -494,7 +494,7 @@ namespace Archive.Forms
                     City = CityTextField.Text,
                     Address = AddressTextField.Text,
                     Phone = PhoneTextField.Text,
-                    Index = IndexTextField.Text,
+                    IndexAddress = IndexTextField.Text,
                 };
 
                 bool isNotError = dBase.UpdateEntryInDB<PatientItem, Guid>(DefaultPatientItem.PatientID, patient);

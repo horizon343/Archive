@@ -228,7 +228,7 @@ namespace Archive.Forms
                                 City = patientWorksheet.Cells[row, 9].Text,
                                 Address = patientWorksheet.Cells[row, 10].Text,
                                 Phone = patientWorksheet.Cells[row, 11].Text,
-                                Index = patientWorksheet.Cells[row, 12].Text,
+                                IndexAddress = patientWorksheet.Cells[row, 12].Text,
                             });
                         }
                         else

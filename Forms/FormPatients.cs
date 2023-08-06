@@ -8,12 +8,15 @@ namespace Archive.Forms
     {
         private int TotalCount { get; set; }
         private int CurrentPage { get; set; }
-        private int limit = 100;
+        private int limit = 1;
 
         private List<PatientItem> PatientItem { get; set; }
         private List<PatientViewItem> patientsDataSource;
 
         private int columnIndex = -1;
+
+        Dictionary<string, object> fields;
+        private bool isSearchByFields = false;
 
         public FormPatients()
         {
@@ -82,13 +85,15 @@ namespace Archive.Forms
         }
         private void InitPatientsTable(int currentPage, int limit)
         {
-            // Получение таблицы пациентов из базы данных
-            DBase dBase = new DBase();
-            (int, List<PatientItem>) patients = dBase.GetTable<PatientItem>(currentPage, limit);
-            dBase.CloseDatabaseConnection();
+            Task.Run(async () =>
+            {
+                DataBase dataBase = new DataBase();
+                (List<PatientItem>, int) patients = await dataBase.GetPagedEntries<PatientItem>(currentPage, limit, "PatientID");
 
-            PatientItem = patients.Item2;
-            TotalCount = patients.Item1;
+                PatientItem = patients.Item1;
+                TotalCount = patients.Item2;
+            }).Wait();
+
             CurrentPage = TotalCount == 0 ? 0 : currentPage;
 
             // Выбираем только необходимые поля и добавляем пациентов в таблицу
@@ -118,7 +123,10 @@ namespace Archive.Forms
             {
                 CurrentPage += 1;
                 PrevPageButton.Enabled = true;
-                InitPatientsTable(CurrentPage, limit);
+                if (isSearchByFields)
+                    SearchByFields(fields);
+                else
+                    InitPatientsTable(CurrentPage, limit);
 
                 if (CurrentPage + 1 > TotalCount)
                     NextPageButton.Enabled = false;
@@ -130,7 +138,10 @@ namespace Archive.Forms
             {
                 CurrentPage -= 1;
                 NextPageButton.Enabled = true;
-                InitPatientsTable(CurrentPage, limit);
+                if (isSearchByFields)
+                    SearchByFields(fields);
+                else
+                    InitPatientsTable(CurrentPage, limit);
 
                 if (CurrentPage - 1 < 1)
                     PrevPageButton.Enabled = false;
@@ -144,7 +155,7 @@ namespace Archive.Forms
                 CurrentPage = 1;
 
                 // Собираем поля и значения для запроса
-                Dictionary<string, object> fields = new Dictionary<string, object>();
+                fields = new Dictionary<string, object>();
                 if (PatientNumberTextField.Text != "")
                     fields.Add("PatientNumber", PatientNumberTextField.Text);
                 if (LastNameTextField.Text != "")
@@ -158,29 +169,18 @@ namespace Archive.Forms
 
                 if (fields.Count != 0)
                 {
-                    DBase dBase = new DBase();
-                    PatientItem = dBase.SearchData<PatientItem>(fields);
-                    dBase.CloseDatabaseConnection();
+                    SearchByFields(fields);
+                    isSearchByFields = true;
 
-                    // Выбираем только необходимые поля и добавляем пациентов в таблицу
-                    patientsDataSource = PatientItem.Select(patient => new PatientViewItem()
-                    {
-                        PatientNumber = patient.PatientNumber,
-                        LastName = patient.LastName,
-                        FirstName = patient.FirstName,
-                        MiddleName = patient.MiddleName,
-                        DateOfBirth = patient.DateOfBirth
-
-                    }).ToList();
-                    PatientsTable.DataSource = patientsDataSource;
-
-                    CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
                     PrevPageButton.Enabled = false;
-                    NextPageButton.Enabled = false;
+                    NextPageButton.Enabled = true;
+                    if (CurrentPage + 1 > TotalCount)
+                        NextPageButton.Enabled = false;
                 }
                 else
                 {
                     InitPatientsTable(CurrentPage, limit);
+                    isSearchByFields = false;
 
                     PrevPageButton.Enabled = false;
                     NextPageButton.Enabled = true;
@@ -256,6 +256,32 @@ namespace Archive.Forms
                 SearchButton.Enabled = false;
             else
                 SearchButton.Enabled = true;
+        }
+
+        private void SearchByFields(Dictionary<string, object> fields)
+        {
+            Task.Run(async () =>
+            {
+                DataBase dataBase = new DataBase();
+                (List<PatientItem>, int) patients = await dataBase.GetPagedEntries<PatientItem>(CurrentPage, limit, "PatientID", "*", fields);
+
+                PatientItem = patients.Item1;
+                TotalCount = patients.Item2;
+            }).Wait();
+
+            // Выбираем только необходимые поля и добавляем пациентов в таблицу
+            patientsDataSource = PatientItem.Select(patient => new PatientViewItem()
+            {
+                PatientNumber = patient.PatientNumber,
+                LastName = patient.LastName,
+                FirstName = patient.FirstName,
+                MiddleName = patient.MiddleName,
+                DateOfBirth = patient.DateOfBirth
+
+            }).ToList();
+            PatientsTable.DataSource = patientsDataSource;
+
+            CountPageTextBox.Text = $"{CurrentPage} / {TotalCount}";
         }
 
         private void PressingEnterInTextField(object? sender, KeyPressEventArgs e)

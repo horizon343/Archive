@@ -39,6 +39,6 @@ namespace Archive.DB
         public string Phone { get; set; }
 
         [Column("Index")]
-        public string Index { get; set; }
+        public string IndexAddress { get; set; }
     }
 }

@@ -170,12 +170,12 @@ namespace Archive.Forms
             }
         }
 
-        private void AddPatient_Click(object sender, EventArgs e)
+        private async void AddPatient_Click(object sender, EventArgs e)
         {
             try
             {
-                DBase dBase = new DBase();
-                List<PatientItem> patients = dBase.GetEntriesStartingWithLetter<PatientItem>(LastNameTextField.Text.Substring(0, 1), EndSymbol, "PatientNumber", "PatientNumber");
+                DataBase dataBase = new DataBase();
+                List<PatientItem> patients = await dataBase.GetEntriesStartAndEndCharacter<PatientItem>(LastNameTextField.Text.Substring(0, 1), EndSymbol, "PatientNumber", "PatientNumber");
 
                 // Устанавливаем PatientNumber
                 int PatientNumber = 1;
@@ -209,11 +209,10 @@ namespace Archive.Forms
                     City = CityTextField.Text,
                     Address = AddressTextField.Text,
                     Phone = PhoneTextField.Text,
-                    Index = IndexTextField.Text,
+                    IndexAddress = IndexTextField.Text,
                 };
 
-                dBase.SetDataTable<PatientItem>(newPatient);
-                dBase.CloseDatabaseConnection();
+                await dataBase.InsertEntry<PatientItem>(newPatient);
 
                 AddPatientNotError = true;
                 this.Close();
