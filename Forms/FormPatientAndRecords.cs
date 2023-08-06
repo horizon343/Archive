@@ -25,48 +25,75 @@ namespace Archive.Forms
         {
             InitializeComponent();
 
-            RecordsTable.CellClick += RecordsTable_CellClick;
-
             InitDefaultValues(PatientID);
             InitTextFieldsDefaultValues();
-            InitTextFieldsChanged();
             InitRecordsTable();
+            InitEvent();
+            InitErrorsFormPatientAndRecords();
         }
 
+        #region Init
+        private void InitDefaultColorTextField()
+        {
+            LastNameTextField.ForeColor = DefaultColor;
+            FirstNameTextField.ForeColor = DefaultColor;
+            MiddleNameTextField.ForeColor = DefaultColor;
+            DateOfBirthTextField.ForeColor = DefaultColor;
+            RegionTextField.ForeColor = DefaultColor;
+            DistrictTextField.ForeColor = DefaultColor;
+            CityTextField.ForeColor = DefaultColor;
+            AddressTextField.ForeColor = DefaultColor;
+            PhoneTextField.ForeColor = DefaultColor;
+            IndexTextField.ForeColor = DefaultColor;
+        }
         private void InitDefaultValues(Guid PatientID)
         {
-            DBase dBase = new DBase();
+            DataBase dataBase = new DataBase();
+
+            Dictionary<string, object> fieldAndValuePatientID = new Dictionary<string, object>()
+            {
+                { "PatientID", PatientID }
+            };
 
             // DefaultPatientItem Init
-            Dictionary<string, object> fieldAndValuePatientTable = new Dictionary<string, object>()
+            Task.Run(async () =>
             {
-                { "PatientID", PatientID }
-            };
-            List<PatientItem> patients = dBase.SearchData<PatientItem>(fieldAndValuePatientTable);
-            DefaultPatientItem = patients[0];
+                (List<PatientItem>, int) patients = await dataBase.GetPagedEntries<PatientItem>(1, 100, "PatientID", "*", fieldAndValuePatientID);
 
-            // Departments Init
-            (int, List<DepartmentItem>) departments = dBase.GetTable<DepartmentItem>(-1, 50);
-            Departments = departments.Item2;
+                if (patients.Item1.Count < 1)
+                {
+                    this.Close();
+                    return;
+                }
 
-            // MKB Init
-            (int, List<MKBItem>) mkb = dBase.GetTable<MKBItem>(-1, 50);
-            MKB = mkb.Item2;
+                DefaultPatientItem = patients.Item1[0];
+            }).Wait();
 
             // Records Init
-            Dictionary<string, object> fieldAndValueRecordTable = new Dictionary<string, object>()
+            Task.Run(async () =>
             {
-                { "PatientID", PatientID }
-            };
-            List<RecordItem> records = dBase.SearchData<RecordItem>(fieldAndValueRecordTable);
-            Records = records;
+                (List<RecordItem>, int) records = await dataBase.GetPagedEntries<RecordItem>(1, 100, "PatientID", "*", fieldAndValuePatientID);
+                Records = records.Item1;
+            }).Wait();
 
-            dBase.CloseDatabaseConnection();
+            // Department and MKB Init
+            List<int> departmentID = new List<int>();
+            List<string> mkbCode = new List<string>();
+            foreach (RecordItem record in Records)
+            {
+                departmentID.Add(record.DepartmentID);
+                mkbCode.Add(record.MKBCode);
+            }
+            Task.Run(async () =>
+            {
+                (List<DepartmentItem>, int) departments = await dataBase.SearchEntriesByFieldValue<DepartmentItem, int>(1, 100, "DepartmentID", "DepartmentID", departmentID.ToArray());
+                (List<MKBItem>, int) MKBs = await dataBase.SearchEntriesByFieldValue<MKBItem, string>(1, 100, "MKBCode", "MKBCode", mkbCode.ToArray());
+
+                Departments = departments.Item1;
+                MKB = MKBs.Item1;
+
+            }).Wait();
         }
-
-        /// <summary>
-        /// Создание таблицы с картами
-        /// </summary>
         private void InitRecordsTable()
         {
             recordsDataSource = Records
@@ -82,7 +109,6 @@ namespace Archive.Forms
                  .ToList();
             RecordsTable.DataSource = recordsDataSource;
 
-            //RecordsTable.DataSource = records;
             foreach (DataGridViewColumn column in RecordsTable.Columns)
                 column.ReadOnly = true;
 
@@ -106,13 +132,9 @@ namespace Archive.Forms
             RecordsTable.Columns[4].Width = 100;
             RecordsTable.DefaultCellStyle = cellStyle;
         }
-
-        /// <summary>
-        /// Заполняет текстовые поля
-        /// </summary>
         private void InitTextFieldsDefaultValues()
         {
-            PatientNumberLabel.Text = $"{DefaultPatientItem.LastName.Substring(0, 1)}-{DefaultPatientItem.PatientNumber}";
+            PatientNumberLabel.Text = DefaultPatientItem.PatientNumber;
             LastNameTextField.Text = DefaultPatientItem.LastName;
             FirstNameTextField.Text = DefaultPatientItem.FirstName;
             MiddleNameTextField.Text = DefaultPatientItem.MiddleName;
@@ -124,11 +146,7 @@ namespace Archive.Forms
             PhoneTextField.Text = DefaultPatientItem.Phone;
             IndexTextField.Text = DefaultPatientItem.IndexAddress.ToString();
         }
-
-        /// <summary>
-        /// Создание обработчиков ввода для полей
-        /// </summary>
-        private void InitTextFieldsChanged()
+        private void InitEvent()
         {
             LastNameTextField.TextChanged += LastNameTextField_Changed;
             FirstNameTextField.TextChanged += FirstNameTextField_Changed;
@@ -140,19 +158,201 @@ namespace Archive.Forms
             AddressTextField.TextChanged += AddressTextField_Changed;
             PhoneTextField.TextChanged += PhoneTextField_Changed;
             IndexTextField.TextChanged += IndexTextField_Changed;
+            RecordsTable.CellClick += RecordsTable_CellClick;
         }
+        private void InitErrorsFormPatientAndRecords()
+        {
+            ErrorsFormPatientAndRecords.LastName = false;
+            ErrorsFormPatientAndRecords.FirstName = false;
+            ErrorsFormPatientAndRecords.DateOfBirth = false;
+        }
+        #endregion
 
-        /// <summary>
-        /// Меняет сойство Enable у SaveButton 
-        /// </summary>
+        #region TextChanged
+        private void LastNameTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(LastNameTextField);
+            ValidationForm.StringOfLetter(LastNameTextField);
+            Edited[0] = false;
+            ErrorsFormPatientAndRecords.LastName = false;
+            if (LastNameTextField.Text.Length > 0 && LastNameTextField.Text != DefaultPatientItem.LastName)
+            {
+                LastNameTextField.ForeColor = EditColor;
+                Edited[0] = true;
+            }
+            else if (LastNameTextField.Text.Length > 0 && LastNameTextField.Text == DefaultPatientItem.LastName)
+                LastNameTextField.ForeColor = DefaultColor;
+            else
+                ErrorsFormPatientAndRecords.LastName = true;
+
+            MakeSaveButtonActive();
+        }
+        private void FirstNameTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(FirstNameTextField);
+            ValidationForm.StringOfLetter(FirstNameTextField);
+            Edited[1] = false;
+            ErrorsFormPatientAndRecords.FirstName = false;
+            if (FirstNameTextField.Text.Length > 0 && FirstNameTextField.Text != DefaultPatientItem.FirstName)
+            {
+                FirstNameTextField.ForeColor = EditColor;
+                Edited[1] = true;
+            }
+            else if (FirstNameTextField.Text.Length > 0 && FirstNameTextField.Text == DefaultPatientItem.FirstName)
+                FirstNameTextField.ForeColor = DefaultColor;
+            else
+                ErrorsFormPatientAndRecords.FirstName = true;
+
+            MakeSaveButtonActive();
+        }
+        private void MiddleNameTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(MiddleNameTextField);
+            ValidationForm.StringOfLetter(MiddleNameTextField);
+            Edited[2] = false;
+            if (MiddleNameTextField.Text != DefaultPatientItem.MiddleName)
+            {
+                MiddleNameTextField.ForeColor = EditColor;
+                Edited[2] = true;
+            }
+            else
+                MiddleNameTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        private void DateOfBirthTextField_Changed(object? sender, EventArgs e)
+        {
+            DateOfBirthTextField.MaxLength = 10;
+
+            ValidationForm.DateFormatting(DateOfBirthTextField);
+            Edited[3] = false;
+            ErrorsFormPatientAndRecords.DateOfBirth = false;
+            if (DateOfBirthTextField.Text.Length == 10)
+            {
+                bool isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text);
+                if (isNotError && !DateOfBirthTextField.Text.Equals(DefaultPatientItem.DateOfBirth.ToShortDateString()))
+                {
+                    Edited[3] = true;
+                    DateOfBirthTextField.ForeColor = EditColor;
+                }
+                else if (isNotError)
+                    DateOfBirthTextField.ForeColor = DefaultColor;
+                else
+                {
+                    DateOfBirthTextField.ForeColor = ErrorColor;
+                    ErrorsFormPatientAndRecords.DateOfBirth = true;
+                }
+            }
+            else
+            {
+                DateOfBirthTextField.ForeColor = DefaultColor;
+                ErrorsFormPatientAndRecords.DateOfBirth = true;
+            }
+
+            MakeSaveButtonActive();
+        }
+        private void RegionTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(RegionTextField);
+            ValidationForm.StringOfLetter(RegionTextField, true);
+            Edited[4] = false;
+            if (RegionTextField.Text != DefaultPatientItem.Region)
+            {
+                RegionTextField.ForeColor = EditColor;
+                Edited[4] = true;
+            }
+            else
+                RegionTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        private void DistrictTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(DistrictTextField);
+            ValidationForm.StringOfLetter(DistrictTextField, true);
+            Edited[5] = false;
+            if (DistrictTextField.Text != DefaultPatientItem.District)
+            {
+                DistrictTextField.ForeColor = EditColor;
+                Edited[5] = true;
+            }
+            else
+                DistrictTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        private void CityTextField_Changed(object? sender, EventArgs e)
+        {
+            ValidationForm.FirstLetterToUpperCase(CityTextField);
+            ValidationForm.StringOfLetter(CityTextField, true);
+            Edited[6] = false;
+            if (CityTextField.Text != DefaultPatientItem.City)
+            {
+                CityTextField.ForeColor = EditColor;
+                Edited[6] = true;
+            }
+            else
+                CityTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        private void AddressTextField_Changed(object? sender, EventArgs e)
+        {
+            Edited[7] = false;
+            if (AddressTextField.Text != DefaultPatientItem.Address)
+            {
+                AddressTextField.ForeColor = EditColor;
+                Edited[7] = true;
+            }
+            else
+                AddressTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        private void PhoneTextField_Changed(object? sender, EventArgs e)
+        {
+            PhoneTextField.MaxLength = 11;
+
+            ValidationForm.StringOfNumber(PhoneTextField);
+            Edited[8] = false;
+            if (PhoneTextField.Text != DefaultPatientItem.Phone)
+            {
+                PhoneTextField.ForeColor = EditColor;
+                Edited[8] = true;
+            }
+            else
+                PhoneTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+
+        }
+        private void IndexTextField_Changed(object? sender, EventArgs e)
+        {
+            IndexTextField.MaxLength = 6;
+
+            ValidationForm.StringOfNumber(IndexTextField);
+            Edited[9] = false;
+            if (IndexTextField.Text != DefaultPatientItem.IndexAddress)
+            {
+                IndexTextField.ForeColor = EditColor;
+                Edited[9] = true;
+            }
+            else
+                IndexTextField.ForeColor = DefaultColor;
+
+            MakeSaveButtonActive();
+        }
+        #endregion
+
+        #region ButtonClick
+
+        #endregion
+
+        // Меняет сойство Enable у SaveButton 
         private void MakeSaveButtonActive()
         {
             SaveButton.Enabled = false;
-            if (ErrorsFormPatientAndRecords.LastName || ErrorsFormPatientAndRecords.FirstName ||
-                ErrorsFormPatientAndRecords.MiddleName || ErrorsFormPatientAndRecords.DateOfBirth ||
-                ErrorsFormPatientAndRecords.Region || ErrorsFormPatientAndRecords.District ||
-                ErrorsFormPatientAndRecords.City || ErrorsFormPatientAndRecords.Address ||
-                ErrorsFormPatientAndRecords.Phone || ErrorsFormPatientAndRecords.Index)
+            if (ErrorsFormPatientAndRecords.LastName || ErrorsFormPatientAndRecords.FirstName || ErrorsFormPatientAndRecords.DateOfBirth)
                 return;
 
             foreach (bool edited in Edited)
@@ -162,219 +362,6 @@ namespace Archive.Forms
                     break;
                 }
         }
-
-        #region
-        // Валидация полей ввода
-        private void LastNameTextField_Changed(object? sender, EventArgs e)
-        {
-            ValidationForm.FirstLetterToUpperCase(LastNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(LastNameTextField.Text, ErrorTextLabel, ErrorColor, "Фамилия состоит только из букв !");
-            Edited[0] = false;
-
-            if (!isNotError)
-                LastNameTextField.ForeColor = ErrorColor;
-            else if (LastNameTextField.Text != DefaultPatientItem.LastName)
-            {
-                LastNameTextField.ForeColor = EditColor;
-                Edited[0] = true;
-            }
-            else
-                LastNameTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.LastName = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void FirstNameTextField_Changed(object? sender, EventArgs e)
-        {
-            ValidationForm.FirstLetterToUpperCase(FirstNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(FirstNameTextField.Text, ErrorTextLabel, ErrorColor, "Имя состоит только из букв !");
-            Edited[1] = false;
-
-            if (!isNotError)
-                FirstNameTextField.ForeColor = ErrorColor;
-            else if (FirstNameTextField.Text != DefaultPatientItem.FirstName)
-            {
-                FirstNameTextField.ForeColor = EditColor;
-                Edited[1] = true;
-            }
-            else
-                FirstNameTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.FirstName = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void MiddleNameTextField_Changed(object? sender, EventArgs e)
-        {
-            ValidationForm.FirstLetterToUpperCase(MiddleNameTextField);
-            bool isNotError = ValidationForm.StringConsistsOfLetters(MiddleNameTextField.Text, ErrorTextLabel, ErrorColor, "Отчество состоит только из букв !");
-            Edited[2] = false;
-
-            if (!isNotError)
-                MiddleNameTextField.ForeColor = ErrorColor;
-            else if (MiddleNameTextField.Text != DefaultPatientItem.MiddleName)
-            {
-                MiddleNameTextField.ForeColor = EditColor;
-                Edited[2] = true;
-            }
-            else
-                MiddleNameTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.MiddleName = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void DateOfBirthTextField_Changed(object? sender, EventArgs e)
-        {
-            string text = DateOfBirthTextField.Text.Replace(".", "");
-            bool isNotError = ValidationForm.ValidationIsNumber(text, ErrorTextLabel, ErrorColor, "Дата может содержать только цифры !");
-            if (isNotError)
-            {
-                ValidationForm.DateFormatting(DateOfBirthTextField);
-                isNotError = ValidationForm.DateIsValid(DateOfBirthTextField.Text, ErrorTextLabel);
-            }
-            Edited[3] = false;
-
-            try
-            {
-                if (!isNotError && DateOfBirthTextField.Text.Length == 10)
-                    DateOfBirthTextField.ForeColor = ErrorColor;
-                else if (DateOfBirthTextField.Text != DefaultPatientItem.DateOfBirth.ToShortDateString())
-                {
-                    DateOfBirthTextField.ForeColor = EditColor;
-                    Edited[3] = true;
-                }
-                else
-                    DateOfBirthTextField.ForeColor = DefaultColor;
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка конвертации DateOfBirthTextField");
-            }
-
-            ErrorsFormPatientAndRecords.DateOfBirth = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void RegionTextField_Changed(object? sender, EventArgs e)
-        {
-            ValidationForm.FirstLetterToUpperCase(RegionTextField);
-            bool isNotError = ValidationForm.StringStartsWithLetter(RegionTextField.Text, ErrorTextLabel, ErrorColor, "Регион должен начинаться с буквы !");
-            Edited[4] = false;
-
-            if (!isNotError)
-                RegionTextField.ForeColor = ErrorColor;
-            else if (RegionTextField.Text != DefaultPatientItem.Region)
-            {
-                RegionTextField.ForeColor = EditColor;
-                Edited[4] = true;
-            }
-            else
-                RegionTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.Region = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void DistrictTextField_Changed(object? sender, EventArgs e)
-        {
-            ValidationForm.FirstLetterToUpperCase(DistrictTextField);
-            bool isNotError = ValidationForm.StringStartsWithLetter(DistrictTextField.Text, ErrorTextLabel, ErrorColor, "Район должен начинаться с буквы !");
-            Edited[5] = false;
-
-            if (!isNotError)
-                DistrictTextField.ForeColor = ErrorColor;
-            else if (DistrictTextField.Text != DefaultPatientItem.District)
-            {
-                DistrictTextField.ForeColor = EditColor;
-                Edited[5] = true;
-            }
-            else
-                DistrictTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.District = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void CityTextField_Changed(object? sender, EventArgs e)
-        {
-            bool isNotError = ValidationForm.StringStartsWithLetter(CityTextField, ErrorTextLabel, ErrorColor, "Город должен начинаться с буквы !");
-            Edited[6] = false;
-
-            if (!isNotError)
-                CityTextField.ForeColor = ErrorColor;
-            else if (CityTextField.Text != DefaultPatientItem.City)
-            {
-                CityTextField.ForeColor = EditColor;
-                Edited[6] = true;
-            }
-            else
-                CityTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.City = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void AddressTextField_Changed(object? sender, EventArgs e)
-        {
-            bool isNotError = ValidationForm.StringStartsWithLetter(AddressTextField, ErrorTextLabel, ErrorColor, "Адрес должен начинаться с буквы !");
-            Edited[7] = false;
-
-            if (!isNotError)
-                AddressTextField.ForeColor = ErrorColor;
-            else if (AddressTextField.Text != DefaultPatientItem.Address)
-            {
-                AddressTextField.ForeColor = EditColor;
-                Edited[7] = true;
-            }
-            else
-                AddressTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.Address = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void PhoneTextField_Changed(object? sender, EventArgs e)
-        {
-            bool isNotError = ValidationForm.ValidationIsNumber(PhoneTextField.Text, ErrorTextLabel, ErrorColor, "Номер телефона может состоять только из цифр !");
-            if (isNotError)
-                isNotError = ValidationForm.CheckingLengthOfString(PhoneTextField.Text, 11, ErrorTextLabel, ErrorColor, "Длина номера телефона не может быть больше 11 символов !");
-            Edited[8] = false;
-
-            if (!isNotError)
-                PhoneTextField.ForeColor = ErrorColor;
-            else if (PhoneTextField.Text != DefaultPatientItem.Phone)
-            {
-                PhoneTextField.ForeColor = EditColor;
-                Edited[8] = true;
-            }
-            else
-                PhoneTextField.ForeColor = DefaultColor;
-
-            ErrorsFormPatientAndRecords.Phone = !isNotError;
-            MakeSaveButtonActive();
-        }
-        private void IndexTextField_Changed(object? sender, EventArgs e)
-        {
-            bool isNotError = ValidationForm.ValidationIsNumber(IndexTextField.Text, ErrorTextLabel, ErrorColor, "Индекс может состоять только из цифр !");
-            if (isNotError)
-                isNotError = ValidationForm.CheckingLengthOfString(IndexTextField.Text, 6, ErrorTextLabel, ErrorColor, "Длина индекса не может быть больше 6 символов !");
-            Edited[9] = false;
-
-            try
-            {
-                if (!isNotError)
-                    IndexTextField.ForeColor = ErrorColor;
-                else if (IndexTextField.Text != DefaultPatientItem.IndexAddress)
-                {
-                    IndexTextField.ForeColor = EditColor;
-                    Edited[9] = true;
-                }
-                else
-                    IndexTextField.ForeColor = DefaultColor;
-            }
-            catch
-            {
-                MessageBox.Show("Ошибка конвертации IndexTextField");
-            }
-
-            ErrorsFormPatientAndRecords.Index = !isNotError;
-            MakeSaveButtonActive();
-        }
-        #endregion
 
         private void RecordsTable_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
@@ -427,60 +414,7 @@ namespace Archive.Forms
         {
             try
             {
-                // Проверка, что нет ошибок
-                if (ErrorsFormPatientAndRecords.LastName)
-                {
-                    MessageBox.Show("Ошибка ввода фамилии");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.FirstName)
-                {
-                    MessageBox.Show("Ошибка ввода имени");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.MiddleName)
-                {
-                    MessageBox.Show("Ошибка ввода отчества");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.DateOfBirth)
-                {
-                    MessageBox.Show("Ошибка ввода даты рождения");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.Region)
-                {
-                    MessageBox.Show("Ошибка ввода региона");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.District)
-                {
-                    MessageBox.Show("Ошибка ввода района");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.City)
-                {
-                    MessageBox.Show("Ошибка ввода города");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.Address)
-                {
-                    MessageBox.Show("Ошибка ввода адреса");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.Phone)
-                {
-                    MessageBox.Show("Ошибка ввода телефона");
-                    return;
-                }
-                if (ErrorsFormPatientAndRecords.Index)
-                {
-                    MessageBox.Show("Ошибка ввода индекса");
-                    return;
-                }
-
                 // Сохранение в базе данных
-                DBase dBase = new DBase();
                 PatientItem patient = new PatientItem()
                 {
                     PatientID = DefaultPatientItem.PatientID,
@@ -497,40 +431,27 @@ namespace Archive.Forms
                     IndexAddress = IndexTextField.Text,
                 };
 
-                bool isNotError = dBase.UpdateEntryInDB<PatientItem, Guid>(DefaultPatientItem.PatientID, patient);
+                int countUpdateEntries = 0;
+                DataBase dataBase = new DataBase();
+                Task.Run(async () =>
+                {
+                    countUpdateEntries = await dataBase.EntryUpdate<PatientItem>(patient, "PatientID");
+                }).Wait();
 
-                if (!isNotError)
-                    MessageBox.Show("Ошибка изменения записи !");
+                if (countUpdateEntries == 0)
+                    MessageBox.Show("Ошибка. Ни одна запись не была изменена");
                 else
                 {
-                    // DefaultPatientItem Init
-                    Dictionary<string, object> fieldAndValuePatientTable = new Dictionary<string, object>()
-                    {
-                        { "PatientID", DefaultPatientItem.PatientID }
-                    };
-                    List<PatientItem> patients = dBase.SearchData<PatientItem>(fieldAndValuePatientTable);
-                    DefaultPatientItem = patients[0];
-
+                    InitDefaultValues(DefaultPatientItem.PatientID);
                     InitTextFieldsDefaultValues();
-                    for (int i = 0; i < Edited.Length; i++)
-                        Edited[i] = false;
+                    Edited = new bool[10];
+                    InitDefaultColorTextField();
                     MakeSaveButtonActive();
-                    LastNameTextField.ForeColor = DefaultColor;
-                    FirstNameTextField.ForeColor = DefaultColor;
-                    MiddleNameTextField.ForeColor = DefaultColor;
-                    DateOfBirthTextField.ForeColor = DefaultColor;
-                    RegionTextField.ForeColor = DefaultColor;
-                    DistrictTextField.ForeColor = DefaultColor;
-                    CityTextField.ForeColor = DefaultColor;
-                    AddressTextField.ForeColor = DefaultColor;
-                    PhoneTextField.ForeColor = DefaultColor;
-                    IndexTextField.ForeColor = DefaultColor;
                 }
-                dBase.CloseDatabaseConnection();
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
+                MessageBox.Show($"Непредвиденная ошибка: [{ex.Message}]");
             }
         }
 
@@ -561,27 +482,16 @@ namespace Archive.Forms
     class RecordViewItem
     {
         public string DepartmentTitle { get; set; }
-
         public DateTime DateOfReceipt { get; set; }
-
         public DateTime DateOfDischarge { get; set; }
-
         public int HistoryNumber { get; set; }
-
         public string MKBCodeTitle { get; set; }
     }
 
     static class ErrorsFormPatientAndRecords
     {
-        static public bool LastName { get; set; } = false;
-        static public bool FirstName { get; set; } = false;
-        static public bool MiddleName { get; set; } = false;
-        static public bool DateOfBirth { get; set; } = false;
-        static public bool Region { get; set; } = false;
-        static public bool District { get; set; } = false;
-        static public bool City { get; set; } = false;
-        static public bool Address { get; set; } = false;
-        static public bool Phone { get; set; } = false;
-        static public bool Index { get; set; } = false;
+        static public bool LastName { get; set; }
+        static public bool FirstName { get; set; }
+        static public bool DateOfBirth { get; set; }
     }
 }

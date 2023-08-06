@@ -8,6 +8,95 @@ namespace Archive.DB
         private string connectionString = "Server=XAMI4OK;Database=Archive;Trusted_Connection=True;Encrypt=false;";
 
         /// <summary>
+        /// Обновление записи в таблице
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <param name="item">Запись для добавления</param>
+        /// <param name="fieldID">Поле с ID</param>
+        public async Task<int> EntryUpdate<T>(T item, string fieldID)
+        {
+            try
+            {
+                string table = typeof(T).Name.Remove(typeof(T).Name.IndexOf("Item"));
+                PropertyInfo[] properties = typeof(T).GetProperties();
+                string setString = string.Join(", ", properties.Select(property => $"{property.Name} = @{property.Name}"));
+
+                string updateQuery = $"UPDATE {table} SET {setString} WHERE {fieldID} = @{fieldID}";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                    {
+                        foreach (PropertyInfo property in properties)
+                        {
+                            SqlParameter parameter = new SqlParameter($"@{property.Name}", property.GetValue(item));
+                            command.Parameters.Add(parameter);
+                        }
+                        return await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Непредвиденная ошибка при обновлении записи: {ex.Message}");
+                return 0;
+            }
+        }
+
+        public async Task<(List<T>, int)> SearchEntriesByFieldValue<T, F>(int pageNumber, int pageSize, string sortField, string field, F[] values, string fields = "*") where T : new()
+        {
+            try
+            {
+                if (pageSize <= 0 || pageNumber <= 0 || values.Length == 0)
+                    return (new List<T>(), 0);
+
+                string table = typeof(T).Name.Remove(typeof(T).Name.IndexOf("Item"));
+                int startIndex = (pageNumber - 1) * pageSize;
+
+                string queryWhere = string.Join(", ", values);
+
+                string countQuery = $"SELECT COUNT(*) FROM {table} WHERE {field} IN ({queryWhere})";
+                string dataQuery = $"SELECT {fields} FROM {table} WHERE {field} IN ({queryWhere}) ORDER BY {sortField} OFFSET {startIndex} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+
+                int totalPages = 0;
+                List<T> result = new List<T>();
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand countCommand = new SqlCommand(countQuery, connection))
+                    {
+                        int totalCount = (int)await countCommand.ExecuteScalarAsync();
+                        totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    }
+
+                    using (SqlCommand dataCommand = new SqlCommand(dataQuery, connection))
+                    {
+                        using (SqlDataReader reader = await dataCommand.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                T item = new T();
+                                PopulateItemFromDataReader<T>(item, reader);
+                                result.Add(item);
+                            }
+                        }
+                    }
+                }
+
+                return (result, totalPages);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Непредвиденная ошибка при поиске записей: {ex.Message}");
+                return (new List<T>(), 0);
+            }
+        }
+
+        /// <summary>
         /// Постраничное получение записей из таблицы 
         /// </summary>
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>

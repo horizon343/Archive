@@ -8,7 +8,7 @@ namespace Archive.Forms
     {
         private int TotalCount { get; set; }
         private int CurrentPage { get; set; }
-        private int limit = 1;
+        private int limit = 100;
 
         private List<PatientItem> PatientItem { get; set; }
         private List<PatientViewItem> patientsDataSource;
