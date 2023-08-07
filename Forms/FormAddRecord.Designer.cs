@@ -43,7 +43,6 @@
             lblTitle = new Label();
             DateOfReceiptErrorText = new Label();
             DateOfDischargeErrorText = new Label();
-            HistoryNumberErrorText = new Label();
             DepartmentTextField = new TextBox();
             MKBCodeTextField = new TextBox();
             panelTitleBar.SuspendLayout();
@@ -52,25 +51,28 @@
             // DepartmentSelect
             // 
             DepartmentSelect.FormattingEnabled = true;
-            DepartmentSelect.Location = new Point(298, 194);
+            DepartmentSelect.Location = new Point(354, 284);
+            DepartmentSelect.Margin = new Padding(3, 4, 3, 4);
             DepartmentSelect.Name = "DepartmentSelect";
-            DepartmentSelect.Size = new Size(393, 23);
+            DepartmentSelect.Size = new Size(449, 28);
             DepartmentSelect.TabIndex = 0;
             DepartmentSelect.TabStop = false;
             // 
             // HistoryNumberTextField
             // 
-            HistoryNumberTextField.Location = new Point(298, 281);
+            HistoryNumberTextField.Location = new Point(354, 400);
+            HistoryNumberTextField.Margin = new Padding(3, 4, 3, 4);
             HistoryNumberTextField.Name = "HistoryNumberTextField";
-            HistoryNumberTextField.Size = new Size(393, 23);
+            HistoryNumberTextField.Size = new Size(449, 27);
             HistoryNumberTextField.TabIndex = 4;
             // 
             // MKBCodeSelect
             // 
             MKBCodeSelect.FormattingEnabled = true;
-            MKBCodeSelect.Location = new Point(298, 310);
+            MKBCodeSelect.Location = new Point(354, 438);
+            MKBCodeSelect.Margin = new Padding(3, 4, 3, 4);
             MKBCodeSelect.Name = "MKBCodeSelect";
-            MKBCodeSelect.Size = new Size(393, 23);
+            MKBCodeSelect.Size = new Size(449, 28);
             MKBCodeSelect.TabIndex = 4;
             MKBCodeSelect.TabStop = false;
             // 
@@ -78,9 +80,9 @@
             // 
             label1.AutoSize = true;
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(186, 197);
+            label1.Location = new Point(214, 283);
             label1.Name = "label1";
-            label1.Size = new Size(66, 15);
+            label1.Size = new Size(84, 20);
             label1.TabIndex = 5;
             label1.Text = "Отделение";
             // 
@@ -88,9 +90,9 @@
             // 
             label2.AutoSize = true;
             label2.ForeColor = Color.Black;
-            label2.Location = new Point(186, 229);
+            label2.Location = new Point(214, 325);
             label2.Name = "label2";
-            label2.Size = new Size(106, 15);
+            label2.Size = new Size(134, 20);
             label2.TabIndex = 6;
             label2.Text = "Дата поступления";
             // 
@@ -98,9 +100,9 @@
             // 
             label3.AutoSize = true;
             label3.ForeColor = Color.Black;
-            label3.Location = new Point(186, 258);
+            label3.Location = new Point(214, 364);
             label3.Name = "label3";
-            label3.Size = new Size(83, 15);
+            label3.Size = new Size(105, 20);
             label3.TabIndex = 7;
             label3.Text = "Дата выписки";
             // 
@@ -108,9 +110,9 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = Color.Black;
-            label4.Location = new Point(186, 284);
+            label4.Location = new Point(214, 399);
             label4.Name = "label4";
-            label4.Size = new Size(94, 15);
+            label4.Size = new Size(119, 20);
             label4.TabIndex = 8;
             label4.Text = "Номер истории";
             // 
@@ -118,17 +120,19 @@
             // 
             label5.AutoSize = true;
             label5.ForeColor = Color.Black;
-            label5.Location = new Point(186, 313);
+            label5.Location = new Point(214, 437);
             label5.Name = "label5";
-            label5.Size = new Size(55, 15);
+            label5.Size = new Size(70, 20);
             label5.TabIndex = 9;
             label5.Text = "Код МКБ";
             // 
             // AddRecord
             // 
-            AddRecord.Location = new Point(616, 339);
+            AddRecord.Enabled = false;
+            AddRecord.Location = new Point(717, 477);
+            AddRecord.Margin = new Padding(3, 4, 3, 4);
             AddRecord.Name = "AddRecord";
-            AddRecord.Size = new Size(75, 23);
+            AddRecord.Size = new Size(86, 31);
             AddRecord.TabIndex = 6;
             AddRecord.Text = "Добавить";
             AddRecord.UseVisualStyleBackColor = true;
@@ -136,16 +140,18 @@
             // 
             // DateOfDischargeTextField
             // 
-            DateOfDischargeTextField.Location = new Point(298, 252);
+            DateOfDischargeTextField.Location = new Point(354, 361);
+            DateOfDischargeTextField.Margin = new Padding(3, 4, 3, 4);
             DateOfDischargeTextField.Name = "DateOfDischargeTextField";
-            DateOfDischargeTextField.Size = new Size(393, 23);
+            DateOfDischargeTextField.Size = new Size(449, 27);
             DateOfDischargeTextField.TabIndex = 3;
             // 
             // DateOfReceiptTextField
             // 
-            DateOfReceiptTextField.Location = new Point(298, 223);
+            DateOfReceiptTextField.Location = new Point(354, 322);
+            DateOfReceiptTextField.Margin = new Padding(3, 4, 3, 4);
             DateOfReceiptTextField.Name = "DateOfReceiptTextField";
-            DateOfReceiptTextField.Size = new Size(393, 23);
+            DateOfReceiptTextField.Size = new Size(449, 27);
             DateOfReceiptTextField.TabIndex = 2;
             // 
             // panelTitleBar
@@ -155,8 +161,9 @@
             panelTitleBar.Dock = DockStyle.Top;
             panelTitleBar.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             panelTitleBar.Location = new Point(0, 0);
+            panelTitleBar.Margin = new Padding(3, 4, 3, 4);
             panelTitleBar.Name = "panelTitleBar";
-            panelTitleBar.Size = new Size(984, 80);
+            panelTitleBar.Size = new Size(1125, 107);
             panelTitleBar.TabIndex = 11;
             // 
             // lblTitle
@@ -164,68 +171,59 @@
             lblTitle.Anchor = AnchorStyles.None;
             lblTitle.AutoSize = true;
             lblTitle.ForeColor = Color.Black;
-            lblTitle.Location = new Point(424, 25);
+            lblTitle.Location = new Point(466, 33);
             lblTitle.Name = "lblTitle";
             lblTitle.RightToLeft = RightToLeft.No;
-            lblTitle.Size = new Size(137, 30);
+            lblTitle.Size = new Size(169, 37);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Новая карта";
             // 
             // DateOfReceiptErrorText
             // 
             DateOfReceiptErrorText.AutoSize = true;
-            DateOfReceiptErrorText.ForeColor = Color.Black;
-            DateOfReceiptErrorText.Location = new Point(697, 229);
+            DateOfReceiptErrorText.ForeColor = Color.Red;
+            DateOfReceiptErrorText.Location = new Point(810, 330);
             DateOfReceiptErrorText.Name = "DateOfReceiptErrorText";
-            DateOfReceiptErrorText.Size = new Size(10, 15);
+            DateOfReceiptErrorText.Size = new Size(13, 20);
             DateOfReceiptErrorText.TabIndex = 6;
             DateOfReceiptErrorText.Text = " ";
             // 
             // DateOfDischargeErrorText
             // 
             DateOfDischargeErrorText.AutoSize = true;
-            DateOfDischargeErrorText.ForeColor = Color.Black;
-            DateOfDischargeErrorText.Location = new Point(697, 255);
+            DateOfDischargeErrorText.ForeColor = Color.Red;
+            DateOfDischargeErrorText.Location = new Point(810, 365);
             DateOfDischargeErrorText.Name = "DateOfDischargeErrorText";
-            DateOfDischargeErrorText.Size = new Size(10, 15);
+            DateOfDischargeErrorText.Size = new Size(13, 20);
             DateOfDischargeErrorText.TabIndex = 6;
             DateOfDischargeErrorText.Text = " ";
             // 
-            // HistoryNumberErrorText
-            // 
-            HistoryNumberErrorText.AutoSize = true;
-            HistoryNumberErrorText.ForeColor = Color.Black;
-            HistoryNumberErrorText.Location = new Point(697, 289);
-            HistoryNumberErrorText.Name = "HistoryNumberErrorText";
-            HistoryNumberErrorText.Size = new Size(10, 15);
-            HistoryNumberErrorText.TabIndex = 6;
-            HistoryNumberErrorText.Text = " ";
-            // 
             // DepartmentTextField
             // 
-            DepartmentTextField.Location = new Point(298, 194);
+            DepartmentTextField.Location = new Point(354, 284);
+            DepartmentTextField.Margin = new Padding(3, 4, 3, 4);
             DepartmentTextField.Name = "DepartmentTextField";
-            DepartmentTextField.Size = new Size(377, 23);
+            DepartmentTextField.Size = new Size(430, 27);
             DepartmentTextField.TabIndex = 1;
             // 
             // MKBCodeTextField
             // 
-            MKBCodeTextField.Location = new Point(298, 310);
+            MKBCodeTextField.Location = new Point(354, 438);
+            MKBCodeTextField.Margin = new Padding(3, 4, 3, 4);
             MKBCodeTextField.Name = "MKBCodeTextField";
-            MKBCodeTextField.Size = new Size(377, 23);
+            MKBCodeTextField.Size = new Size(430, 27);
             MKBCodeTextField.TabIndex = 5;
             // 
             // FormAddRecord
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 524);
+            ClientSize = new Size(1125, 699);
             Controls.Add(panelTitleBar);
             Controls.Add(AddRecord);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
-            Controls.Add(HistoryNumberErrorText);
             Controls.Add(DateOfDischargeErrorText);
             Controls.Add(DateOfReceiptErrorText);
             Controls.Add(label2);
@@ -237,6 +235,7 @@
             Controls.Add(HistoryNumberTextField);
             Controls.Add(DepartmentSelect);
             Controls.Add(MKBCodeSelect);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "FormAddRecord";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Добавление карты";
@@ -263,7 +262,6 @@
         private Label lblTitle;
         private Label DateOfReceiptErrorText;
         private Label DateOfDischargeErrorText;
-        private Label HistoryNumberErrorText;
         private TextBox DepartmentTextField;
         private TextBox MKBCodeTextField;
     }

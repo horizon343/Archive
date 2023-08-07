@@ -6,7 +6,7 @@ namespace Archive.Forms
     public partial class FormAddPatient : Form
     {
         private Guid PatientID { get; set; }
-        private bool AddPatientNotError = false;
+        private bool AddPatientNotError = true;
 
         private string EndSymbol = "К"; // Заменить на постфикс отделения, где создана карта
 
@@ -214,11 +214,11 @@ namespace Archive.Forms
 
                 await dataBase.InsertEntry<PatientItem>(newPatient);
 
-                AddPatientNotError = true;
                 this.Close();
             }
             catch (Exception error)
             {
+                AddPatientNotError = false;
                 MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
         }

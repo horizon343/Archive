@@ -1,4 +1,5 @@
-﻿using Archive.DB;
+﻿using Archive.Data;
+using Archive.DB;
 using Archive.Validation;
 
 namespace Archive.Forms
@@ -7,8 +8,6 @@ namespace Archive.Forms
     {
         private PatientItem DefaultPatientItem { get; set; }
         private List<RecordItem> Records { get; set; }
-        private List<DepartmentItem> Departments { get; set; }
-        private List<MKBItem> MKB { get; set; }
 
         private List<RecordViewItem> recordsDataSource;
         private List<RecordViewItem> recordsDataSourceClone;
@@ -17,9 +16,9 @@ namespace Archive.Forms
 
         private bool[] Edited = new bool[10];
 
-        private Color DefaultColor = Color.Black;
-        private Color ErrorColor = Color.Red;
-        private Color EditColor = Color.Green;
+        private readonly Color DefaultColor = Color.Black;
+        private readonly Color ErrorColor = Color.Red;
+        private readonly Color EditColor = Color.Green;
 
         public FormPatientAndRecords(Guid PatientID)
         {
@@ -75,30 +74,12 @@ namespace Archive.Forms
                 (List<RecordItem>, int) records = await dataBase.GetPagedEntries<RecordItem>(1, 100, "PatientID", "*", fieldAndValuePatientID);
                 Records = records.Item1;
             }).Wait();
-
-            // Department and MKB Init
-            List<int> departmentID = new List<int>();
-            List<string> mkbCode = new List<string>();
-            foreach (RecordItem record in Records)
-            {
-                departmentID.Add(record.DepartmentID);
-                mkbCode.Add(record.MKBCode);
-            }
-            Task.Run(async () =>
-            {
-                (List<DepartmentItem>, int) departments = await dataBase.SearchEntriesByFieldValue<DepartmentItem, int>(1, 100, "DepartmentID", "DepartmentID", departmentID.ToArray());
-                (List<MKBItem>, int) MKBs = await dataBase.SearchEntriesByFieldValue<MKBItem, string>(1, 100, "MKBCode", "MKBCode", mkbCode.ToArray());
-
-                Departments = departments.Item1;
-                MKB = MKBs.Item1;
-
-            }).Wait();
         }
         private void InitRecordsTable()
         {
             recordsDataSource = Records
-                 .Join(Departments, record => record.DepartmentID, department => department.DepartmentID, (record, department) => new { Record = record, DepartmentTitle = department.Title })
-                 .Join(MKB, record => record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
+                 .Join(Departments.DepartmentList, record => record.DepartmentID, department => department.DepartmentID, (record, department) => new { Record = record, DepartmentTitle = department.Title })
+                 .Join(MKB.MKBList, record => record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
                  {
                      DepartmentTitle = record.DepartmentTitle,
                      DateOfReceipt = record.Record.DateOfReceipt,
@@ -345,10 +326,81 @@ namespace Archive.Forms
         #endregion
 
         #region ButtonClick
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Сохранение в базе данных
+                PatientItem patient = new PatientItem()
+                {
+                    PatientID = DefaultPatientItem.PatientID,
+                    PatientNumber = DefaultPatientItem.PatientNumber,
+                    LastName = LastNameTextField.Text,
+                    FirstName = FirstNameTextField.Text,
+                    MiddleName = MiddleNameTextField.Text,
+                    DateOfBirth = DateTime.Parse(DateOfBirthTextField.Text),
+                    Region = RegionTextField.Text,
+                    District = DistrictTextField.Text,
+                    City = CityTextField.Text,
+                    Address = AddressTextField.Text,
+                    Phone = PhoneTextField.Text,
+                    IndexAddress = IndexTextField.Text,
+                };
 
+                int countUpdateEntries = 0;
+                DataBase dataBase = new DataBase();
+                Task.Run(async () =>
+                {
+                    countUpdateEntries = await dataBase.EntryUpdate<PatientItem>(patient, "PatientID");
+                }).Wait();
+
+                if (countUpdateEntries == 0)
+                    MessageBox.Show("Ошибка. Ни одна запись не была изменена");
+                else
+                {
+                    InitDefaultValues(DefaultPatientItem.PatientID);
+                    InitTextFieldsDefaultValues();
+                    Edited = new bool[10];
+                    InitDefaultColorTextField();
+                    MakeSaveButtonActive();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Непредвиденная ошибка: [{ex.Message}]");
+            }
+        }
+        private void AddRecordButton_Click(object sender, EventArgs e)
+        {
+            var FormAddRecord = new FormAddRecord(DefaultPatientItem.PatientID);
+            FormAddRecord.Show();
+            this.Close();
+        }
+        private void ShowOrHideButton_Click(object sender, EventArgs e)
+        {
+            if (isVisible)
+            {
+                recordsDataSourceClone = recordsDataSource;
+                List<RecordViewItem> recordsViewItems = recordsDataSource
+                    .GroupBy(record => record.DepartmentTitle)
+                    .Select(group => group.OrderByDescending(record => record.DateOfDischarge).First())
+                    .ToList();
+                recordsDataSource = recordsViewItems;
+                RecordsTable.DataSource = recordsDataSource;
+                ShowOrHideButton.Text = "Показать одинаковые отделения";
+            }
+            else
+            {
+                recordsDataSource = recordsDataSourceClone;
+                RecordsTable.DataSource = recordsDataSource;
+                ShowOrHideButton.Text = "Скрыть одинаковые отделения";
+            }
+
+            isVisible = !isVisible;
+        }
         #endregion
 
-        // Меняет сойство Enable у SaveButton 
+        // Меняет свойство Enable у SaveButton 
         private void MakeSaveButtonActive()
         {
             SaveButton.Enabled = false;
@@ -401,81 +453,6 @@ namespace Archive.Forms
             }
 
             RecordsTable.DataSource = recordsDataSource;
-        }
-
-        private void AddRecordButton_Click(object sender, EventArgs e)
-        {
-            var FormAddRecord = new FormAddRecord(DefaultPatientItem.PatientID);
-            FormAddRecord.Show();
-            this.Close();
-        }
-
-        private void SaveButton_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Сохранение в базе данных
-                PatientItem patient = new PatientItem()
-                {
-                    PatientID = DefaultPatientItem.PatientID,
-                    PatientNumber = DefaultPatientItem.PatientNumber,
-                    LastName = LastNameTextField.Text,
-                    FirstName = FirstNameTextField.Text,
-                    MiddleName = MiddleNameTextField.Text,
-                    DateOfBirth = DateTime.Parse(DateOfBirthTextField.Text),
-                    Region = RegionTextField.Text,
-                    District = DistrictTextField.Text,
-                    City = CityTextField.Text,
-                    Address = AddressTextField.Text,
-                    Phone = PhoneTextField.Text,
-                    IndexAddress = IndexTextField.Text,
-                };
-
-                int countUpdateEntries = 0;
-                DataBase dataBase = new DataBase();
-                Task.Run(async () =>
-                {
-                    countUpdateEntries = await dataBase.EntryUpdate<PatientItem>(patient, "PatientID");
-                }).Wait();
-
-                if (countUpdateEntries == 0)
-                    MessageBox.Show("Ошибка. Ни одна запись не была изменена");
-                else
-                {
-                    InitDefaultValues(DefaultPatientItem.PatientID);
-                    InitTextFieldsDefaultValues();
-                    Edited = new bool[10];
-                    InitDefaultColorTextField();
-                    MakeSaveButtonActive();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Непредвиденная ошибка: [{ex.Message}]");
-            }
-        }
-
-        private void ShowOrHideButton_Click(object sender, EventArgs e)
-        {
-            if (isVisible)
-            {
-                recordsDataSourceClone = recordsDataSource;
-                List<RecordViewItem> recordsViewItems = recordsDataSource
-                    .GroupBy(record => record.DepartmentTitle)
-                    .Select(group => group.OrderByDescending(record => record.DateOfDischarge).First())
-                    .ToList();
-                recordsDataSource = recordsViewItems;
-                RecordsTable.DataSource = recordsDataSource;
-                ShowOrHideButton.Text = "Показать";
-            }
-            else
-            {
-                recordsDataSource = recordsDataSourceClone;
-                RecordsTable.DataSource = recordsDataSource;
-                ShowOrHideButton.Text = "Скрыть";
-            }
-
-            isVisible = !isVisible;
         }
     }
 

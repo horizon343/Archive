@@ -1,3 +1,4 @@
+using Archive.Data;
 using Archive.DB;
 
 namespace Archive
@@ -15,6 +16,9 @@ namespace Archive
             DBase dBase = new DBase();
             dBase.CreateTables();
             dBase.CloseDatabaseConnection();
+
+            MKB.GetMKB();
+            Departments.GetDepartment();
         }
         private void ActivateButton(object btnSender)
         {

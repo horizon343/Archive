@@ -55,7 +55,6 @@
             lblTitle = new Label();
             DateOfBirthTextField = new TextBox();
             PatientNumberLabel = new Label();
-            ErrorTextLabel = new Label();
             SaveButton = new Button();
             ShowOrHideButton = new Button();
             ((System.ComponentModel.ISupportInitialize)RecordsTable).BeginInit();
@@ -319,15 +318,6 @@
             PatientNumberLabel.TabIndex = 11;
             PatientNumberLabel.Text = "Номер";
             // 
-            // ErrorTextLabel
-            // 
-            ErrorTextLabel.AutoSize = true;
-            ErrorTextLabel.ForeColor = Color.Black;
-            ErrorTextLabel.Location = new Point(661, 328);
-            ErrorTextLabel.Name = "ErrorTextLabel";
-            ErrorTextLabel.Size = new Size(0, 20);
-            ErrorTextLabel.TabIndex = 21;
-            // 
             // SaveButton
             // 
             SaveButton.Enabled = false;
@@ -344,12 +334,12 @@
             // ShowOrHideButton
             // 
             ShowOrHideButton.ForeColor = Color.Black;
-            ShowOrHideButton.Location = new Point(685, 613);
+            ShowOrHideButton.Location = new Point(546, 613);
             ShowOrHideButton.Margin = new Padding(3, 4, 3, 4);
             ShowOrHideButton.Name = "ShowOrHideButton";
-            ShowOrHideButton.Size = new Size(136, 31);
+            ShowOrHideButton.Size = new Size(275, 31);
             ShowOrHideButton.TabIndex = 12;
-            ShowOrHideButton.Text = "Скрыть";
+            ShowOrHideButton.Text = "Скрыть одинаковые отделения";
             ShowOrHideButton.UseVisualStyleBackColor = true;
             ShowOrHideButton.Click += ShowOrHideButton_Click;
             // 
@@ -370,7 +360,6 @@
             Controls.Add(AddRecordButton);
             Controls.Add(label12);
             Controls.Add(RecordsTable);
-            Controls.Add(ErrorTextLabel);
             Controls.Add(label11);
             Controls.Add(label10);
             Controls.Add(label9);
@@ -426,7 +415,6 @@
         private Label lblTitle;
         private TextBox DateOfBirthTextField;
         private Label PatientNumberLabel;
-        private Label ErrorTextLabel;
         private Button SaveButton;
         private Button ShowOrHideButton;
     }
