@@ -147,7 +147,7 @@
             // 
             label6.AutoSize = true;
             label6.ForeColor = Color.Black;
-            label6.Location = new Point(122, 335);
+            label6.Location = new Point(121, 325);
             label6.Name = "label6";
             label6.Size = new Size(58, 20);
             label6.TabIndex = 16;
@@ -206,20 +206,20 @@
             // RecordsTable
             // 
             RecordsTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            RecordsTable.Location = new Point(244, 363);
+            RecordsTable.Location = new Point(122, 363);
             RecordsTable.Margin = new Padding(3, 4, 3, 4);
             RecordsTable.Name = "RecordsTable";
             RecordsTable.RowHeadersWidth = 51;
             RecordsTable.RowTemplate.Height = 25;
             RecordsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            RecordsTable.Size = new Size(719, 243);
+            RecordsTable.Size = new Size(841, 243);
             RecordsTable.TabIndex = 0;
             RecordsTable.TabStop = false;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(122, 377);
+            label12.Location = new Point(586, 328);
             label12.Name = "label12";
             label12.Size = new Size(52, 20);
             label12.TabIndex = 23;
@@ -228,7 +228,7 @@
             // AddRecordButton
             // 
             AddRecordButton.ForeColor = Color.Black;
-            AddRecordButton.Location = new Point(244, 613);
+            AddRecordButton.Location = new Point(122, 614);
             AddRecordButton.Margin = new Padding(3, 4, 3, 4);
             AddRecordButton.Name = "AddRecordButton";
             AddRecordButton.Size = new Size(136, 31);

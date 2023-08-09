@@ -22,5 +22,8 @@ namespace Archive.DB
 
         [Column("MKBCode")]
         public string MKBCode { get; set; }
+
+        [Column("StorageLocationID")]
+        public string StorageLocationID { get; set; }
     }
 }

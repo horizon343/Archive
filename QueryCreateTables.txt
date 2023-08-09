@@ -1,0 +1,48 @@
+-- Create Patient table
+CREATE TABLE StorageLocation (
+    StorageLocationID NVARCHAR(255) PRIMARY KEY,
+    Title NVARCHAR(255)
+);
+
+-- Create Department table
+CREATE TABLE Department (
+    DepartmentID INT PRIMARY KEY,
+    Title NVARCHAR(255)
+);
+
+-- Create Patient table
+CREATE TABLE Patient (
+    PatientID UNIQUEIDENTIFIER PRIMARY KEY,
+    PatientNumber NVARCHAR(255),
+    LastName NVARCHAR(255),
+    FirstName NVARCHAR(255),
+    MiddleName NVARCHAR(255),
+    DateOfBirth DATETIME,
+    Region NVARCHAR(255),
+    District NVARCHAR(255),
+    City NVARCHAR(255),
+    Address NVARCHAR(255),
+    Phone NVARCHAR(255),
+    IndexAddress NVARCHAR(255)
+);
+
+-- Create MKB table
+CREATE TABLE MKB (
+    MKBCode NVARCHAR(255) PRIMARY KEY,
+    Title NVARCHAR(255)
+);
+
+-- Create Record table
+CREATE TABLE Record (
+    DepartmentID INT,
+    PatientID UNIQUEIDENTIFIER,
+    DateOfReceipt DATETIME,
+    DateOfDischarge DATETIME,
+    HistoryNumber INT,
+    MKBCode NVARCHAR(255),
+	StorageLocationID NVARCHAR(255),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
+    FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
+    FOREIGN KEY (MKBCode) REFERENCES MKB(MKBCode),
+	FOREIGN KEY (StorageLocationID) REFERENCES StorageLocation(StorageLocationID)
+);

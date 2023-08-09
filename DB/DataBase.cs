@@ -1,11 +1,48 @@
 ﻿using Microsoft.Data.SqlClient;
+using Newtonsoft.Json.Linq;
 using System.Reflection;
 
 namespace Archive.DB
 {
     internal class DataBase
     {
-        private string connectionString = "Server=XAMI4OK;Database=Archive;Trusted_Connection=True;Encrypt=false;";
+        private static string connectionString = "";
+        private static string jsonFilePath = "connectionDB.json";
+
+        private static JObject? jsonObject;
+        public static bool errorWhenConnection = false;
+
+        public DataBase()
+        {
+            errorWhenConnection = false;
+
+            try
+            {
+                if (jsonObject == null)
+                {
+                    if (File.Exists(jsonFilePath))
+                    {
+                        string jsonContext = File.ReadAllText(jsonFilePath);
+                        jsonObject = JObject.Parse(jsonContext);
+                        connectionString = $"Server={jsonObject["Server"]};Database={jsonObject["Database"]};" +
+                            $"Trusted_Connection={jsonObject["Trusted_Connection"]};Encrypt={jsonObject["Encrypt"]};";
+
+                        using SqlConnection connection = new SqlConnection(connectionString);
+                        connection.Open();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ошибка, отсутствует файл с настройками");
+                        errorWhenConnection = true;
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Ошибка подключения к базе данных");
+                errorWhenConnection = true;
+            }
+        }
 
         /// <summary>
         /// Обновление записи в таблице

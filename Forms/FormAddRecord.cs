@@ -18,6 +18,7 @@ namespace Archive.Forms
             InitEvent();
             InitMKBItemField();
             InitDepartmentItemField();
+            InitStorageLocationItemField();
             InitErrorsAddRecords();
 
             PatientID = patientID;
@@ -33,6 +34,8 @@ namespace Archive.Forms
             DepartmentTextField.TextChanged += DepartmentTextField_Changed;
             MKBCodeSelect.SelectedIndexChanged += MKBCodeSelect_SelectedIndexChanged;
             MKBCodeTextField.TextChanged += MKBCodeTextField_Changed;
+            StorageLocationTextField.TextChanged += StorageLocationTextField_Changed;
+            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
         }
         private void InitMKBItemField()
         {
@@ -63,6 +66,21 @@ namespace Archive.Forms
             DepartmentTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
 
             DepartmentSelect.Items.AddRange(departmentsTitle.ToArray());
+        }
+        private void InitStorageLocationItemField()
+        {
+            List<string> storageLocationTitle = new List<string>();
+            foreach (StorageLocationItem storageLocationItem in StorageLocation.StorageLocationList)
+                storageLocationTitle.Add(storageLocationItem.Title);
+
+            AutoCompleteStringCollection storageLocationsSource = new AutoCompleteStringCollection();
+            storageLocationsSource.AddRange(storageLocationTitle.ToArray());
+
+            StorageLocationTextField.AutoCompleteCustomSource = storageLocationsSource;
+            StorageLocationTextField.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            StorageLocationTextField.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+            StorageLocationSelect.Items.AddRange(storageLocationTitle.ToArray());
         }
         private void InitErrorsAddRecords()
         {
@@ -177,6 +195,24 @@ namespace Archive.Forms
 
             MakeAddButtonActive();
         }
+        private void StorageLocationSelect_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            StorageLocationTextField.Text = StorageLocationSelect.SelectedItem.ToString();
+
+            MakeAddButtonActive();
+        }
+        private void StorageLocationTextField_Changed(object? sender, EventArgs e)
+        {
+            string storageLocationTextFieldText = StorageLocationTextField.Text;
+
+            var selectedItem = StorageLocationSelect.Items.Cast<string>()
+                .FirstOrDefault(item => item.ToLower().Equals(storageLocationTextFieldText.ToLower()));
+
+            if (selectedItem != null)
+                StorageLocationSelect.SelectedItem = selectedItem;
+
+            MakeAddButtonActive();
+        }
         #endregion
 
         // Меняет свойство Enable у AddButton 
@@ -188,10 +224,14 @@ namespace Archive.Forms
             string? mkbCodeSelect = MKBCodeSelect.SelectedItem?.ToString();
             string mkbTextFieldText = MKBCodeTextField.Text;
 
+            string? storageLocationSelect = StorageLocationSelect.SelectedItem?.ToString();
+            string storageLocationTextField = StorageLocationTextField.Text;
+
             AddRecord.Enabled = false;
             if (ErrorsAddRecords.DateOfReceipt || ErrorsAddRecords.DateOfDischarge ||
                 departmentSelect == null || departmentSelect.ToLower() != departmentTextField.ToLower() ||
-                mkbCodeSelect == null || mkbCodeSelect.ToLower() != mkbTextFieldText.ToLower())
+                mkbCodeSelect == null || mkbCodeSelect.ToLower() != mkbTextFieldText.ToLower() ||
+                storageLocationSelect == null || storageLocationSelect.ToLower() != storageLocationTextField.ToLower())
                 return;
 
             AddRecord.Enabled = true;
@@ -199,14 +239,20 @@ namespace Archive.Forms
 
         private void AddRecord_Click(object sender, EventArgs e)
         {
+            AddRecord.Enabled = false;
+
             try
             {
                 // Устанавливаем значение DepartmentID и MKBCode
                 int? DepartmentID = Departments.DepartmentList.Find(department => DepartmentSelect.SelectedItem.ToString() == department.Title)?.DepartmentID;
                 string? MKBCode = MKBCodeSelect.SelectedItem?.ToString();
+                string? StorageLocationID = StorageLocation.StorageLocationList.Find(storageLocation => StorageLocationSelect.SelectedItem.ToString() == storageLocation.Title)?.StorageLocationID;
 
-                if (DepartmentID == null || MKBCode == null)
+                if (DepartmentID == null || MKBCode == null || StorageLocationID == null)
+                {
+                    MessageBox.Show($"Ошибка добавления записи {DepartmentID} {MKBCode} {StorageLocationID}");
                     return;
+                }
 
                 // Сохранение в базе данных
                 RecordItem record = new RecordItem()
@@ -216,7 +262,8 @@ namespace Archive.Forms
                     DateOfReceipt = DateTime.Parse(DateOfReceiptTextField.Text),
                     DateOfDischarge = DateTime.Parse(DateOfDischargeTextField.Text),
                     HistoryNumber = int.Parse(HistoryNumberTextField.Text),
-                    MKBCode = MKBCode
+                    MKBCode = MKBCode,
+                    StorageLocationID = StorageLocationID
                 };
 
                 Task.Run(async () =>
@@ -231,6 +278,8 @@ namespace Archive.Forms
             {
                 MessageBox.Show($"Непредвиденная ошибка при добавлении записи: [{ex.Message}]");
             }
+
+            AddRecord.Enabled = true;
         }
 
     }

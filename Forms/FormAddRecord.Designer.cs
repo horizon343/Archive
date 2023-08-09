@@ -45,13 +45,16 @@
             DateOfDischargeErrorText = new Label();
             DepartmentTextField = new TextBox();
             MKBCodeTextField = new TextBox();
+            label6 = new Label();
+            StorageLocationSelect = new ComboBox();
+            StorageLocationTextField = new TextBox();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
             // DepartmentSelect
             // 
             DepartmentSelect.FormattingEnabled = true;
-            DepartmentSelect.Location = new Point(354, 284);
+            DepartmentSelect.Location = new Point(353, 279);
             DepartmentSelect.Margin = new Padding(3, 4, 3, 4);
             DepartmentSelect.Name = "DepartmentSelect";
             DepartmentSelect.Size = new Size(449, 28);
@@ -60,7 +63,7 @@
             // 
             // HistoryNumberTextField
             // 
-            HistoryNumberTextField.Location = new Point(354, 400);
+            HistoryNumberTextField.Location = new Point(353, 395);
             HistoryNumberTextField.Margin = new Padding(3, 4, 3, 4);
             HistoryNumberTextField.Name = "HistoryNumberTextField";
             HistoryNumberTextField.Size = new Size(449, 27);
@@ -69,7 +72,7 @@
             // MKBCodeSelect
             // 
             MKBCodeSelect.FormattingEnabled = true;
-            MKBCodeSelect.Location = new Point(354, 438);
+            MKBCodeSelect.Location = new Point(353, 433);
             MKBCodeSelect.Margin = new Padding(3, 4, 3, 4);
             MKBCodeSelect.Name = "MKBCodeSelect";
             MKBCodeSelect.Size = new Size(449, 28);
@@ -80,7 +83,7 @@
             // 
             label1.AutoSize = true;
             label1.ForeColor = Color.Black;
-            label1.Location = new Point(214, 283);
+            label1.Location = new Point(213, 278);
             label1.Name = "label1";
             label1.Size = new Size(84, 20);
             label1.TabIndex = 5;
@@ -90,7 +93,7 @@
             // 
             label2.AutoSize = true;
             label2.ForeColor = Color.Black;
-            label2.Location = new Point(214, 325);
+            label2.Location = new Point(213, 320);
             label2.Name = "label2";
             label2.Size = new Size(134, 20);
             label2.TabIndex = 6;
@@ -100,7 +103,7 @@
             // 
             label3.AutoSize = true;
             label3.ForeColor = Color.Black;
-            label3.Location = new Point(214, 364);
+            label3.Location = new Point(213, 359);
             label3.Name = "label3";
             label3.Size = new Size(105, 20);
             label3.TabIndex = 7;
@@ -110,7 +113,7 @@
             // 
             label4.AutoSize = true;
             label4.ForeColor = Color.Black;
-            label4.Location = new Point(214, 399);
+            label4.Location = new Point(213, 394);
             label4.Name = "label4";
             label4.Size = new Size(119, 20);
             label4.TabIndex = 8;
@@ -120,7 +123,7 @@
             // 
             label5.AutoSize = true;
             label5.ForeColor = Color.Black;
-            label5.Location = new Point(214, 437);
+            label5.Location = new Point(213, 436);
             label5.Name = "label5";
             label5.Size = new Size(70, 20);
             label5.TabIndex = 9;
@@ -129,18 +132,18 @@
             // AddRecord
             // 
             AddRecord.Enabled = false;
-            AddRecord.Location = new Point(717, 477);
+            AddRecord.Location = new Point(716, 510);
             AddRecord.Margin = new Padding(3, 4, 3, 4);
             AddRecord.Name = "AddRecord";
             AddRecord.Size = new Size(86, 31);
-            AddRecord.TabIndex = 6;
+            AddRecord.TabIndex = 7;
             AddRecord.Text = "Добавить";
             AddRecord.UseVisualStyleBackColor = true;
             AddRecord.Click += AddRecord_Click;
             // 
             // DateOfDischargeTextField
             // 
-            DateOfDischargeTextField.Location = new Point(354, 361);
+            DateOfDischargeTextField.Location = new Point(353, 356);
             DateOfDischargeTextField.Margin = new Padding(3, 4, 3, 4);
             DateOfDischargeTextField.Name = "DateOfDischargeTextField";
             DateOfDischargeTextField.Size = new Size(449, 27);
@@ -148,7 +151,7 @@
             // 
             // DateOfReceiptTextField
             // 
-            DateOfReceiptTextField.Location = new Point(354, 322);
+            DateOfReceiptTextField.Location = new Point(353, 317);
             DateOfReceiptTextField.Margin = new Padding(3, 4, 3, 4);
             DateOfReceiptTextField.Name = "DateOfReceiptTextField";
             DateOfReceiptTextField.Size = new Size(449, 27);
@@ -182,7 +185,7 @@
             // 
             DateOfReceiptErrorText.AutoSize = true;
             DateOfReceiptErrorText.ForeColor = Color.Red;
-            DateOfReceiptErrorText.Location = new Point(810, 330);
+            DateOfReceiptErrorText.Location = new Point(809, 325);
             DateOfReceiptErrorText.Name = "DateOfReceiptErrorText";
             DateOfReceiptErrorText.Size = new Size(13, 20);
             DateOfReceiptErrorText.TabIndex = 6;
@@ -192,7 +195,7 @@
             // 
             DateOfDischargeErrorText.AutoSize = true;
             DateOfDischargeErrorText.ForeColor = Color.Red;
-            DateOfDischargeErrorText.Location = new Point(810, 365);
+            DateOfDischargeErrorText.Location = new Point(809, 360);
             DateOfDischargeErrorText.Name = "DateOfDischargeErrorText";
             DateOfDischargeErrorText.Size = new Size(13, 20);
             DateOfDischargeErrorText.TabIndex = 6;
@@ -200,7 +203,7 @@
             // 
             // DepartmentTextField
             // 
-            DepartmentTextField.Location = new Point(354, 284);
+            DepartmentTextField.Location = new Point(353, 279);
             DepartmentTextField.Margin = new Padding(3, 4, 3, 4);
             DepartmentTextField.Name = "DepartmentTextField";
             DepartmentTextField.Size = new Size(430, 27);
@@ -208,11 +211,39 @@
             // 
             // MKBCodeTextField
             // 
-            MKBCodeTextField.Location = new Point(354, 438);
+            MKBCodeTextField.Location = new Point(353, 433);
             MKBCodeTextField.Margin = new Padding(3, 4, 3, 4);
             MKBCodeTextField.Name = "MKBCodeTextField";
             MKBCodeTextField.Size = new Size(430, 27);
             MKBCodeTextField.TabIndex = 5;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.ForeColor = Color.Black;
+            label6.Location = new Point(213, 477);
+            label6.Name = "label6";
+            label6.Size = new Size(123, 20);
+            label6.TabIndex = 9;
+            label6.Text = "Место хранения";
+            // 
+            // StorageLocationSelect
+            // 
+            StorageLocationSelect.FormattingEnabled = true;
+            StorageLocationSelect.Location = new Point(353, 474);
+            StorageLocationSelect.Margin = new Padding(3, 4, 3, 4);
+            StorageLocationSelect.Name = "StorageLocationSelect";
+            StorageLocationSelect.Size = new Size(449, 28);
+            StorageLocationSelect.TabIndex = 4;
+            StorageLocationSelect.TabStop = false;
+            // 
+            // StorageLocationTextField
+            // 
+            StorageLocationTextField.Location = new Point(353, 474);
+            StorageLocationTextField.Margin = new Padding(3, 4, 3, 4);
+            StorageLocationTextField.Name = "StorageLocationTextField";
+            StorageLocationTextField.Size = new Size(430, 27);
+            StorageLocationTextField.TabIndex = 6;
             // 
             // FormAddRecord
             // 
@@ -221,6 +252,7 @@
             ClientSize = new Size(1125, 699);
             Controls.Add(panelTitleBar);
             Controls.Add(AddRecord);
+            Controls.Add(label6);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -230,9 +262,11 @@
             Controls.Add(label1);
             Controls.Add(DateOfReceiptTextField);
             Controls.Add(DateOfDischargeTextField);
+            Controls.Add(StorageLocationTextField);
             Controls.Add(MKBCodeTextField);
             Controls.Add(DepartmentTextField);
             Controls.Add(HistoryNumberTextField);
+            Controls.Add(StorageLocationSelect);
             Controls.Add(DepartmentSelect);
             Controls.Add(MKBCodeSelect);
             Margin = new Padding(3, 4, 3, 4);
@@ -264,5 +298,8 @@
         private Label DateOfDischargeErrorText;
         private TextBox DepartmentTextField;
         private TextBox MKBCodeTextField;
+        private Label label6;
+        private ComboBox StorageLocationSelect;
+        private TextBox StorageLocationTextField;
     }
 }

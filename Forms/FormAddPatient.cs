@@ -170,21 +170,28 @@ namespace Archive.Forms
             }
         }
 
-        private async void AddPatient_Click(object sender, EventArgs e)
+        private void AddPatient_Click(object sender, EventArgs e)
         {
+            AddPatient.Enabled = false;
+            AddPatientAndRecords.Enabled = false;
+
             try
             {
                 DataBase dataBase = new DataBase();
-                List<PatientItem> patients = await dataBase.GetEntriesStartAndEndCharacter<PatientItem>(LastNameTextField.Text.Substring(0, 1), EndSymbol, "PatientNumber", "PatientNumber");
 
                 // Устанавливаем PatientNumber
+                List<PatientItem> patients;
                 int PatientNumber = 1;
                 List<int> patientNumbers = new List<int>();
-                foreach (PatientItem patientItem in patients)
+                Task.Run(async () =>
                 {
-                    string[] patientNumberParse = patientItem.PatientNumber.Split("-");
-                    patientNumbers.Add(int.Parse(patientNumberParse[1]));
-                }
+                    patients = await dataBase.GetEntriesStartAndEndCharacter<PatientItem>(LastNameTextField.Text.Substring(0, 1), EndSymbol, "PatientNumber", "PatientNumber");
+                    foreach (PatientItem patientItem in patients)
+                    {
+                        string[] patientNumberParse = patientItem.PatientNumber.Split("-");
+                        patientNumbers.Add(int.Parse(patientNumberParse[1]));
+                    }
+                }).Wait();
                 patientNumbers.Sort();
                 foreach (int number in patientNumbers)
                 {
@@ -212,7 +219,10 @@ namespace Archive.Forms
                     IndexAddress = IndexTextField.Text,
                 };
 
-                await dataBase.InsertEntry<PatientItem>(newPatient);
+                Task.Run(async () =>
+                {
+                    await dataBase.InsertEntry<PatientItem>(newPatient);
+                }).Wait();
 
                 this.Close();
             }
@@ -221,6 +231,9 @@ namespace Archive.Forms
                 AddPatientNotError = false;
                 MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
+
+            AddPatient.Enabled = true;
+            AddPatientAndRecords.Enabled = true;
         }
 
         private void AddPatientAndRecords_Click(object sender, EventArgs e)

@@ -79,13 +79,15 @@ namespace Archive.Forms
         {
             recordsDataSource = Records
                  .Join(Departments.DepartmentList, record => record.DepartmentID, department => department.DepartmentID, (record, department) => new { Record = record, DepartmentTitle = department.Title })
-                 .Join(MKB.MKBList, record => record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
+                 .Join(StorageLocation.StorageLocationList, record => record.Record.StorageLocationID, storageLocation => storageLocation.StorageLocationID, (record, storageLocation) => new { Record = record, StorageLocationTitle = storageLocation.Title })
+                 .Join(MKB.MKBList, record => record.Record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
                  {
-                     DepartmentTitle = record.DepartmentTitle,
-                     DateOfReceipt = record.Record.DateOfReceipt,
-                     DateOfDischarge = record.Record.DateOfDischarge,
-                     HistoryNumber = record.Record.HistoryNumber,
-                     MKBCodeTitle = mkb.MKBCode
+                     DepartmentTitle = record.Record.DepartmentTitle,
+                     DateOfReceipt = record.Record.Record.DateOfReceipt,
+                     DateOfDischarge = record.Record.Record.DateOfDischarge,
+                     HistoryNumber = record.Record.Record.HistoryNumber,
+                     MKBCodeTitle = mkb.MKBCode,
+                     StorageLocationTitle = record.StorageLocationTitle
                  })
                  .ToList();
             RecordsTable.DataSource = recordsDataSource;
@@ -99,6 +101,7 @@ namespace Archive.Forms
             RecordsTable.Columns[2].HeaderText = "Дата выписки";
             RecordsTable.Columns[3].HeaderText = "Номер истории";
             RecordsTable.Columns[4].HeaderText = "МКБ";
+            RecordsTable.Columns[5].HeaderText = "Место хранения";
 
             //Устанавливаем стили для таблицы
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle
@@ -111,6 +114,7 @@ namespace Archive.Forms
             RecordsTable.Columns[2].Width = 100;
             RecordsTable.Columns[3].Width = 100;
             RecordsTable.Columns[4].Width = 100;
+            RecordsTable.Columns[5].Width = 200;
             RecordsTable.DefaultCellStyle = cellStyle;
         }
         private void InitTextFieldsDefaultValues()
@@ -435,6 +439,9 @@ namespace Archive.Forms
                 case 4:
                     sortingFunc = record => record.MKBCodeTitle;
                     break;
+                case 5:
+                    sortingFunc = record => record.StorageLocationTitle;
+                    break;
                 default:
                     sortingFunc = record => record.DepartmentTitle;
                     break;
@@ -463,6 +470,7 @@ namespace Archive.Forms
         public DateTime DateOfDischarge { get; set; }
         public int HistoryNumber { get; set; }
         public string MKBCodeTitle { get; set; }
+        public string StorageLocationTitle { get; set; }
     }
 
     static class ErrorsFormPatientAndRecords

@@ -17,8 +17,19 @@ namespace Archive
             dBase.CreateTables();
             dBase.CloseDatabaseConnection();
 
-            MKB.GetMKB();
-            Departments.GetDepartment();
+            Task.Run(async () =>
+            {
+                DataBase dataBase = new DataBase();
+                if (DataBase.errorWhenConnection)
+                {
+                    this.Close();
+                    return;
+                }
+
+                await MKB.GetMKB();
+                await Departments.GetDepartment();
+                await StorageLocation.GetStorageLocation();
+            });
         }
         private void ActivateButton(object btnSender)
         {
