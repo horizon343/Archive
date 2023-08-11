@@ -5,6 +5,9 @@ namespace Archive.DB
     [Table("Record")]
     class RecordItem
     {
+        [Column("RecordID")]
+        public Guid RecordID { get; set; }
+        
         [Column("DepartmentID")]
         public int DepartmentID { get; set; }
 

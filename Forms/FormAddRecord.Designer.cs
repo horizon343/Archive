@@ -132,10 +132,10 @@
             // AddRecord
             // 
             AddRecord.Enabled = false;
-            AddRecord.Location = new Point(716, 510);
+            AddRecord.Location = new Point(679, 510);
             AddRecord.Margin = new Padding(3, 4, 3, 4);
             AddRecord.Name = "AddRecord";
-            AddRecord.Size = new Size(86, 31);
+            AddRecord.Size = new Size(123, 31);
             AddRecord.TabIndex = 7;
             AddRecord.Text = "Добавить";
             AddRecord.UseVisualStyleBackColor = true;

@@ -82,6 +82,7 @@ namespace Archive.Forms
                  .Join(StorageLocation.StorageLocationList, record => record.Record.StorageLocationID, storageLocation => storageLocation.StorageLocationID, (record, storageLocation) => new { Record = record, StorageLocationTitle = storageLocation.Title })
                  .Join(MKB.MKBList, record => record.Record.Record.MKBCode, mkb => mkb.MKBCode, (record, mkb) => new RecordViewItem
                  {
+                     RecordID = record.Record.Record.RecordID,
                      DepartmentTitle = record.Record.DepartmentTitle,
                      DateOfReceipt = record.Record.Record.DateOfReceipt,
                      DateOfDischarge = record.Record.Record.DateOfDischarge,
@@ -96,12 +97,13 @@ namespace Archive.Forms
                 column.ReadOnly = true;
 
             // Задаем названия полям
-            RecordsTable.Columns[0].HeaderText = "Отделение";
-            RecordsTable.Columns[1].HeaderText = "Дата поступления";
-            RecordsTable.Columns[2].HeaderText = "Дата выписки";
-            RecordsTable.Columns[3].HeaderText = "Номер истории";
-            RecordsTable.Columns[4].HeaderText = "МКБ";
-            RecordsTable.Columns[5].HeaderText = "Место хранения";
+            RecordsTable.Columns[0].HeaderText = "RecordID";
+            RecordsTable.Columns[1].HeaderText = "Отделение";
+            RecordsTable.Columns[2].HeaderText = "Дата поступления";
+            RecordsTable.Columns[3].HeaderText = "Дата выписки";
+            RecordsTable.Columns[4].HeaderText = "Номер истории";
+            RecordsTable.Columns[5].HeaderText = "МКБ";
+            RecordsTable.Columns[6].HeaderText = "Место хранения";
 
             //Устанавливаем стили для таблицы
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle
@@ -109,12 +111,13 @@ namespace Archive.Forms
                 BackColor = Color.White,
                 ForeColor = Color.Black,
             };
-            RecordsTable.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            RecordsTable.Columns[1].Width = 100;
+            RecordsTable.Columns[0].Visible = false;
+            RecordsTable.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             RecordsTable.Columns[2].Width = 100;
             RecordsTable.Columns[3].Width = 100;
             RecordsTable.Columns[4].Width = 100;
-            RecordsTable.Columns[5].Width = 200;
+            RecordsTable.Columns[5].Width = 100;
+            RecordsTable.Columns[6].Width = 200;
             RecordsTable.DefaultCellStyle = cellStyle;
         }
         private void InitTextFieldsDefaultValues()
@@ -124,6 +127,7 @@ namespace Archive.Forms
             FirstNameTextField.Text = DefaultPatientItem.FirstName;
             MiddleNameTextField.Text = DefaultPatientItem.MiddleName;
             DateOfBirthTextField.Text = DefaultPatientItem.DateOfBirth.ToShortDateString();
+            DateOfBirthTextField.MaxLength = 10;
             RegionTextField.Text = DefaultPatientItem.Region;
             DistrictTextField.Text = DefaultPatientItem.District;
             CityTextField.Text = DefaultPatientItem.City;
@@ -144,6 +148,7 @@ namespace Archive.Forms
             PhoneTextField.TextChanged += PhoneTextField_Changed;
             IndexTextField.TextChanged += IndexTextField_Changed;
             RecordsTable.CellClick += RecordsTable_CellClick;
+            RecordsTable.CellDoubleClick += RecordsTable_CellDoubleClick;
         }
         private void InitErrorsFormPatientAndRecords()
         {
@@ -207,8 +212,6 @@ namespace Archive.Forms
         }
         private void DateOfBirthTextField_Changed(object? sender, EventArgs e)
         {
-            DateOfBirthTextField.MaxLength = 10;
-
             ValidationForm.DateFormatting(DateOfBirthTextField);
             Edited[3] = false;
             ErrorsFormPatientAndRecords.DateOfBirth = false;
@@ -332,6 +335,7 @@ namespace Archive.Forms
         #region ButtonClick
         private void SaveButton_Click(object sender, EventArgs e)
         {
+            SaveButton.Enabled = false;
             try
             {
                 // Сохранение в базе данных
@@ -359,7 +363,10 @@ namespace Archive.Forms
                 }).Wait();
 
                 if (countUpdateEntries == 0)
+                {
                     MessageBox.Show("Ошибка. Ни одна запись не была изменена");
+                    SaveButton.Enabled = true;
+                }
                 else
                 {
                     InitDefaultValues(DefaultPatientItem.PatientID);
@@ -461,10 +468,21 @@ namespace Archive.Forms
 
             RecordsTable.DataSource = recordsDataSource;
         }
+
+        private void RecordsTable_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                var FormAddRecord = new FormAddRecord(DefaultPatientItem.PatientID, recordsDataSource[e.RowIndex].RecordID);
+                FormAddRecord.Show();
+                this.Close();
+            }
+        }
     }
 
     class RecordViewItem
     {
+        public Guid RecordID { get; set; }
         public string DepartmentTitle { get; set; }
         public DateTime DateOfReceipt { get; set; }
         public DateTime DateOfDischarge { get; set; }

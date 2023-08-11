@@ -149,6 +149,7 @@ namespace Archive.Forms
         }
         private void SearchButton_Click(object sender, EventArgs e)
         {
+            SearchButton.Enabled = false;
             try
             {
                 TotalCount = 1;
@@ -192,6 +193,7 @@ namespace Archive.Forms
             {
                 MessageBox.Show($"Непредвиденная ошибка: [{error.Message}]");
             }
+            SearchButton.Enabled = true;
         }
         #endregion
 

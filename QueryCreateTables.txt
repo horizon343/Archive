@@ -34,6 +34,7 @@ CREATE TABLE MKB (
 
 -- Create Record table
 CREATE TABLE Record (
+    RecordID UNIQUEIDENTIFIER PRIMARY KEY,
     DepartmentID INT,
     PatientID UNIQUEIDENTIFIER,
     DateOfReceipt DATETIME,
