@@ -17,6 +17,7 @@ namespace Archive
             dBase.CreateTables();
             dBase.CloseDatabaseConnection();
 
+            CyrillicToLatin.GetCyrillicToLatin();
             Task.Run(async () =>
             {
                 DataBase dataBase = new DataBase();

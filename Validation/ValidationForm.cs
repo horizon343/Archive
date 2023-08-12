@@ -81,6 +81,15 @@ namespace Archive.Validation
         }
 
         /// <summary>
+        /// Проверка, что символ является кириллицей
+        /// </summary>
+        /// <param name="symbol">Символ</param>
+        static public bool IsCyrillic(char symbol)
+        {
+            return (symbol >= 'А' && symbol <= 'я') || symbol == 'Ё' || symbol == 'ё';
+        }
+
+        /// <summary>
         /// Проверка, что строка состоит только из букв
         /// </summary>
         /// <param name="text">Текст</param>

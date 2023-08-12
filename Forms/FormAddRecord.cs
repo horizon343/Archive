@@ -121,6 +121,7 @@ namespace Archive.Forms
             DepartmentTextField.TextChanged += DepartmentTextField_Changed;
             MKBCodeSelect.SelectedIndexChanged += MKBCodeSelect_SelectedIndexChanged;
             MKBCodeTextField.TextChanged += MKBCodeTextField_Changed;
+            MKBCodeTextField.KeyPress += MKBCodeTextField_KeyPress;
             StorageLocationTextField.TextChanged += StorageLocationTextField_Changed;
             StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
         }
@@ -319,6 +320,20 @@ namespace Archive.Forms
             }
 
             MakeAddButtonActive();
+        }
+        private void MKBCodeTextField_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            try
+            {
+                if (ValidationForm.IsCyrillic(e.KeyChar))
+                {
+                    e.KeyChar = CyrillicToLatin.CyrillicToLatinMap[e.KeyChar.ToString().ToLower()[0]];
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка замены символа: {ex.Message}");
+            }
         }
         private void StorageLocationSelect_SelectedIndexChanged(object? sender, EventArgs e)
         {
