@@ -23,7 +23,7 @@ namespace Archive.Forms
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
         /// <param name="filePath">Путь к Excel файлу</param>
         /// <param name="propertys">Поля из таблицы</param>
-        private void ImportDataFromExcel<T>(string filePath, string[] propertys) where T : new()
+        private void ImportDataFromExcel<T>(string filePath, string[] propertys, string primaryKey) where T : new()
         {
             try
             {
@@ -73,7 +73,7 @@ namespace Archive.Forms
                     foreach (List<T> data in importedDataPortion)
                         Task.Run(async () =>
                         {
-                            await dataBase.InsertEntry<T>(data);
+                            await dataBase.MergeEntry<T>(data, primaryKey);
                         }).Wait();
 
                     MessageBox.Show($"Успешно добавлено {importedData.Count} записей!");
@@ -91,7 +91,7 @@ namespace Archive.Forms
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.), передается в ImportDataFromExcel</typeparam>
         /// <param name="button">Кнопка</param>
         /// <param name="propertys">Поля из таблицы, передается в ImportDataFromExcel</param>
-        private void OpenFile<T>(Button button, string[] propertys) where T : new()
+        private void OpenFile<T>(Button button, string[] propertys, string primaryKey) where T : new()
         {
             button.Enabled = false;
             try
@@ -102,7 +102,7 @@ namespace Archive.Forms
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         string filePath = openFileDialog.FileName;
-                        ImportDataFromExcel<T>(filePath, propertys);
+                        ImportDataFromExcel<T>(filePath, propertys, primaryKey);
                     }
                 }
             }
@@ -111,39 +111,6 @@ namespace Archive.Forms
                 MessageBox.Show($"При открытии файла произошла ошибка: [{ex.Message}]");
             }
             button.Enabled = true;
-        }
-
-
-        private void ImportDepartmentsButton_Click(object sender, EventArgs e)
-        {
-            OpenFile<DepartmentItem>(ImportDepartmentsButton, new string[] { "DepartmentID", "Title" });
-        }
-        private void ImportMKBButton_Click(object sender, EventArgs e)
-        {
-            OpenFile<MKBItem>(ImportMKBButton, new string[] { "MKBCode", "Title" });
-        }
-        private void ImportPatientAndRecordButton_Click(object sender, EventArgs e)
-        {
-            ImportPatientAndRecordButton.Enabled = false;
-            MessageBox.Show("Сначала выберите таблицу с пациентами, потом с картами (для выбора нескольких файлов зажмите ctrl)");
-            try
-            {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.Multiselect = true;
-                    openFileDialog.Filter = "Excel Files|*.xlsx";
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        List<string> selectedFiles = openFileDialog.FileNames.ToList();
-                        ImportPatientAndRecordFromExcel(selectedFiles[1], selectedFiles[0]);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка выбора файлов для импорта: [{ex.Message}]");
-            }
-            ImportPatientAndRecordButton.Enabled = true;
         }
 
         /// <summary>
@@ -260,6 +227,38 @@ namespace Archive.Forms
         }
 
 
+        private void ImportDepartmentsButton_Click(object sender, EventArgs e)
+        {
+            OpenFile<DepartmentItem>(ImportDepartmentsButton, new string[] { "DepartmentID", "Title" }, "DepartmentID");
+        }
+        private void ImportMKBButton_Click(object sender, EventArgs e)
+        {
+            OpenFile<MKBItem>(ImportMKBButton, new string[] { "MKBCode", "Title" }, "MKBCode");
+        }
+        private void ImportPatientAndRecordButton_Click(object sender, EventArgs e)
+        {
+            ImportPatientAndRecordButton.Enabled = false;
+            MessageBox.Show("Сначала выберите таблицу с пациентами, потом с картами (для выбора нескольких файлов зажмите ctrl)");
+            try
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Multiselect = true;
+                    openFileDialog.Filter = "Excel Files|*.xlsx";
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        List<string> selectedFiles = openFileDialog.FileNames.ToList();
+                        ImportPatientAndRecordFromExcel(selectedFiles[1], selectedFiles[0]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка выбора файлов для импорта: [{ex.Message}]");
+            }
+            ImportPatientAndRecordButton.Enabled = true;
+        }
+
         #region Examples imports
         private void ExampleImportDepartments_Click(object sender, EventArgs e)
         {
@@ -319,6 +318,10 @@ namespace Archive.Forms
             button.Enabled = true;
         }
         #endregion
+
+        private void ExportDepartmentButton_Click(object sender, EventArgs e)
+        {
+        }
     }
 
     class RecordItemDraft
@@ -335,5 +338,4 @@ namespace Archive.Forms
 
         public string MKBCode { get; set; }
     }
-
 }

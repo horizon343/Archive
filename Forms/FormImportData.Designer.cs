@@ -34,11 +34,12 @@
             ImportMKBButton = new Button();
             label3 = new Label();
             ImportPatientAndRecordButton = new Button();
-            label6 = new Label();
-            label7 = new Label();
             ExampleImportDepartments = new Button();
             ExampleImportMKB = new Button();
             ExampleImportPatientAndRecord = new Button();
+            ExportDepartmentButton = new Button();
+            ExportMKBButton = new Button();
+            ExportPatientAndRecordButton = new Button();
             SuspendLayout();
             // 
             // departments
@@ -102,32 +103,10 @@
             ImportPatientAndRecordButton.Margin = new Padding(3, 4, 3, 4);
             ImportPatientAndRecordButton.Name = "ImportPatientAndRecordButton";
             ImportPatientAndRecordButton.Size = new Size(102, 31);
-            ImportPatientAndRecordButton.TabIndex = 2;
+            ImportPatientAndRecordButton.TabIndex = 3;
             ImportPatientAndRecordButton.Text = "Импорт";
             ImportPatientAndRecordButton.UseVisualStyleBackColor = true;
             ImportPatientAndRecordButton.Click += ImportPatientAndRecordButton_Click;
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            label6.ForeColor = SystemColors.Desktop;
-            label6.Location = new Point(22, 227);
-            label6.Name = "label6";
-            label6.Size = new Size(1171, 20);
-            label6.TabIndex = 0;
-            label6.Text = "Таблица пациентов должна содержать 12 столбцов (код, номер, фамилия, имя, отчество, дата рождения, регион, район, город, адрес, телефон, индекс) без заголовков";
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            label7.ForeColor = SystemColors.Desktop;
-            label7.Location = new Point(22, 264);
-            label7.Name = "label7";
-            label7.Size = new Size(1033, 20);
-            label7.TabIndex = 0;
-            label7.Text = "Таблица карт должна содержать 6 столбцов (номер пациента, дата поступления, дата выписки, отделение, номер истории, МКБ) без заголовков";
             // 
             // ExampleImportDepartments
             // 
@@ -136,7 +115,7 @@
             ExampleImportDepartments.Margin = new Padding(3, 4, 3, 4);
             ExampleImportDepartments.Name = "ExampleImportDepartments";
             ExampleImportDepartments.Size = new Size(153, 31);
-            ExampleImportDepartments.TabIndex = 1;
+            ExampleImportDepartments.TabIndex = 4;
             ExampleImportDepartments.Text = "Пример импорта";
             ExampleImportDepartments.UseVisualStyleBackColor = true;
             ExampleImportDepartments.Click += ExampleImportDepartments_Click;
@@ -148,7 +127,7 @@
             ExampleImportMKB.Margin = new Padding(3, 4, 3, 4);
             ExampleImportMKB.Name = "ExampleImportMKB";
             ExampleImportMKB.Size = new Size(153, 31);
-            ExampleImportMKB.TabIndex = 1;
+            ExampleImportMKB.TabIndex = 5;
             ExampleImportMKB.Text = "Пример импорта";
             ExampleImportMKB.UseVisualStyleBackColor = true;
             ExampleImportMKB.Click += ExampleImportMKB_Click;
@@ -160,10 +139,44 @@
             ExampleImportPatientAndRecord.Margin = new Padding(3, 4, 3, 4);
             ExampleImportPatientAndRecord.Name = "ExampleImportPatientAndRecord";
             ExampleImportPatientAndRecord.Size = new Size(153, 31);
-            ExampleImportPatientAndRecord.TabIndex = 1;
+            ExampleImportPatientAndRecord.TabIndex = 6;
             ExampleImportPatientAndRecord.Text = "Пример импорта";
             ExampleImportPatientAndRecord.UseVisualStyleBackColor = true;
             ExampleImportPatientAndRecord.Click += ExampleImportPatientAndRecord_Click;
+            // 
+            // ExportDepartmentButton
+            // 
+            ExportDepartmentButton.ForeColor = SystemColors.Desktop;
+            ExportDepartmentButton.Location = new Point(516, 62);
+            ExportDepartmentButton.Margin = new Padding(3, 4, 3, 4);
+            ExportDepartmentButton.Name = "ExportDepartmentButton";
+            ExportDepartmentButton.Size = new Size(102, 31);
+            ExportDepartmentButton.TabIndex = 1;
+            ExportDepartmentButton.Text = "Экспорт";
+            ExportDepartmentButton.UseVisualStyleBackColor = true;
+            ExportDepartmentButton.Click += ExportDepartmentButton_Click;
+            // 
+            // ExportMKBButton
+            // 
+            ExportMKBButton.ForeColor = SystemColors.Desktop;
+            ExportMKBButton.Location = new Point(516, 105);
+            ExportMKBButton.Margin = new Padding(3, 4, 3, 4);
+            ExportMKBButton.Name = "ExportMKBButton";
+            ExportMKBButton.Size = new Size(102, 31);
+            ExportMKBButton.TabIndex = 1;
+            ExportMKBButton.Text = "Экспорт";
+            ExportMKBButton.UseVisualStyleBackColor = true;
+            // 
+            // ExportPatientAndRecordButton
+            // 
+            ExportPatientAndRecordButton.ForeColor = SystemColors.Desktop;
+            ExportPatientAndRecordButton.Location = new Point(516, 144);
+            ExportPatientAndRecordButton.Margin = new Padding(3, 4, 3, 4);
+            ExportPatientAndRecordButton.Name = "ExportPatientAndRecordButton";
+            ExportPatientAndRecordButton.Size = new Size(102, 31);
+            ExportPatientAndRecordButton.TabIndex = 1;
+            ExportPatientAndRecordButton.Text = "Экспорт";
+            ExportPatientAndRecordButton.UseVisualStyleBackColor = true;
             // 
             // FormImportData
             // 
@@ -176,10 +189,11 @@
             Controls.Add(ExampleImportPatientAndRecord);
             Controls.Add(ExampleImportMKB);
             Controls.Add(ExampleImportDepartments);
+            Controls.Add(ExportPatientAndRecordButton);
+            Controls.Add(ExportMKBButton);
+            Controls.Add(ExportDepartmentButton);
             Controls.Add(ImportDepartmentsButton);
             Controls.Add(label1);
-            Controls.Add(label7);
-            Controls.Add(label6);
             Controls.Add(departments);
             Margin = new Padding(3, 4, 3, 4);
             Name = "FormImportData";
@@ -196,10 +210,11 @@
         private Button ImportMKBButton;
         private Label label3;
         private Button ImportPatientAndRecordButton;
-        private Label label6;
-        private Label label7;
         private Button ExampleImportDepartments;
         private Button ExampleImportMKB;
         private Button ExampleImportPatientAndRecord;
+        private Button ExportDepartmentButton;
+        private Button ExportMKBButton;
+        private Button ExportPatientAndRecordButton;
     }
 }

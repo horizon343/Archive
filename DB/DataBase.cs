@@ -268,7 +268,7 @@ namespace Archive.DB
         {
             try
             {
-                string table = (typeof(T).Name).Remove(typeof(T).Name.IndexOf("Item"));
+                string table = typeof(T).Name.Remove(typeof(T).Name.IndexOf("Item"));
                 PropertyInfo[] properties = typeof(T).GetProperties();
 
                 string columns = string.Join(", ", properties.Select(property => property.Name));
@@ -285,7 +285,6 @@ namespace Archive.DB
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         foreach (PropertyInfo property in properties)
@@ -310,6 +309,68 @@ namespace Archive.DB
             List<T> dataList = new List<T>();
             dataList.Add(data);
             await InsertEntry(dataList);
+        }
+
+        /// <summary>
+        /// Выполняет слияние
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <param name="data">Данные (типа T)</param>
+        /// <param name="primaryKey">Первичный ключ из таблицы <T></param>
+        public async Task MergeEntry<T>(List<T> data, string primaryKey) where T : new()
+        {
+            try
+            {
+                string table = typeof(T).Name.Remove(typeof(T).Name.IndexOf("Item"));
+                PropertyInfo[] properties = typeof(T).GetProperties();
+
+                string columns = string.Join(", ", properties.Select(property => property.Name));
+                string values = "";
+                for (int i = 0; i < data.Count; i++)
+                {
+                    values += "(" + string.Join(", ", properties.Select(property => "@" + property.Name + i)) + ")";
+                    if (i != data.Count - 1)
+                        values += ",";
+                }
+                string updateString = "";
+                foreach (PropertyInfo property in properties)
+                {
+                    if (property.Name != primaryKey)
+                        updateString += $"{property.Name}=Source.{property.Name}";
+                }
+                string insertString = string.Join(", ", properties.Select(property => $"Source.{property.Name}"));
+
+                string query = $"MERGE INTO {table} AS Target " +
+                               $"USING (VALUES {values}) " +
+                               $"AS Source ({columns}) " +
+                               $"ON Target.{primaryKey} = Source.{primaryKey} " +
+                               $"WHEN MATCHED THEN " +
+                               $"UPDATE SET {updateString} " +
+                               $"WHEN NOT MATCHED THEN " +
+                               $"INSERT ({columns}) " +
+                               $"VALUES ({insertString});";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        foreach (PropertyInfo property in properties)
+                        {
+                            for (int i = 0; i < data.Count; i++)
+                            {
+                                SqlParameter parameter = new SqlParameter("@" + property.Name + i, property.GetValue(data[i]) ?? DBNull.Value);
+                                command.Parameters.Add(parameter);
+                            }
+                        }
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Непредвиденная ошибка при слиянии записи: {ex.Message}");
+            }
         }
 
         private void PopulateItemFromDataReader<T>(T item, SqlDataReader reader)
