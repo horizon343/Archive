@@ -4,7 +4,7 @@ namespace Archive.Data
 {
     static class CyrillicToLatin
     {
-        private static readonly string filePathCyrillicToLatinMap = "CyrillicToLatinMap.json";
+        private static readonly string filePathCyrillicToLatinMap = "JSON/CyrillicToLatinMap.json";
         public static Dictionary<char, char> CyrillicToLatinMap { get; set; } = new Dictionary<char, char> { };
 
         public static void GetCyrillicToLatin()

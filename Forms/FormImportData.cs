@@ -1,10 +1,17 @@
 ﻿using Archive.DB;
+using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
+using System.IO.Packaging;
 
 namespace Archive.Forms
 {
     public partial class FormImportData : Form
     {
+        private readonly string exampleImportPatientPathFile = "JSON/ExampleImportPatients.json";
+        private readonly string exampleImportRecordPathFile = "JSON/ExampleImportRecords.json";
+        private readonly string exampleImportMKBPathFile = "JSON/ExampleImportMKB.json";
+        private readonly string exampleImportDepartmentPathFile = "JSON/ExampleImportDepartments.json";
+
         public FormImportData()
         {
             InitializeComponent();
@@ -15,14 +22,11 @@ namespace Archive.Forms
         /// </summary>
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
         /// <param name="filePath">Путь к Excel файлу</param>
-        /// <param name="button">Кнопка</param>
-        /// <param name="propertys">Поля из таблицы (AutoIncrement не нужны)</param>
-        private void ImportDataFromExcel<T>(string filePath, Button button, string[] propertys) where T : new()
+        /// <param name="propertys">Поля из таблицы</param>
+        private void ImportDataFromExcel<T>(string filePath, string[] propertys) where T : new()
         {
             try
             {
-                button.Enabled = false;
-
                 // Установка лицензии
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -33,20 +37,18 @@ namespace Archive.Forms
                     int columnCount = worksheet.Dimension.Columns;
 
                     //Проверка корректности таблицы Excel
-                    if (typeof(T) == typeof(DepartmentItem) && columnCount != 1)
+                    if (typeof(T) == typeof(DepartmentItem) && columnCount != 2)
                     {
-                        MessageBox.Show($"Количество столбцов в импортируемой таблице должно быть равно 1 (названия отделений начиная с первой строки). " +
-                            $"Текущее число столбцов: {columnCount}");
+                        MessageBox.Show($"Некорректная таблица с отделениями, смотрите пример для импорта");
                         return;
                     }
                     else if (typeof(T) == typeof(MKBItem) && columnCount != 2)
                     {
-                        MessageBox.Show($"Количество столбцов в импортируемой таблице должно быть равно 2 (код и название, начиная с первой строки). " +
-                            $"Текущее число столбцов: {columnCount}");
+                        MessageBox.Show($"Некорректная таблица с МКБ, смотрите пример для импорта");
                         return;
                     }
 
-                    // Создание списка для перезаписи таблицы
+                    // Создание списка для добавления в таблицу
                     List<T> importedData = new List<T>();
                     for (int row = 1; row <= rowCount; row++)
                     {
@@ -56,27 +58,30 @@ namespace Archive.Forms
                         {
                             var prop = typeof(T).GetProperty(propertys[col - 1]);
                             if (prop != null)
-                                prop.SetValue(rowData, worksheet.Cells[row, col].Text);
+                                prop.SetValue(rowData, Convert.ChangeType(worksheet.Cells[row, col].Text, prop.PropertyType));
                         }
                         importedData.Add(rowData);
                     }
 
-                    // Перезаписываем таблицу
-                    DBase dBase = new DBase();
-                    dBase.ClearTable<T>();
-                    dBase.SetDataTable<T>(importedData);
-                    dBase.CloseDatabaseConnection();
+                    // Разбиение данных на порции
+                    List<List<T>> importedDataPortion = new List<List<T>>();
+                    for (int i = 0; i < importedData.Count; i += 1000)
+                        importedDataPortion.Add(importedData.GetRange(i, Math.Min(1000, importedData.Count - i)));
 
-                    MessageBox.Show($"Успешно перезаписано {importedData.Count} записей !");
+                    // Добавление в базу данных
+                    DataBase dataBase = new DataBase();
+                    foreach (List<T> data in importedDataPortion)
+                        Task.Run(async () =>
+                        {
+                            await dataBase.InsertEntry<T>(data);
+                        }).Wait();
+
+                    MessageBox.Show($"Успешно добавлено {importedData.Count} записей!");
                 }
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка импорта: [{error.Message}]");
-            }
-            finally
-            {
-                button.Enabled = true;
+                MessageBox.Show($"Ошибка импорта: [{ex.Message}]");
             }
         }
 
@@ -84,10 +89,11 @@ namespace Archive.Forms
         /// Выбор файла
         /// </summary>
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.), передается в ImportDataFromExcel</typeparam>
-        /// <param name="button">Кнопка, передается в ImportDataFromExcel</param>
-        /// <param name="propertys">Поля из таблицы (AutoIncrement не нужны), передается в ImportDataFromExcel</param>
+        /// <param name="button">Кнопка</param>
+        /// <param name="propertys">Поля из таблицы, передается в ImportDataFromExcel</param>
         private void OpenFile<T>(Button button, string[] propertys) where T : new()
         {
+            button.Enabled = false;
             try
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -96,29 +102,30 @@ namespace Archive.Forms
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         string filePath = openFileDialog.FileName;
-                        ImportDataFromExcel<T>(filePath, button, propertys);
+                        ImportDataFromExcel<T>(filePath, propertys);
                     }
                 }
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка выбора файла для импорта [{error}]");
+                MessageBox.Show($"При открытии файла произошла ошибка: [{ex.Message}]");
             }
+            button.Enabled = true;
         }
+
 
         private void ImportDepartmentsButton_Click(object sender, EventArgs e)
         {
-            OpenFile<DepartmentItem>(ImportDepartmentsButton, new string[] { "Title" });
+            OpenFile<DepartmentItem>(ImportDepartmentsButton, new string[] { "DepartmentID", "Title" });
         }
-
         private void ImportMKBButton_Click(object sender, EventArgs e)
         {
             OpenFile<MKBItem>(ImportMKBButton, new string[] { "MKBCode", "Title" });
         }
-
         private void ImportPatientAndRecordButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Сначала выберите таблицу с пациентами, потом с картами");
+            ImportPatientAndRecordButton.Enabled = false;
+            MessageBox.Show("Сначала выберите таблицу с пациентами, потом с картами (для выбора нескольких файлов зажмите ctrl)");
             try
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -132,10 +139,11 @@ namespace Archive.Forms
                     }
                 }
             }
-            catch (Exception error)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка выбора файла для импорта [{error}]");
+                MessageBox.Show($"Ошибка выбора файлов для импорта: [{ex.Message}]");
             }
+            ImportPatientAndRecordButton.Enabled = true;
         }
 
         /// <summary>
@@ -147,8 +155,6 @@ namespace Archive.Forms
         {
             try
             {
-                ImportPatientAndRecordButton.Enabled = false;
-
                 // Установка лицензии
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -163,18 +169,19 @@ namespace Archive.Forms
                     int recordRowCount = recordWorksheet.Dimension.Rows;
                     int recordColumnCount = recordWorksheet.Dimension.Columns;
 
-                    //Проверка корректности таблицы Excel
+                    //Проверка корректности таблиц Excel
                     if (patientColumnCount != 12)
                     {
-                        MessageBox.Show($"Количество столбцов в таблице пациентов должно быть равно 12. Текущее число столбцов: {patientColumnCount}");
+                        MessageBox.Show($"Некорректная таблица с пациентами, смотрите пример для импорта");
                         return;
                     }
                     else if (recordColumnCount != 6)
                     {
-                        MessageBox.Show($"Количество столбцов в таблице карты должно быть равно 6. Текущее число столбцов: {recordColumnCount}");
+                        MessageBox.Show($"Некорректная таблица с картами, смотрите пример для импорта");
                         return;
                     }
 
+                    List<string> errors = new List<string>();
                     // Создание списка карт
                     List<RecordItemDraft> recordsDraft = new List<RecordItemDraft>();
                     for (int row = 1; row <= recordRowCount; row++)
@@ -190,10 +197,10 @@ namespace Archive.Forms
                                 MKBCode = recordWorksheet.Cells[row, 6].Text,
                             });
                         else
-                            MessageBox.Show($"Ошибка добавления карты: строка {row} пропущена");
+                            errors.Add($"Ошибка добавления карты: строка {row} пропущена (некорректный номер пациента)");
                     }
-                    List<RecordItem> recordItem = new List<RecordItem>();
 
+                    List<RecordItem> recordItem = new List<RecordItem>();
                     // Создание списка пациентов
                     List<PatientItem> patientItem = new List<PatientItem>();
                     for (int row = 1; row <= patientRowCount; row++)
@@ -250,11 +257,68 @@ namespace Archive.Forms
             {
                 MessageBox.Show($"Ошибка импорта: [{error.Message}]");
             }
-            finally
-            {
-                ImportPatientAndRecordButton.Enabled = true;
-            }
         }
+
+
+        #region Examples imports
+        private void ExampleImportDepartments_Click(object sender, EventArgs e)
+        {
+            ExampleImport(ExampleImportDepartments, "Отделения", exampleImportDepartmentPathFile);
+        }
+        private void ExampleImportMKB_Click(object sender, EventArgs e)
+        {
+            ExampleImport(ExampleImportMKB, "МКБ", exampleImportMKBPathFile);
+        }
+        private void ExampleImportPatientAndRecord_Click(object sender, EventArgs e)
+        {
+            ExampleImport(ExampleImportPatientAndRecord, "Пациенты", exampleImportPatientPathFile);
+            ExampleImport(ExampleImportPatientAndRecord, "Карты", exampleImportRecordPathFile);
+        }
+
+        private void ExampleImport(Button button, string fileName, string exampleFilePath)
+        {
+            button.Enabled = false;
+            try
+            {
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx";
+                    saveFileDialog.FileName = fileName;
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = saveFileDialog.FileName;
+
+                        using (var excelPackage = new ExcelPackage())
+                        {
+                            if (File.Exists(exampleFilePath))
+                            {
+                                var worksheet = excelPackage.Workbook.Worksheets.Add("Sheets");
+
+                                string jsonContext = File.ReadAllText(exampleFilePath);
+                                JObject jsonObject = JObject.Parse(jsonContext);
+                                foreach (var item in jsonObject)
+                                {
+                                    if (item.Value != null)
+                                        worksheet.Cells[item.Key].Value = item.Value.ToString();
+                                }
+                                excelPackage.SaveAs(new System.IO.FileInfo(filePath));
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Ошибка загрузки примера импорта: {fileName}");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки примера импорта {fileName}: {ex.Message}");
+            }
+            button.Enabled = true;
+        }
+        #endregion
     }
 
     class RecordItemDraft

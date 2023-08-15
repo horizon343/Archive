@@ -7,7 +7,7 @@ namespace Archive.DB
     internal class DataBase
     {
         private static string connectionString = "";
-        private static string jsonFilePath = "connectionDB.json";
+        private static string jsonFilePath = "JSON/connectionDB.json";
 
         private static JObject? jsonObject;
         public static bool errorWhenConnection = false;
@@ -260,11 +260,11 @@ namespace Archive.DB
         }
 
         /// <summary>
-        /// Добавление одной записи в таблицу T
+        /// Добавление записи в таблицу T
         /// </summary>
         /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
         /// <param name="data">Данные (типа T)</param>
-        public async Task InsertEntry<T>(T data) where T : new()
+        public async Task InsertEntry<T>(List<T> data) where T : new()
         {
             try
             {
@@ -272,9 +272,15 @@ namespace Archive.DB
                 PropertyInfo[] properties = typeof(T).GetProperties();
 
                 string columns = string.Join(", ", properties.Select(property => property.Name));
-                string values = string.Join(", ", properties.Select(property => "@" + property.Name));
+                string values = "";
+                for (int i = 0; i < data.Count; i++)
+                {
+                    values += "(" + string.Join(", ", properties.Select(property => "@" + property.Name + i)) + ")";
+                    if (i != data.Count - 1)
+                        values += ",";
+                }
 
-                string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
+                string query = $"INSERT INTO {table} ({columns}) VALUES {values}";
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -284,8 +290,11 @@ namespace Archive.DB
                     {
                         foreach (PropertyInfo property in properties)
                         {
-                            SqlParameter parameter = new SqlParameter("@" + property.Name, property.GetValue(data) ?? DBNull.Value);
-                            command.Parameters.Add(parameter);
+                            for (int i = 0; i < data.Count; i++)
+                            {
+                                SqlParameter parameter = new SqlParameter("@" + property.Name + i, property.GetValue(data[i]) ?? DBNull.Value);
+                                command.Parameters.Add(parameter);
+                            }
                         }
                         command.ExecuteNonQuery();
                     }
@@ -295,6 +304,12 @@ namespace Archive.DB
             {
                 MessageBox.Show($"Непредвиденная ошибка при добавлении записи: {ex.Message}");
             }
+        }
+        public async Task InsertEntry<T>(T data) where T : new()
+        {
+            List<T> dataList = new List<T>();
+            dataList.Add(data);
+            await InsertEntry(dataList);
         }
 
         private void PopulateItemFromDataReader<T>(T item, SqlDataReader reader)

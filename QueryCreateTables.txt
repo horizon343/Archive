@@ -41,9 +41,9 @@ CREATE TABLE Record (
     DateOfDischarge DATETIME,
     HistoryNumber INT,
     MKBCode NVARCHAR(255),
-	StorageLocationID NVARCHAR(255),
+    StorageLocationID NVARCHAR(255),
     FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
     FOREIGN KEY (PatientID) REFERENCES Patient(PatientID),
     FOREIGN KEY (MKBCode) REFERENCES MKB(MKBCode),
-	FOREIGN KEY (StorageLocationID) REFERENCES StorageLocation(StorageLocationID)
+    FOREIGN KEY (StorageLocationID) REFERENCES StorageLocation(StorageLocationID)
 );
