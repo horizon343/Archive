@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
 using System.IO.Packaging;
+using System.Reflection;
 
 namespace Archive.Forms
 {
@@ -11,6 +12,7 @@ namespace Archive.Forms
         private readonly string exampleImportRecordPathFile = "JSON/ExampleImportRecords.json";
         private readonly string exampleImportMKBPathFile = "JSON/ExampleImportMKB.json";
         private readonly string exampleImportDepartmentPathFile = "JSON/ExampleImportDepartments.json";
+        private readonly string[] Columns = new string[26] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 
         public FormImportData()
         {
@@ -288,7 +290,7 @@ namespace Archive.Forms
                     {
                         string filePath = saveFileDialog.FileName;
 
-                        using (var excelPackage = new ExcelPackage())
+                        using (ExcelPackage excelPackage = new ExcelPackage())
                         {
                             if (File.Exists(exampleFilePath))
                             {
@@ -319,9 +321,71 @@ namespace Archive.Forms
         }
         #endregion
 
+        #region Export
         private void ExportDepartmentButton_Click(object sender, EventArgs e)
         {
+            ExportOnExcel<DepartmentItem>(ExportDepartmentButton, "Отделения", "DepartmentID");
         }
+        private void ExportMKBButton_Click(object sender, EventArgs e)
+        {
+            ExportOnExcel<MKBItem>(ExportMKBButton, "МКБ", "MKBCode");
+        }
+
+        private void ExportOnExcel<T>(Button button, string fileName, string IDField) where T : new()
+        {
+            button.Enabled = false;
+            try
+            {
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx";
+                    saveFileDialog.FileName = fileName;
+
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = saveFileDialog.FileName;
+                        using (ExcelPackage excelPackage = new ExcelPackage(filePath))
+                        {
+                            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Sheets");
+
+                            int totalPage = 1;
+                            int currentPage = 1;
+                            int pageSize = 10;
+                            DataBase dataBase = new DataBase();
+
+                            while (currentPage <= totalPage)
+                            {
+                                Task.Run(async () =>
+                                {
+                                    (List<T>, int) items = await dataBase.GetPagedEntries<T>(currentPage, pageSize, IDField);
+
+                                    for (int i = 1; i <= items.Item1.Count; i++)
+                                    {
+                                        int row = (currentPage - 1) * pageSize + i;
+                                        PropertyInfo[] properties = typeof(T).GetProperties();
+                                        for (int column = 0; column < properties.Length; column++)
+                                        {
+                                            worksheet.Cells[Columns[column] + row].Value = properties[column].GetValue(items.Item1[i - 1]);
+                                        }
+                                    }
+
+                                    totalPage = items.Item2;
+                                    currentPage += 1;
+                                }).Wait();
+                            }
+
+                            excelPackage.SaveAs(new System.IO.FileInfo(filePath));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка экспорта: {ex.Message}");
+            }
+            button.Enabled = true;
+        }
+        #endregion
     }
 
     class RecordItemDraft

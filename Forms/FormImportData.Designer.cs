@@ -166,6 +166,7 @@
             ExportMKBButton.TabIndex = 1;
             ExportMKBButton.Text = "Экспорт";
             ExportMKBButton.UseVisualStyleBackColor = true;
+            ExportMKBButton.Click += ExportMKBButton_Click;
             // 
             // ExportPatientAndRecordButton
             // 
