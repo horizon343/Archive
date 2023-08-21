@@ -57,6 +57,7 @@
             PatientNumberLabel = new Label();
             SaveButton = new Button();
             ShowOrHideButton = new Button();
+            DeletePatientAndRecordsButton = new Button();
             ((System.ComponentModel.ISupportInitialize)RecordsTable).BeginInit();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
@@ -343,6 +344,18 @@
             ShowOrHideButton.UseVisualStyleBackColor = true;
             ShowOrHideButton.Click += ShowOrHideButton_Click;
             // 
+            // DeletePatientAndRecordsButton
+            // 
+            DeletePatientAndRecordsButton.ForeColor = Color.Red;
+            DeletePatientAndRecordsButton.Location = new Point(688, 652);
+            DeletePatientAndRecordsButton.Margin = new Padding(3, 4, 3, 4);
+            DeletePatientAndRecordsButton.Name = "DeletePatientAndRecordsButton";
+            DeletePatientAndRecordsButton.Size = new Size(275, 31);
+            DeletePatientAndRecordsButton.TabIndex = 14;
+            DeletePatientAndRecordsButton.Text = "Удалить пациента с картами";
+            DeletePatientAndRecordsButton.UseVisualStyleBackColor = true;
+            DeletePatientAndRecordsButton.Click += DeletePatientAndRecordsButton_Click;
+            // 
             // FormPatientAndRecords
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -357,6 +370,7 @@
             Controls.Add(DistrictTextField);
             Controls.Add(ShowOrHideButton);
             Controls.Add(SaveButton);
+            Controls.Add(DeletePatientAndRecordsButton);
             Controls.Add(AddRecordButton);
             Controls.Add(label12);
             Controls.Add(RecordsTable);
@@ -417,5 +431,6 @@
         private Label PatientNumberLabel;
         private Button SaveButton;
         private Button ShowOrHideButton;
+        private Button DeletePatientAndRecordsButton;
     }
 }

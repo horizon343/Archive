@@ -409,6 +409,27 @@ namespace Archive.Forms
 
             isVisible = !isVisible;
         }
+        private void DeletePatientAndRecordsButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить данного пациента со всеми его картами? \n(Данную операцию нельзя будет отменить!)", "Подтверждение", MessageBoxButtons.OKCancel);
+
+            if (result == DialogResult.OK)
+            {
+                DataBase dataBase = new DataBase();
+
+                Task.Run(async () =>
+                {
+                    List<Guid> recordsID = new List<Guid>();
+                    foreach (RecordItem record in Records)
+                        recordsID.Add(record.RecordID);
+                    if (recordsID.Count > 0)
+                        await dataBase.DeleteEntry<RecordItem, Guid>("RecordID", recordsID);
+                    await dataBase.DeleteEntry<PatientItem, Guid>("PatientID", DefaultPatientItem.PatientID);
+                }).Wait();
+
+                this.Close();
+            }
+        }
         #endregion
 
         // Меняет свойство Enable у SaveButton 

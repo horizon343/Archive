@@ -82,55 +82,57 @@ namespace Archive.DB
             }
         }
 
-        public async Task<(List<T>, int)> SearchEntriesByFieldValue<T, F>(int pageNumber, int pageSize, string sortField, string field, F[] values, string fields = "*") where T : new()
+        /// <summary>
+        /// Удаляет массив записей по primaryKey
+        /// </summary>
+        /// <typeparam name="T">Таблица (MKBItem, PatientItem и т.д.)</typeparam>
+        /// <typeparam name="PK">Тип первичного ключа</typeparam>
+        /// <param name="primaryKey">Поле первичного ключа (Name)</param>
+        /// <param name="listPK">Список из значений первичного ключа</param>
+        /// <returns></returns>
+        public async Task<int> DeleteEntry<T, PK>(string primaryKey, List<PK> listPK)
         {
             try
             {
-                if (pageSize <= 0 || pageNumber <= 0 || values.Length == 0)
-                    return (new List<T>(), 0);
-
                 string table = typeof(T).Name.Remove(typeof(T).Name.IndexOf("Item"));
-                int startIndex = (pageNumber - 1) * pageSize;
-
-                string queryWhere = string.Join(", ", values);
-
-                string countQuery = $"SELECT COUNT(*) FROM {table} WHERE {field} IN ({queryWhere})";
-                string dataQuery = $"SELECT {fields} FROM {table} WHERE {field} IN ({queryWhere}) ORDER BY {sortField} OFFSET {startIndex} ROWS FETCH NEXT {pageSize} ROWS ONLY";
-
-                int totalPages = 0;
-                List<T> result = new List<T>();
+                string values = "";
+                for (int i = 0; i < listPK.Count; i++)
+                {
+                    values += "@" + i.ToString();
+                    if (i != listPK.Count - 1)
+                        values += ",";
+                }
+                string query = $"DELETE FROM {table} WHERE {primaryKey} IN ({values})";
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-
-                    using (SqlCommand countCommand = new SqlCommand(countQuery, connection))
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        int totalCount = (int)await countCommand.ExecuteScalarAsync();
-                        totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-                    }
-
-                    using (SqlCommand dataCommand = new SqlCommand(dataQuery, connection))
-                    {
-                        using (SqlDataReader reader = await dataCommand.ExecuteReaderAsync())
+                        for (int i = 0; i < listPK.Count; i++)
                         {
-                            while (await reader.ReadAsync())
-                            {
-                                T item = new T();
-                                PopulateItemFromDataReader<T>(item, reader);
-                                result.Add(item);
-                            }
+                            SqlParameter parameter = new SqlParameter("@" + i, listPK[i]);
+                            command.Parameters.Add(parameter);
                         }
+
+                        int? count = await command.ExecuteNonQueryAsync();
+                        if (count != null)
+                            return (int)count;
+                        return 0;
                     }
                 }
-
-                return (result, totalPages);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Непредвиденная ошибка при поиске записей: {ex.Message}");
-                return (new List<T>(), 0);
+                MessageBox.Show($"Непредвиденная ошибка при удалении записи: {ex.Message}");
+                return 0;
             }
+        }
+        public async Task<int> DeleteEntry<T, PK>(string primaryKey, PK data)
+        {
+            List<PK> dataList = new List<PK>();
+            dataList.Add(data);
+            return await DeleteEntry<T, PK>(primaryKey, dataList);
         }
 
         /// <summary>
@@ -308,7 +310,7 @@ namespace Archive.DB
         {
             List<T> dataList = new List<T>();
             dataList.Add(data);
-            await InsertEntry(dataList);
+            await InsertEntry<T>(dataList);
         }
 
         /// <summary>
