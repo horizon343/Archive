@@ -333,10 +333,14 @@ namespace Archive.DB
                         values += ",";
                 }
                 string updateString = "";
-                foreach (PropertyInfo property in properties)
+                for (int i = 0; i < properties.Length; i++)
                 {
-                    if (property.Name != primaryKey)
-                        updateString += $"{property.Name}=Source.{property.Name}";
+                    if (properties[i].Name != primaryKey)
+                    {
+                        updateString += $"{properties[i].Name}=Source.{properties[i].Name}";
+                        if (i != properties.Length - 1)
+                            updateString += ",";
+                    }
                 }
                 string insertString = string.Join(", ", properties.Select(property => $"Source.{property.Name}"));
 
