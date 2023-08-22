@@ -12,6 +12,7 @@ namespace Archive
         public Form1()
         {
             InitializeComponent();
+            DisableButton();
 
             DBase dBase = new DBase();
             dBase.CreateTables();
@@ -63,6 +64,9 @@ namespace Archive
 
         private void OpenChildForm(Form childForm, object btnSender)
         {
+            // Блокировка меню, если идет импорт или экспорт на форме FormImportData
+            if (!Data.Data.IsActiveMenu)
+                return;
             if (activeForm != null)
                 activeForm.Close();
             ActivateButton(btnSender);
@@ -90,21 +94,6 @@ namespace Archive
         private void button3_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormMKB(), sender);
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender);
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender);
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender);
         }
 
         private void ImportDataButton_Click(object sender, EventArgs e)

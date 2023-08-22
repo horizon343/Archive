@@ -937,6 +937,8 @@ namespace Archive.Forms
             ImportMKBButton.Enabled = value;
             ImportPatientAndRecordButton.Enabled = value;
             ImportNewPatientAndRecord.Enabled = value;
+
+            Data.Data.IsActiveMenu = value;
         }
     }
 

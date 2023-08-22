@@ -18,6 +18,10 @@ namespace Archive.Forms
         private readonly Color ErrorColor = Color.Red;
         private readonly Color EditColor = Color.Green;
 
+        private static List<string>? MKBCode = null;
+        private static List<string>? departmentsTitle = null;
+        private static List<string>? storageLocationTitle = null;
+
         public FormAddRecord(Guid patientID, Guid? recordID = null)
         {
             InitializeComponent();
@@ -127,9 +131,12 @@ namespace Archive.Forms
         }
         private void InitMKBItemField()
         {
-            List<string> MKBCode = new List<string>();
-            foreach (MKBItem mkbItem in MKB.MKBList)
-                MKBCode.Add(mkbItem.MKBCode);
+            if (MKBCode == null)
+            {
+                MKBCode = new List<string>();
+                foreach (MKBItem mkbItem in MKB.MKBList)
+                    MKBCode.Add(mkbItem.MKBCode);
+            }
 
             AutoCompleteStringCollection MKBSource = new AutoCompleteStringCollection();
             MKBSource.AddRange(MKBCode.ToArray());
@@ -142,9 +149,12 @@ namespace Archive.Forms
         }
         private void InitDepartmentItemField()
         {
-            List<string> departmentsTitle = new List<string>();
-            foreach (DepartmentItem departmentItem in Departments.DepartmentList)
-                departmentsTitle.Add(departmentItem.Title);
+            if (departmentsTitle == null)
+            {
+                departmentsTitle = new List<string>();
+                foreach (DepartmentItem departmentItem in Departments.DepartmentList)
+                    departmentsTitle.Add(departmentItem.Title);
+            }
 
             AutoCompleteStringCollection departmentsSource = new AutoCompleteStringCollection();
             departmentsSource.AddRange(departmentsTitle.ToArray());
@@ -157,9 +167,12 @@ namespace Archive.Forms
         }
         private void InitStorageLocationItemField()
         {
-            List<string> storageLocationTitle = new List<string>();
-            foreach (StorageLocationItem storageLocationItem in StorageLocation.StorageLocationList)
-                storageLocationTitle.Add(storageLocationItem.Title);
+            if (storageLocationTitle == null)
+            {
+                storageLocationTitle = new List<string>();
+                foreach (StorageLocationItem storageLocationItem in StorageLocation.StorageLocationList)
+                    storageLocationTitle.Add(storageLocationItem.Title);
+            }
 
             AutoCompleteStringCollection storageLocationsSource = new AutoCompleteStringCollection();
             storageLocationsSource.AddRange(storageLocationTitle.ToArray());
