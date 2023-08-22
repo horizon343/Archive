@@ -119,6 +119,15 @@ namespace Archive.Forms
             RecordsTable.Columns[5].Width = 100;
             RecordsTable.Columns[6].Width = 200;
             RecordsTable.DefaultCellStyle = cellStyle;
+
+            // Добавляем кнопку в каждую строку
+            DataGridViewButtonColumn DeleteRecordButton = new DataGridViewButtonColumn();
+            DeleteRecordButton.HeaderText = "Действие";
+            DeleteRecordButton.Text = "Удалить";
+            DeleteRecordButton.UseColumnTextForButtonValue = true;
+            DeleteRecordButton.FlatStyle = FlatStyle.Flat;
+            DeleteRecordButton.DefaultCellStyle.ForeColor = Color.Red;
+            RecordsTable.Columns.Add(DeleteRecordButton);
         }
         private void InitTextFieldsDefaultValues()
         {
@@ -149,6 +158,7 @@ namespace Archive.Forms
             IndexTextField.TextChanged += IndexTextField_Changed;
             RecordsTable.CellClick += RecordsTable_CellClick;
             RecordsTable.CellDoubleClick += RecordsTable_CellDoubleClick;
+            RecordsTable.CellContentClick += RecordsTable_CellContentClick;
         }
         private void InitErrorsFormPatientAndRecords()
         {
@@ -492,11 +502,37 @@ namespace Archive.Forms
 
         private void RecordsTable_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0)
+            if (e.RowIndex >= 0 && e.ColumnIndex != 0)
             {
                 var FormAddRecord = new FormAddRecord(DefaultPatientItem.PatientID, recordsDataSource[e.RowIndex].RecordID);
                 FormAddRecord.Show();
                 this.Close();
+            }
+        }
+
+        private void RecordsTable_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
+            {
+                DialogResult result = MessageBox.Show("Вы уверены, что хотите удалить карту? \n(Данную операцию нельзя будет отменить!)", "Подтверждение", MessageBoxButtons.OKCancel);
+
+                if (result == DialogResult.OK)
+                {
+                    DataBase dataBase = new DataBase();
+
+                    Task.Run(async () =>
+                    {
+                        int countDelete = await dataBase.DeleteEntry<RecordItem, Guid>("RecordID", recordsDataSource[e.RowIndex].RecordID);
+                        if (countDelete != 0)
+                        {
+                            List<RecordViewItem> recordsDataSourceNew = recordsDataSource.ToList();
+                            recordsDataSourceNew.Remove(recordsDataSource[e.RowIndex]);
+                            recordsDataSource = recordsDataSourceNew;
+                        }
+                    }).Wait();
+
+                    RecordsTable.DataSource = recordsDataSource;
+                }
             }
         }
     }

@@ -213,7 +213,7 @@
             RecordsTable.RowHeadersWidth = 51;
             RecordsTable.RowTemplate.Height = 25;
             RecordsTable.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            RecordsTable.Size = new Size(841, 243);
+            RecordsTable.Size = new Size(991, 243);
             RecordsTable.TabIndex = 0;
             RecordsTable.TabStop = false;
             // 

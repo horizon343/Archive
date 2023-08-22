@@ -346,13 +346,7 @@ namespace Archive.Forms
             {
                 var FormPatientAndRecords = new FormPatientAndRecords(PatientItem[e.RowIndex].PatientID);
                 FormPatientAndRecords.Show();
-                FormPatientAndRecords.FormClosing += FormPatientAndRecords_FormClosing;
             }
-        }
-        private void FormPatientAndRecords_FormClosing(object? sender, FormClosingEventArgs e)
-        {
-            if (sender != null)
-                SearchButton_Click(sender, e);
         }
     }
 
