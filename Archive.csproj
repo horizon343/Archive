@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="JSON\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="JSON\connectionDB.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

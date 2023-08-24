@@ -14,6 +14,8 @@ namespace Archive
             InitializeComponent();
             DisableButton();
 
+            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
+
             DBase dBase = new DBase();
             dBase.CreateTables();
             dBase.CloseDatabaseConnection();
@@ -31,8 +33,58 @@ namespace Archive
                 await MKB.GetMKB();
                 await Departments.GetDepartment();
                 await StorageLocation.GetStorageLocation();
+                StorageLocation.SetCurrentStorageLocation();
+
+                SetItemStorageLocationSelect();
+                InitStorageLocationSelect();
+
+                if (StorageLocation.currentStorageLocation == null)
+                {
+                    this.Close();
+                    return;
+                }
             });
+
         }
+
+        private void SetItemStorageLocationSelect()
+        {
+            if (StorageLocation.isDataReceived)
+            {
+                List<string> StorageLocationTitle = new List<string>();
+                foreach (StorageLocationItem storageLocation in StorageLocation.StorageLocationList)
+                    StorageLocationTitle.Add(storageLocation.Title);
+                StorageLocationSelect.Items.AddRange(StorageLocationTitle.ToArray());
+            }
+        }
+
+        private void InitStorageLocationSelect()
+        {
+            if (StorageLocation.currentStorageLocation != null)
+            {
+                StorageLocationItem? currentStorageLocation = StorageLocation.StorageLocationList.Find(sl => sl.StorageLocationID == StorageLocation.currentStorageLocation);
+                if (currentStorageLocation != null)
+                {
+                    var selectedItemStorageLocation = StorageLocationSelect.Items.Cast<string>()
+                         .FirstOrDefault(item => item.ToLower().Equals(currentStorageLocation.Title.ToLower()));
+                    if (selectedItemStorageLocation != null)
+                        StorageLocationSelect.SelectedItem = selectedItemStorageLocation;
+                }
+            }
+        }
+
+        private void StorageLocationSelect_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            foreach (StorageLocationItem sl in StorageLocation.StorageLocationList)
+            {
+                if (sl.Title.ToLower() == StorageLocationSelect.SelectedItem.ToString().ToLower())
+                {
+                    StorageLocation.currentStorageLocation = sl.StorageLocationID;
+                    StorageLocation.SetNewStorageLocation(sl.StorageLocationID);
+                }
+            }
+        }
+
         private void ActivateButton(object btnSender)
         {
             if (btnSender != null)

@@ -37,10 +37,13 @@ namespace Archive
             button2 = new Button();
             button1 = new Button();
             panelLogo = new Panel();
+            StorageLocationSelect = new ComboBox();
             panelTitleBar = new Panel();
             lblTitle = new Label();
             panelDesktopPanel = new Panel();
+            label1 = new Label();
             panelMenu.SuspendLayout();
+            panelLogo.SuspendLayout();
             panelTitleBar.SuspendLayout();
             SuspendLayout();
             // 
@@ -138,12 +141,25 @@ namespace Archive
             // panelLogo
             // 
             panelLogo.BackColor = Color.FromArgb(39, 39, 58);
+            panelLogo.Controls.Add(label1);
+            panelLogo.Controls.Add(StorageLocationSelect);
             panelLogo.Dock = DockStyle.Top;
             panelLogo.Location = new Point(0, 0);
             panelLogo.Margin = new Padding(3, 4, 3, 4);
             panelLogo.Name = "panelLogo";
             panelLogo.Size = new Size(251, 107);
             panelLogo.TabIndex = 0;
+            // 
+            // StorageLocationSelect
+            // 
+            StorageLocationSelect.DropDownStyle = ComboBoxStyle.DropDownList;
+            StorageLocationSelect.FormattingEnabled = true;
+            StorageLocationSelect.Location = new Point(9, 43);
+            StorageLocationSelect.Margin = new Padding(3, 4, 3, 4);
+            StorageLocationSelect.Name = "StorageLocationSelect";
+            StorageLocationSelect.Size = new Size(233, 28);
+            StorageLocationSelect.TabIndex = 1;
+            StorageLocationSelect.TabStop = false;
             // 
             // panelTitleBar
             // 
@@ -177,6 +193,17 @@ namespace Archive
             panelDesktopPanel.Size = new Size(1103, 616);
             panelDesktopPanel.TabIndex = 2;
             // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.None;
+            label1.AutoSize = true;
+            label1.Location = new Point(33, 9);
+            label1.Name = "label1";
+            label1.RightToLeft = RightToLeft.No;
+            label1.Size = new Size(192, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Текущее местоположение";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -191,6 +218,8 @@ namespace Archive
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Архив";
             panelMenu.ResumeLayout(false);
+            panelLogo.ResumeLayout(false);
+            panelLogo.PerformLayout();
             panelTitleBar.ResumeLayout(false);
             panelTitleBar.PerformLayout();
             ResumeLayout(false);
@@ -217,5 +246,7 @@ namespace Archive
         private Panel panelDesktopPanel;
         private Button Departments_button;
         private Button ImportDataButton;
+        private ComboBox StorageLocationSelect;
+        private Label label1;
     }
 }

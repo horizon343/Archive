@@ -1,4 +1,5 @@
-﻿using Archive.DB;
+﻿using Archive.Data;
+using Archive.DB;
 using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace Archive.Forms
         private readonly string exampleImportDepartmentPathFile = "JSON/ExampleImportDepartments.json";
         private readonly string exampleImportStorageLocationPathFile = "JSON/ExampleImportStorageLocation.json";
         private readonly string[] Columns = new string[26] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
-        string EndSymbol = "К";
+        string EndSymbol = StorageLocation.currentStorageLocation ?? "Б";
 
         public FormImportData()
         {

@@ -1,3 +1,4 @@
+using Archive.Data;
 using Archive.DB;
 using Archive.Validation;
 
@@ -8,7 +9,7 @@ namespace Archive.Forms
         private Guid PatientID { get; set; }
         private bool AddPatientNotError = true;
 
-        private string EndSymbol = "К"; // Заменить на постфикс отделения, где создана карта
+        private string EndSymbol = StorageLocation.currentStorageLocation ?? "Б";
 
         public FormAddPatient()
         {
