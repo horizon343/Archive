@@ -14,11 +14,11 @@ namespace Archive
             InitializeComponent();
             DisableButton();
 
-            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
-
             DBase dBase = new DBase();
             dBase.CreateTables();
             dBase.CloseDatabaseConnection();
+
+            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
 
             CyrillicToLatin.GetCyrillicToLatin();
             Task.Run(async () =>
@@ -26,7 +26,7 @@ namespace Archive
                 DataBase dataBase = new DataBase();
                 if (DataBase.errorWhenConnection)
                 {
-                    this.Close();
+                    MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки.");
                     return;
                 }
 
@@ -156,6 +156,11 @@ namespace Archive
         private void Departments_button_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormDepartments(), sender);
+        }
+
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            OpenChildForm(new Forms.FormSettings(), sender);
         }
     }
 }

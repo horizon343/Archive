@@ -37,11 +37,12 @@ namespace Archive
             button2 = new Button();
             button1 = new Button();
             panelLogo = new Panel();
+            label1 = new Label();
             StorageLocationSelect = new ComboBox();
             panelTitleBar = new Panel();
             lblTitle = new Label();
             panelDesktopPanel = new Panel();
-            label1 = new Label();
+            SettingsButton = new Button();
             panelMenu.SuspendLayout();
             panelLogo.SuspendLayout();
             panelTitleBar.SuspendLayout();
@@ -50,6 +51,7 @@ namespace Archive
             // panelMenu
             // 
             panelMenu.BackColor = Color.FromArgb(51, 51, 76);
+            panelMenu.Controls.Add(SettingsButton);
             panelMenu.Controls.Add(ImportDataButton);
             panelMenu.Controls.Add(Departments_button);
             panelMenu.Controls.Add(button3);
@@ -150,6 +152,17 @@ namespace Archive
             panelLogo.Size = new Size(251, 107);
             panelLogo.TabIndex = 0;
             // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.None;
+            label1.AutoSize = true;
+            label1.Location = new Point(33, 9);
+            label1.Name = "label1";
+            label1.RightToLeft = RightToLeft.No;
+            label1.Size = new Size(192, 20);
+            label1.TabIndex = 0;
+            label1.Text = "Текущее местоположение";
+            // 
             // StorageLocationSelect
             // 
             StorageLocationSelect.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -193,16 +206,20 @@ namespace Archive
             panelDesktopPanel.Size = new Size(1103, 616);
             panelDesktopPanel.TabIndex = 2;
             // 
-            // label1
+            // SettingsButton
             // 
-            label1.Anchor = AnchorStyles.None;
-            label1.AutoSize = true;
-            label1.Location = new Point(33, 9);
-            label1.Name = "label1";
-            label1.RightToLeft = RightToLeft.No;
-            label1.Size = new Size(192, 20);
-            label1.TabIndex = 0;
-            label1.Text = "Текущее местоположение";
+            SettingsButton.Dock = DockStyle.Top;
+            SettingsButton.FlatAppearance.BorderSize = 0;
+            SettingsButton.FlatStyle = FlatStyle.Flat;
+            SettingsButton.ForeColor = Color.Gainsboro;
+            SettingsButton.Location = new Point(0, 507);
+            SettingsButton.Margin = new Padding(3, 4, 3, 4);
+            SettingsButton.Name = "SettingsButton";
+            SettingsButton.Size = new Size(251, 80);
+            SettingsButton.TabIndex = 7;
+            SettingsButton.Text = "Настройки";
+            SettingsButton.UseVisualStyleBackColor = true;
+            SettingsButton.Click += SettingsButton_Click;
             // 
             // Form1
             // 
@@ -248,5 +265,6 @@ namespace Archive
         private Button ImportDataButton;
         private ComboBox StorageLocationSelect;
         private Label label1;
+        private Button SettingsButton;
     }
 }

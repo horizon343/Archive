@@ -1,6 +1,8 @@
 {
-    "Server":"XAMI4OK",
-    "Database":"Archive",
-    "Trusted_Connection":true,
-    "Encrypt":false
+  "Server": "XAMI4OK",
+  "Database": "Archive",
+  "Trusted_Connection": true,
+  "Encrypt": false,
+  "UserId": null,
+  "Password": null
 }
