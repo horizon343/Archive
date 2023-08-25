@@ -31,18 +31,18 @@ namespace Archive
         private void InitializeComponent()
         {
             panelMenu = new Panel();
+            SettingsButton = new Button();
             ImportDataButton = new Button();
-            Departments_button = new Button();
-            button3 = new Button();
-            button2 = new Button();
-            button1 = new Button();
+            DepartmentsButton = new Button();
+            MKBButton = new Button();
+            PatientsButton = new Button();
+            RecordsButton = new Button();
             panelLogo = new Panel();
             label1 = new Label();
             StorageLocationSelect = new ComboBox();
             panelTitleBar = new Panel();
             lblTitle = new Label();
             panelDesktopPanel = new Panel();
-            SettingsButton = new Button();
             panelMenu.SuspendLayout();
             panelLogo.SuspendLayout();
             panelTitleBar.SuspendLayout();
@@ -53,10 +53,10 @@ namespace Archive
             panelMenu.BackColor = Color.FromArgb(51, 51, 76);
             panelMenu.Controls.Add(SettingsButton);
             panelMenu.Controls.Add(ImportDataButton);
-            panelMenu.Controls.Add(Departments_button);
-            panelMenu.Controls.Add(button3);
-            panelMenu.Controls.Add(button2);
-            panelMenu.Controls.Add(button1);
+            panelMenu.Controls.Add(DepartmentsButton);
+            panelMenu.Controls.Add(MKBButton);
+            panelMenu.Controls.Add(PatientsButton);
+            panelMenu.Controls.Add(RecordsButton);
             panelMenu.Controls.Add(panelLogo);
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 0);
@@ -64,6 +64,21 @@ namespace Archive
             panelMenu.Name = "panelMenu";
             panelMenu.Size = new Size(251, 723);
             panelMenu.TabIndex = 0;
+            // 
+            // SettingsButton
+            // 
+            SettingsButton.Dock = DockStyle.Top;
+            SettingsButton.FlatAppearance.BorderSize = 0;
+            SettingsButton.FlatStyle = FlatStyle.Flat;
+            SettingsButton.ForeColor = Color.Gainsboro;
+            SettingsButton.Location = new Point(0, 507);
+            SettingsButton.Margin = new Padding(3, 4, 3, 4);
+            SettingsButton.Name = "SettingsButton";
+            SettingsButton.Size = new Size(251, 80);
+            SettingsButton.TabIndex = 7;
+            SettingsButton.Text = "Настройки";
+            SettingsButton.UseVisualStyleBackColor = true;
+            SettingsButton.Click += SettingsButton_Click;
             // 
             // ImportDataButton
             // 
@@ -80,65 +95,65 @@ namespace Archive
             ImportDataButton.UseVisualStyleBackColor = true;
             ImportDataButton.Click += ImportDataButton_Click;
             // 
-            // Departments_button
+            // DepartmentsButton
             // 
-            Departments_button.Dock = DockStyle.Top;
-            Departments_button.FlatAppearance.BorderSize = 0;
-            Departments_button.FlatStyle = FlatStyle.Flat;
-            Departments_button.ForeColor = Color.Gainsboro;
-            Departments_button.Location = new Point(0, 347);
-            Departments_button.Margin = new Padding(3, 4, 3, 4);
-            Departments_button.Name = "Departments_button";
-            Departments_button.Size = new Size(251, 80);
-            Departments_button.TabIndex = 5;
-            Departments_button.Text = "Отделения";
-            Departments_button.UseVisualStyleBackColor = true;
-            Departments_button.Click += Departments_button_Click;
+            DepartmentsButton.Dock = DockStyle.Top;
+            DepartmentsButton.FlatAppearance.BorderSize = 0;
+            DepartmentsButton.FlatStyle = FlatStyle.Flat;
+            DepartmentsButton.ForeColor = Color.Gainsboro;
+            DepartmentsButton.Location = new Point(0, 347);
+            DepartmentsButton.Margin = new Padding(3, 4, 3, 4);
+            DepartmentsButton.Name = "DepartmentsButton";
+            DepartmentsButton.Size = new Size(251, 80);
+            DepartmentsButton.TabIndex = 5;
+            DepartmentsButton.Text = "Отделения";
+            DepartmentsButton.UseVisualStyleBackColor = true;
+            DepartmentsButton.Click += DepartmentsButton_Click;
             // 
-            // button3
+            // MKBButton
             // 
-            button3.Dock = DockStyle.Top;
-            button3.FlatAppearance.BorderSize = 0;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.ForeColor = Color.Gainsboro;
-            button3.Location = new Point(0, 267);
-            button3.Margin = new Padding(3, 4, 3, 4);
-            button3.Name = "button3";
-            button3.Size = new Size(251, 80);
-            button3.TabIndex = 3;
-            button3.Text = "МКБ";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            MKBButton.Dock = DockStyle.Top;
+            MKBButton.FlatAppearance.BorderSize = 0;
+            MKBButton.FlatStyle = FlatStyle.Flat;
+            MKBButton.ForeColor = Color.Gainsboro;
+            MKBButton.Location = new Point(0, 267);
+            MKBButton.Margin = new Padding(3, 4, 3, 4);
+            MKBButton.Name = "MKBButton";
+            MKBButton.Size = new Size(251, 80);
+            MKBButton.TabIndex = 3;
+            MKBButton.Text = "МКБ";
+            MKBButton.UseVisualStyleBackColor = true;
+            MKBButton.Click += MKBButton_Click;
             // 
-            // button2
+            // PatientsButton
             // 
-            button2.Dock = DockStyle.Top;
-            button2.FlatAppearance.BorderSize = 0;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.ForeColor = Color.Gainsboro;
-            button2.Location = new Point(0, 187);
-            button2.Margin = new Padding(3, 4, 3, 4);
-            button2.Name = "button2";
-            button2.Size = new Size(251, 80);
-            button2.TabIndex = 2;
-            button2.Text = "Пациенты";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            PatientsButton.Dock = DockStyle.Top;
+            PatientsButton.FlatAppearance.BorderSize = 0;
+            PatientsButton.FlatStyle = FlatStyle.Flat;
+            PatientsButton.ForeColor = Color.Gainsboro;
+            PatientsButton.Location = new Point(0, 187);
+            PatientsButton.Margin = new Padding(3, 4, 3, 4);
+            PatientsButton.Name = "PatientsButton";
+            PatientsButton.Size = new Size(251, 80);
+            PatientsButton.TabIndex = 2;
+            PatientsButton.Text = "Пациенты";
+            PatientsButton.UseVisualStyleBackColor = true;
+            PatientsButton.Click += PatientsButton_Click;
             // 
-            // button1
+            // RecordsButton
             // 
-            button1.Dock = DockStyle.Top;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.ForeColor = Color.Gainsboro;
-            button1.Location = new Point(0, 107);
-            button1.Margin = new Padding(3, 4, 3, 4);
-            button1.Name = "button1";
-            button1.Size = new Size(251, 80);
-            button1.TabIndex = 1;
-            button1.Text = "Карты";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            RecordsButton.Dock = DockStyle.Top;
+            RecordsButton.FlatAppearance.BorderSize = 0;
+            RecordsButton.FlatStyle = FlatStyle.Flat;
+            RecordsButton.ForeColor = Color.Gainsboro;
+            RecordsButton.Location = new Point(0, 107);
+            RecordsButton.Margin = new Padding(3, 4, 3, 4);
+            RecordsButton.Name = "RecordsButton";
+            RecordsButton.Size = new Size(251, 80);
+            RecordsButton.TabIndex = 1;
+            RecordsButton.Text = "Карты";
+            RecordsButton.UseVisualStyleBackColor = true;
+            RecordsButton.Click += RecordsButton_Click;
             // 
             // panelLogo
             // 
@@ -156,7 +171,7 @@ namespace Archive
             // 
             label1.Anchor = AnchorStyles.None;
             label1.AutoSize = true;
-            label1.Location = new Point(33, 9);
+            label1.Location = new Point(50, 9);
             label1.Name = "label1";
             label1.RightToLeft = RightToLeft.No;
             label1.Size = new Size(192, 20);
@@ -206,21 +221,6 @@ namespace Archive
             panelDesktopPanel.Size = new Size(1103, 616);
             panelDesktopPanel.TabIndex = 2;
             // 
-            // SettingsButton
-            // 
-            SettingsButton.Dock = DockStyle.Top;
-            SettingsButton.FlatAppearance.BorderSize = 0;
-            SettingsButton.FlatStyle = FlatStyle.Flat;
-            SettingsButton.ForeColor = Color.Gainsboro;
-            SettingsButton.Location = new Point(0, 507);
-            SettingsButton.Margin = new Padding(3, 4, 3, 4);
-            SettingsButton.Name = "SettingsButton";
-            SettingsButton.Size = new Size(251, 80);
-            SettingsButton.TabIndex = 7;
-            SettingsButton.Text = "Настройки";
-            SettingsButton.UseVisualStyleBackColor = true;
-            SettingsButton.Click += SettingsButton_Click;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -254,14 +254,14 @@ namespace Archive
         }
 
         private Panel panelMenu;
-        private Button button1;
-        private Button button3;
-        private Button button2;
+        private Button RecordsButton;
+        private Button MKBButton;
+        private Button PatientsButton;
         private Panel panelLogo;
         private Panel panelTitleBar;
         private Label lblTitle;
         private Panel panelDesktopPanel;
-        private Button Departments_button;
+        private Button DepartmentsButton;
         private Button ImportDataButton;
         private ComboBox StorageLocationSelect;
         private Label label1;

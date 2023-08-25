@@ -4,30 +4,33 @@ namespace Archive.Data
 {
     static class CyrillicToLatin
     {
-        private static readonly string filePathCyrillicToLatinMap = "JSON/CyrillicToLatinMap.json";
+        private static readonly string cyrillicToLatinMapFilePath = FilesPaths.cyrillicToLatinMapFilePath;
+
         public static Dictionary<char, char> CyrillicToLatinMap { get; set; } = new Dictionary<char, char> { };
 
-        public static void GetCyrillicToLatin()
+        // Получает символы для автозамены
+        public static bool GetCyrillicToLatin()
         {
             try
             {
-                if (File.Exists(filePathCyrillicToLatinMap))
+                if (File.Exists(cyrillicToLatinMapFilePath))
                 {
-                    string jsonContext = File.ReadAllText(filePathCyrillicToLatinMap);
+                    string jsonContext = File.ReadAllText(cyrillicToLatinMapFilePath);
                     JObject jsonObject = JObject.Parse(jsonContext);
+
                     foreach (var item in jsonObject)
                     {
+                        if (item.Key.Length != 1 || item.Value == null || item.Value.ToString().Length != 1)
+                            continue;
                         CyrillicToLatinMap.Add(item.Key[0], item.Value.ToString()[0]);
                     }
+                    return true;
                 }
-                else
-                {
-                    MessageBox.Show($"Ошибка мапинга, отсутствует {filePathCyrillicToLatinMap}");
-                }
+                return false;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Ошибка мапинга: [{ex.Message}]");
+                return false;
             }
         }
     }

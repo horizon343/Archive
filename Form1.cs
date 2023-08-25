@@ -1,88 +1,67 @@
 using Archive.Data;
 using Archive.DB;
+using Archive.Forms;
 
 namespace Archive
 {
     public partial class Form1 : Form
     {
         private Button currentButton;
-        private int tempIndex;
         private Form activeForm;
 
         public Form1()
         {
             InitializeComponent();
+
             DisableButton();
+            InitEvents();
 
-            DBase dBase = new DBase();
-            dBase.CreateTables();
-            dBase.CloseDatabaseConnection();
+            // Loader
+            FormLoader loader = new FormLoader();
+            Thread loadingThread = new Thread(() =>
+            {
+                loader.ShowDialog();
+            });
+            loadingThread.Start();
 
-            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
-
-            CyrillicToLatin.GetCyrillicToLatin();
             Task.Run(async () =>
             {
                 DataBase dataBase = new DataBase();
                 if (DataBase.errorWhenConnection)
                 {
-                    MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки.");
+                    loader.Close();
+                    MessageBox.Show("Ошибка подключения к базе данных. Проверьте настройки подключения.");
                     return;
                 }
 
-                await MKB.GetMKB();
-                await Departments.GetDepartment();
-                await StorageLocation.GetStorageLocation();
-                StorageLocation.SetCurrentStorageLocation();
+                if (!CyrillicToLatin.GetCyrillicToLatin())
+                    MessageBox.Show($"Ошибка получения данных для мапинга.");
+                if (!await MKB.GetMKB(dataBase))
+                    MessageBox.Show($"Ошибка при получении МКБ");
+                if (!await Departments.GetDepartment(dataBase))
+                    MessageBox.Show($"Ошибка при получении отделений");
+                if (!await StorageLocation.GetStorageLocation(dataBase))
+                    MessageBox.Show($"Ошибка при получении мест хранения");
+                if (!StorageLocation.SetCurrentStorageLocation())
+                    MessageBox.Show($"Ошибка при установке текущего местоположения");
 
-                SetItemStorageLocationSelect();
-                InitStorageLocationSelect();
+                SetItemStorageLocationSelect(StorageLocationSelect);
+                InitStorageLocationSelect(StorageLocationSelect);
 
                 if (StorageLocation.currentStorageLocation == null)
                 {
                     this.Close();
                     return;
                 }
+
+                loader.Close();
             });
 
-        }
-
-        private void SetItemStorageLocationSelect()
-        {
-            if (StorageLocation.isDataReceived)
-            {
-                List<string> StorageLocationTitle = new List<string>();
-                foreach (StorageLocationItem storageLocation in StorageLocation.StorageLocationList)
-                    StorageLocationTitle.Add(storageLocation.Title);
-                StorageLocationSelect.Items.AddRange(StorageLocationTitle.ToArray());
-            }
-        }
-
-        private void InitStorageLocationSelect()
-        {
-            if (StorageLocation.currentStorageLocation != null)
-            {
-                StorageLocationItem? currentStorageLocation = StorageLocation.StorageLocationList.Find(sl => sl.StorageLocationID == StorageLocation.currentStorageLocation);
-                if (currentStorageLocation != null)
-                {
-                    var selectedItemStorageLocation = StorageLocationSelect.Items.Cast<string>()
-                         .FirstOrDefault(item => item.ToLower().Equals(currentStorageLocation.Title.ToLower()));
-                    if (selectedItemStorageLocation != null)
-                        StorageLocationSelect.SelectedItem = selectedItemStorageLocation;
-                }
-            }
-        }
-
-        private void StorageLocationSelect_SelectedIndexChanged(object? sender, EventArgs e)
-        {
-            foreach (StorageLocationItem sl in StorageLocation.StorageLocationList)
-            {
-                if (sl.Title.ToLower() == StorageLocationSelect.SelectedItem.ToString().ToLower())
-                {
-                    StorageLocation.currentStorageLocation = sl.StorageLocationID;
-                    StorageLocation.SetNewStorageLocation(sl.StorageLocationID);
-                }
-            }
+            // === Delete ===
+            DBase dBase = new DBase();
+            dBase.CreateTables();
+            dBase.CloseDatabaseConnection();
+            // === Delete ===
         }
 
         private void ActivateButton(object btnSender)
@@ -119,8 +98,8 @@ namespace Archive
             // Блокировка меню, если идет импорт или экспорт на форме FormImportData
             if (!Data.Data.IsActiveMenu)
                 return;
-            if (activeForm != null)
-                activeForm.Close();
+
+            activeForm?.Close();
             ActivateButton(btnSender);
             activeForm = childForm;
             childForm.TopLevel = false;
@@ -133,34 +112,78 @@ namespace Archive
             lblTitle.Text = childForm.Text;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        #region Click
+        private void RecordsButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormRecords(), sender);
         }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void PatientsButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormPatients(), sender);
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        private void MKBButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormMKB(), sender);
         }
-
         private void ImportDataButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormImportData(), sender);
         }
-
-        private void Departments_button_Click(object sender, EventArgs e)
+        private void DepartmentsButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormDepartments(), sender);
         }
-
         private void SettingsButton_Click(object sender, EventArgs e)
         {
             OpenChildForm(new Forms.FormSettings(), sender);
         }
+        #endregion
+
+        #region Init
+        private void InitEvents()
+        {
+            StorageLocationSelect.SelectedIndexChanged += StorageLocationSelect_SelectedIndexChanged;
+        }
+        private void SetItemStorageLocationSelect(ComboBox StorageLocationComboBox)
+        {
+            if (StorageLocation.isDataReceived)
+            {
+                List<string> storageLocationTitles = new List<string>();
+                foreach (StorageLocationItem storageLocation in StorageLocation.StorageLocationList)
+                    storageLocationTitles.Add(storageLocation.Title);
+                StorageLocationComboBox.Items.AddRange(storageLocationTitles.ToArray());
+            }
+        }
+        private void InitStorageLocationSelect(ComboBox StorageLocationComboBox)
+        {
+            if (StorageLocation.currentStorageLocation != null)
+            {
+                StorageLocationItem? currentStorageLocation = StorageLocation.StorageLocationList.Find(sl => sl.StorageLocationID == StorageLocation.currentStorageLocation);
+                if (currentStorageLocation != null)
+                {
+                    string? selectedItemStorageLocation = StorageLocationSelect.Items.Cast<string>()
+                         .FirstOrDefault(item => item.ToLower().Equals(currentStorageLocation.Title.ToLower()));
+                    if (selectedItemStorageLocation != null)
+                        StorageLocationComboBox.SelectedItem = selectedItemStorageLocation;
+                }
+            }
+        }
+        #endregion
+
+        #region Changed
+        private void StorageLocationSelect_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            foreach (StorageLocationItem sl in StorageLocation.StorageLocationList)
+            {
+                if (sl.Title.ToLower() == StorageLocationSelect.SelectedItem?.ToString()?.ToLower())
+                {
+                    if (!StorageLocation.SetNewStorageLocation(sl.StorageLocationID))
+                        MessageBox.Show($"Ошибка изменения текущего местоположения");
+                    else
+                        StorageLocation.currentStorageLocation = sl.StorageLocationID;
+                }
+            }
+        }
+        #endregion
     }
 }

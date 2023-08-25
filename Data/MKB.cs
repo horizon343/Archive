@@ -9,15 +9,13 @@ namespace Archive.Data
 
         private static int currentPage = 1;
         private static int totalPage = 1;
+        private static readonly int pageSize = 10000;
 
-        private static int pageSize = 10000;
-
-        public static async Task GetMKB()
+        // Получает список МКБ кодов
+        public static async Task<bool> GetMKB(DataBase dataBase)
         {
             try
             {
-                DataBase dataBase = new DataBase();
-
                 while (currentPage <= totalPage)
                 {
                     (List<MKBItem>, int) mkb = await dataBase.GetPagedEntries<MKBItem>(currentPage, pageSize, "MKBCode", "MKBCode");
@@ -27,10 +25,11 @@ namespace Archive.Data
                 }
 
                 isDataReceived = true;
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Непредвиденная ошибка при получении МКБ: {ex.Message}");
+                return false;
             }
         }
     }

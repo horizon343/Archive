@@ -1,5 +1,4 @@
-﻿
-using Archive.DB;
+﻿using Archive.DB;
 
 namespace Archive.Data
 {
@@ -10,15 +9,13 @@ namespace Archive.Data
 
         private static int currentPage = 1;
         private static int totalPage = 1;
+        private static readonly int pageSize = 10000;
 
-        private static int pageSize = 10000;
-
-        public static async Task GetDepartment()
+        // Получает список отделений
+        public static async Task<bool> GetDepartment(DataBase dataBase)
         {
             try
             {
-                DataBase dataBase = new DataBase();
-
                 while (currentPage <= totalPage)
                 {
                     (List<DepartmentItem>, int) departments = await dataBase.GetPagedEntries<DepartmentItem>(currentPage, pageSize, "DepartmentID");
@@ -28,10 +25,11 @@ namespace Archive.Data
                 }
 
                 isDataReceived = true;
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Непредвиденная ошибка при получении отделений: {ex.Message}");
+                return false;
             }
         }
     }

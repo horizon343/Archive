@@ -8,21 +8,19 @@ namespace Archive.Data
     {
         public static List<StorageLocationItem> StorageLocationList { get; set; } = new List<StorageLocationItem>();
         public static bool isDataReceived = false;
+        private static readonly string configFilePath = FilesPaths.configFilePath;
 
         private static int currentPage = 1;
         private static int totalPage = 1;
+        private static readonly int pageSize = 10000;
 
-        private static int pageSize = 10000;
-
-        private static readonly string currentStorageLocationPathFile = "JSON/config.json";
         public static string? currentStorageLocation = null;
 
-        public static async Task GetStorageLocation()
+        // Получить места хранения карт
+        public static async Task<bool> GetStorageLocation(DataBase dataBase)
         {
             try
             {
-                DataBase dataBase = new DataBase();
-
                 while (currentPage <= totalPage)
                 {
                     (List<StorageLocationItem>, int) storageLocations = await dataBase.GetPagedEntries<StorageLocationItem>(currentPage, pageSize, "StorageLocationID");
@@ -32,67 +30,66 @@ namespace Archive.Data
                 }
 
                 isDataReceived = true;
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Непредвиденная ошибка при получении мест хранения карт: {ex.Message}");
-            }
-        }
-
-        public static void SetCurrentStorageLocation()
-        {
-            try
-            {
-                if (File.Exists(currentStorageLocationPathFile))
-                {
-                    string jsonContext = File.ReadAllText(currentStorageLocationPathFile);
-                    JObject jsonObject = JObject.Parse(jsonContext);
-
-                    string? currentStorageLocationfromJson = jsonObject["CurrentStorageLocation"]?.ToString();
-                    if (currentStorageLocationfromJson != null)
-                        currentStorageLocation = currentStorageLocationfromJson;
-                    else
-                        currentStorageLocation = "Б";
-                }
-                else
-                {
-                    MessageBox.Show($"Непредвиденная ошибка при получении текущего местоположения: Отсутствует файл config.json");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Непредвиденная ошибка при установлении текущего местоположения: {ex.Message}");
+                return false;
             }
         }
 
-        public static void SetNewStorageLocation(string newStorageLocationID)
+        // Устанавливает текущее местоположение
+        public static bool SetCurrentStorageLocation()
         {
             try
             {
-                if (File.Exists(currentStorageLocationPathFile))
+                if (File.Exists(configFilePath))
                 {
-                    string jsonContext = File.ReadAllText(currentStorageLocationPathFile);
+                    string jsonContext = File.ReadAllText(configFilePath);
                     JObject jsonObject = JObject.Parse(jsonContext);
 
-                    if (jsonObject["CurrentStorageLocation"].ToString() != null)
-                        jsonObject["CurrentStorageLocation"] = currentStorageLocation;
-                    else
-                        jsonObject.Add("CurrentStorageLocation", currentStorageLocation);
+                    string? currentStorageLocationFromJson = jsonObject["CurrentStorageLocation"]?.ToString();
+                    if (currentStorageLocationFromJson != null)
+                    {
+                        currentStorageLocation = currentStorageLocationFromJson;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
-                    using (StreamWriter file = File.CreateText(currentStorageLocationPathFile))
+        // Изменяет текущее местоположение
+        public static bool SetNewStorageLocation(string newStorageLocationID)
+        {
+            try
+            {
+                if (File.Exists(configFilePath))
+                {
+                    string jsonContext = File.ReadAllText(configFilePath);
+                    JObject jsonObject = JObject.Parse(jsonContext);
+
+                    if (jsonObject["CurrentStorageLocation"] != null)
+                        jsonObject["CurrentStorageLocation"] = newStorageLocationID;
+                    else
+                        jsonObject.Add("CurrentStorageLocation", newStorageLocationID);
+
+                    using (StreamWriter file = File.CreateText(configFilePath))
                     using (JsonTextWriter writer = new JsonTextWriter(file))
                     {
                         jsonObject.WriteTo(writer);
+                        return true;
                     }
                 }
-                else
-                {
-                    MessageBox.Show($"Непредвиденная ошибка при получении текущего местоположения: Отсутствует файл config.json");
-                }
+                return false;
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Ошибка изменения текущего местоположения: {ex.Message}");
+                return false;
             }
         }
     }
