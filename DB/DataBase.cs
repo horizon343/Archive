@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Archive.Data;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 
@@ -7,7 +8,7 @@ namespace Archive.DB
     internal class DataBase
     {
         private static string connectionString = "";
-        private static string jsonFilePath = "JSON/connectionDB.json";
+        private static readonly string jsonFilePath = FilesPaths.connectionDBFilePath;
 
         private static JObject? jsonObject;
         public static bool errorWhenConnection = false;

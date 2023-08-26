@@ -2,19 +2,20 @@
 using Archive.DB;
 using Newtonsoft.Json.Linq;
 using OfficeOpenXml;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Archive.Forms
 {
     public partial class FormImportData : Form
     {
-        private readonly string exampleImportPatientPathFile = "JSON/ExampleImportPatients.json";
-        private readonly string exampleImportRecordPathFile = "JSON/ExampleImportRecords.json";
-        private readonly string exampleImportNewPatientPathFile = "JSON/ExampleImportNewPatients.json";
-        private readonly string exampleImportNewRecordPathFile = "JSON/ExampleImportNewRecords.json";
-        private readonly string exampleImportMKBPathFile = "JSON/ExampleImportMKB.json";
-        private readonly string exampleImportDepartmentPathFile = "JSON/ExampleImportDepartments.json";
-        private readonly string exampleImportStorageLocationPathFile = "JSON/ExampleImportStorageLocation.json";
+        private readonly string exampleImportPatientPathFile = FilesPaths.exampleImportPatientFilePath;
+        private readonly string exampleImportRecordPathFile = FilesPaths.exampleImportRecordFilePath;
+        private readonly string exampleImportNewPatientPathFile = FilesPaths.exampleImportNewPatientFilePath;
+        private readonly string exampleImportNewRecordPathFile = FilesPaths.exampleImportNewRecordFilePath;
+        private readonly string exampleImportMKBPathFile = FilesPaths.exampleImportMKBFilePath;
+        private readonly string exampleImportDepartmentPathFile = FilesPaths.exampleImportDepartmentFilePath;
+        private readonly string exampleImportStorageLocationPathFile = FilesPaths.exampleImportStorageLocationFilePath;
         private readonly string[] Columns = new string[26] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
         string EndSymbol = StorageLocation.currentStorageLocation ?? "Б";
 
@@ -348,25 +349,45 @@ namespace Archive.Forms
                         return;
                     }
 
+                    // NULL в таблицах
+                    Task.Run(async () =>
+                    {
+                        await new DataBase().MergeEntry<MKBItem>(
+                            new List<MKBItem>() { new MKBItem()
+                                {
+                                    MKBCode = "NULL",
+                                    Title = "NULL"
+                                } },
+                            "MKBCode");
+                        await new DataBase().MergeEntry<DepartmentItem>(
+                            new List<DepartmentItem>() { new DepartmentItem()
+                                {
+                                    DepartmentID = 0,
+                                    Title = "NULL"
+                                } },
+                            "DepartmentID");
+                    }).Wait();
+
                     // Создание списка карт
                     List<RecordItemDraft> recordsDraft = new List<RecordItemDraft>(recordRowCount);
                     for (int row = 1; row <= recordRowCount; row++)
                     {
-                        if (int.TryParse(recordWorksheet.Cells[row, 1].Text, out int PatientID) &&
-                            DateTime.TryParse(recordWorksheet.Cells[row, 2].Text, out DateTime dateOfReceipt) &&
-                            DateTime.TryParse(recordWorksheet.Cells[row, 3].Text, out DateTime dateOfDischarge) &&
-                            int.TryParse(recordWorksheet.Cells[row, 4].Text, out int departmentID) &&
-                            int.TryParse(recordWorksheet.Cells[row, 5].Text, out int historyNumber) &&
-                            recordWorksheet.Cells[row, 6].Text.Length != 0)
+                        if (int.TryParse(recordWorksheet.Cells[row, 1].Text, out int PatientID))
+                        {
+                            bool isDateOfReceipt = DateTime.TryParse(recordWorksheet.Cells[row, 2].Text, out DateTime dateOfReceipt);
+                            bool isDateOfDischarge = DateTime.TryParse(recordWorksheet.Cells[row, 3].Text, out DateTime dateOfDischarge);
+                            bool isDepartmentID = int.TryParse(recordWorksheet.Cells[row, 4].Text, out int departmentID);
+                            bool isHistoryNumber = int.TryParse(recordWorksheet.Cells[row, 5].Text, out int historyNumber);
                             recordsDraft.Add(new RecordItemDraft()
                             {
                                 PatientID = PatientID,
-                                DateOfReceipt = dateOfReceipt.Date,
-                                DateOfDischarge = dateOfDischarge.Date,
-                                DepartmentID = departmentID,
-                                HistoryNumber = historyNumber,
-                                MKBCode = recordWorksheet.Cells[row, 6].Text,
+                                DateOfReceipt = isDateOfReceipt ? dateOfReceipt.Date : new DateTime(1800, 1, 1),
+                                DateOfDischarge = isDateOfDischarge ? dateOfDischarge.Date : new DateTime(1800, 1, 1),
+                                DepartmentID = isDepartmentID ? departmentID : 0,
+                                HistoryNumber = isHistoryNumber ? historyNumber : 0,
+                                MKBCode = recordWorksheet.Cells[row, 6].Text.Length != 0 ? recordWorksheet.Cells[row, 6].Text : "NULL",
                             });
+                        }
 
                         try
                         {
@@ -521,6 +542,7 @@ namespace Archive.Forms
                     }
                     catch { }
                     MessageBox.Show($"Успешно добавлено {patientItem.Count} пациентов и {recordItem.Count} карт!");
+                    RestartApp();
                 }
             }
             catch (Exception error)
@@ -919,6 +941,21 @@ namespace Archive.Forms
             }
         }
         #endregion
+
+        // Перезапуск приложения
+        private void RestartApp()
+        {
+            string appPath = Application.ExecutablePath;
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = appPath,
+                UseShellExecute = true,
+                Verb = "runas"
+            });
+
+            Application.Exit();
+        }
 
         private void ToggleButtonState(bool value)
         {

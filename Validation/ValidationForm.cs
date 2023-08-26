@@ -90,26 +90,28 @@ namespace Archive.Validation
         }
 
         /// <summary>
-        /// Проверка, что строка состоит только из букв
+        /// Проверка на корректность даты (не прошлый век и не будущее)
         /// </summary>
-        /// <param name="text">Текст</param>
-        /// <param name="errorTextLabel">Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        /// <returns></returns>
-        static public bool StringConsistsOfLetters(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
+        /// <param name="text">Строка с датой в формате dd.mm.yyyy</param>
+        static public bool DateIsValid(string text)
         {
-            string pattern = @"^\p{L}+$";
-
-            if (Regex.IsMatch(text, pattern))
+            try
             {
-                errorTextLabel.Text = "";
+                string[] dateArray = text.Split(".");
+                DateTime todayDate = DateTime.Now;
+                DateTime minDate = new DateTime(1900, 12, 31);
+                DateTime date = new DateTime(int.Parse(dateArray[2]), int.Parse(dateArray[1]), int.Parse(dateArray[0]));
+                if (date > todayDate || date < minDate)
+                    return false;
                 return true;
             }
-            errorTextLabel.ForeColor = color;
-            errorTextLabel.Text = errorText;
-            return false;
+            catch
+            {
+                return false;
+            }
         }
+
+
 
         /// <summary>
         /// Проверка, что строка состоит только из цифр
@@ -173,112 +175,6 @@ namespace Archive.Validation
                 return false;
             }
         }
-        /// <summary>
-        /// Проверка на корректность даты (не прошлый век и не будущее)
-        /// </summary>
-        /// <param name="text">Строка с датой в формате dd.mm.yyyy</param>
-        static public bool DateIsValid(string text)
-        {
-            try
-            {
-                string[] dateArray = text.Split(".");
-                DateTime todayDate = DateTime.Now;
-                DateTime minDate = new DateTime(1900, 12, 31);
-                DateTime date = new DateTime(int.Parse(dateArray[2]), int.Parse(dateArray[1]), int.Parse(dateArray[0]));
-                if (date > todayDate || date < minDate)
-                    return false;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Проверка, что строка начинается с буквы
-        /// </summary>
-        /// <param name="text">Текст</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        static public bool StringStartsWithLetter(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            string pattern = @"^\p{L}";
-
-            if (Regex.IsMatch(text, pattern))
-            {
-                errorTextLabel.Text = "";
-                return true;
-            }
-            errorTextLabel.ForeColor = color;
-            errorTextLabel.Text = errorText;
-            return false;
-        }
-
-        /// <summary>
-        /// Проверка длины строки
-        /// </summary>
-        /// <param name="text">Текст</param>
-        /// <param name="length">Максимальная длина строки</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        static public bool CheckingLengthOfString(string text, int length, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            if (text.Length <= length)
-            {
-                errorTextLabel.Text = "";
-                return true;
-            }
-            errorTextLabel.ForeColor = color;
-            errorTextLabel.Text = errorText;
-            return false;
-        }
         #endregion
-
-
-        /// <summary>
-        /// Проверка, что строка начинается с буквы
-        /// </summary>
-        /// <param name="textField">Текст</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        static public bool StringStartsWithLetter(TextBox textField, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            string pattern = @"^\p{L}";
-
-            if (Regex.IsMatch(textField.Text, pattern))
-            {
-                errorTextLabel.Text = "";
-                return true;
-            }
-            errorTextLabel.ForeColor = color;
-            errorTextLabel.Text = errorText;
-            return false;
-        }
-
-        /// <summary>
-        /// Проверка корректности номера пациента (формта А-123)
-        /// </summary>
-        /// <param name="text">Текст</param>
-        /// <param name="errorTextLabel">Label: Поле ошибки</param>
-        /// <param name="color">Цвет ошибки</param>
-        /// <param name="errorText">Текст ошибки</param>
-        /// <returns></returns>
-        static public bool PatientNumberFormat(string text, Label errorTextLabel, Color color, string errorText = "Возможно допущена ошибка ?!")
-        {
-            string pattern = @"^\p{L}-\d+$";
-            if (Regex.IsMatch(text, pattern))
-            {
-                errorTextLabel.Text = "";
-                return true;
-            }
-            errorTextLabel.ForeColor = color;
-            errorTextLabel.Text = errorText;
-            return false;
-        }
-
     }
 }
