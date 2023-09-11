@@ -27,10 +27,7 @@ namespace Archive.Forms
                     string jsonContext = File.ReadAllText(connectionFilePath);
                     JObject jsonObject = JObject.Parse(jsonContext);
 
-                    ServerTextField.Text = jsonObject["Server"]?.ToString();
-                    DatabaseTextField.Text = jsonObject["Database"]?.ToString();
-                    UserIdTextField.Text = jsonObject["User_Id"]?.ToString();
-                    PasswordTextField.Text = jsonObject["Password"]?.ToString();
+                    ConnectionStringTextField.Text = jsonObject["ConnectionString"]?.ToString();
                 }
                 else
                     throw new Exception("Отсутствует connectionDB.json");
@@ -42,10 +39,7 @@ namespace Archive.Forms
         }
         private void InitEvents()
         {
-            ServerTextField.TextChanged += ToggleButtonStatus;
-            DatabaseTextField.TextChanged += ToggleButtonStatus;
-            UserIdTextField.TextChanged += ToggleButtonStatus;
-            PasswordTextField.TextChanged += ToggleButtonStatus;
+            ConnectionStringTextField.TextChanged += ToggleButtonStatus;
         }
         #endregion
 
@@ -54,20 +48,20 @@ namespace Archive.Forms
         {
             ConnectButton.Enabled = false;
 
-            if (ServerTextField.Text.Length != 0 && DatabaseTextField.Text.Length != 0 && ((PasswordTextField.Text.Length == 0 && UserIdTextField.Text.Length == 0) || (PasswordTextField.Text.Length != 0 && UserIdTextField.Text.Length != 0)))
+            if (ConnectionStringTextField.Text.Length != 0)
                 ConnectButton.Enabled = true;
         }
         #endregion
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            bool result = RewriteConnectionDBJson(ServerTextField, DatabaseTextField, UserIdTextField, PasswordTextField);
+            bool result = RewriteConnectionDBJson(ConnectionStringTextField);
             if (result)
                 RestartApp();
         }
 
         // Перезаписывает настройки файла connectionDB.json
-        private bool RewriteConnectionDBJson(TextBox ServerTextBox, TextBox DatabaseTextBox, TextBox UserIdTextBox, TextBox PasswordTextBox)
+        private bool RewriteConnectionDBJson(TextBox ConnectionStringTextField)
         {
             try
             {
@@ -76,21 +70,7 @@ namespace Archive.Forms
                     string jsonContext = File.ReadAllText(connectionFilePath);
                     JObject jsonObject = JObject.Parse(jsonContext);
 
-                    jsonObject["Server"] = ServerTextBox.Text;
-                    jsonObject["Database"] = DatabaseTextBox.Text;
-
-                    if (UserIdTextBox.Text.Length == 0 && PasswordTextBox.Text.Length == 0)
-                    {
-                        jsonObject["Trusted_Connection"] = true;
-                        jsonObject["User_Id"] = null;
-                        jsonObject["Password"] = null;
-                    }
-                    else
-                    {
-                        jsonObject["Trusted_Connection"] = false;
-                        jsonObject["User_Id"] = UserIdTextBox.Text;
-                        jsonObject["Password"] = PasswordTextBox.Text;
-                    }
+                    jsonObject["ConnectionString"] = ConnectionStringTextField.Text;
 
                     using (StreamWriter file = File.CreateText(connectionFilePath))
                     using (JsonTextWriter writer = new JsonTextWriter(file))

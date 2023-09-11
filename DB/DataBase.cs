@@ -25,11 +25,18 @@ namespace Archive.DB
                     {
                         string jsonContext = File.ReadAllText(jsonFilePath);
                         jsonObject = JObject.Parse(jsonContext);
-                        connectionString = $"Server={jsonObject["Server"]};Database={jsonObject["Database"]};" +
-                            $"Trusted_Connection={jsonObject["Trusted_Connection"]};Encrypt={jsonObject["Encrypt"]};";
+                        if (jsonObject["ConnectionString"] != null)
+                        {
+                            connectionString = jsonObject["ConnectionString"].ToString();
 
-                        using SqlConnection connection = new SqlConnection(connectionString);
-                        connection.Open();
+                            using SqlConnection connection = new SqlConnection(connectionString);
+                            connection.Open();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Ошибка, отсутствует поле \"ConnectionString\"");
+                            errorWhenConnection = true;
+                        }
                     }
                     else
                     {
