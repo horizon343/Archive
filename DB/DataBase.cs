@@ -163,14 +163,14 @@ namespace Archive.DB
                 int startIndex = (pageNumber - 1) * pageSize;
 
                 string countQuery = $"SELECT COUNT(*) FROM {table}";
-                string dataQuery = $"SELECT {fields} FROM {table} ORDER BY {sortField} OFFSET {startIndex} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+                string dataQuery = $"SELECT {fields} FROM (SELECT ROW_NUMBER() OVER (ORDER BY {sortField}) AS RowNum, {fields} FROM {table}) AS NumberedRows WHERE RowNum BETWEEN @StartIndex + 1 AND @StartIndex + @PageSize";
 
                 if (fieldsAndValues != null)
                 {
                     string queryWhere = string.Join(" AND ", fieldsAndValues.Select(fieldAndValue => $"{fieldAndValue.Key} = @{fieldAndValue.Key}"));
 
                     countQuery = $"SELECT COUNT(*) FROM {table} WHERE {queryWhere}";
-                    dataQuery = $"SELECT {fields} FROM {table} WHERE {queryWhere} ORDER BY {sortField} OFFSET {startIndex} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+                    dataQuery = $"SELECT {fields} FROM (SELECT ROW_NUMBER() OVER (ORDER BY {sortField}) AS RowNum, {fields} FROM {table} WHERE {queryWhere}) AS NumberedRows WHERE RowNum BETWEEN @StartIndex + 1 AND @StartIndex + @PageSize";
                 }
 
                 int totalPages = 0;
@@ -201,6 +201,9 @@ namespace Archive.DB
                                 SqlParameter parameter = new SqlParameter("@" + fieldAndValue.Key, fieldAndValue.Value);
                                 dataCommand.Parameters.Add(parameter);
                             }
+
+                        dataCommand.Parameters.AddWithValue("@StartIndex", startIndex);
+                        dataCommand.Parameters.AddWithValue("@PageSize", pageSize);
 
                         using (SqlDataReader reader = await dataCommand.ExecuteReaderAsync())
                         {
